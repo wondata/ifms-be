@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Application.Features.ChartOfAccount.Queries;
+using Application.DTOs;
 using Application.Interfaces.Services;
 using Application.Wrappers;
 using Domain.Entities;
 using Domain.Models;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Presentation.Api.Model.PostModel;
+using Serilog;
 
 namespace Presentation.Api.Controllers
 {
@@ -46,16 +49,162 @@ namespace Presentation.Api.Controllers
             return await this._service.GetCostCodes();
         }
 
+        //[HttpPost("GetVoucherType")]
+        //public async Task<IEnumerable<VoucherTypeEntity>> GetVoucherType()
+        //{
+        //    return await this._service.GetVoucherTypes();
+        //}
+
         [HttpPost("GetVoucherType")]
-        public async Task<IEnumerable<VoucherTypeEntity>> GetVoucherType()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<APIPagedResponse<VoucherTypeEntity>>> GetVoucherType()
         {
-            return await this._service.GetVoucherType();
+            //BusinessLogModel logModel = new BusinessLogModel
+            //{
+            //    ActionName = "GetBankSetupLookups",
+            //    BranchName = bankSetupPostModel.Branch.BranchName,
+            //    Data = bankSetupPostModel
+            //};
+
+            try
+            {
+                var lookups = await _service.GetVoucherTypes();
+                //Log.Information("Get all bank setups", logModel, ResponseStatus.Info);
+                return Ok(new APIPagedResponse<List<VoucherTypeEntity>>(lookups));
+            }
+            //catch (CustomException e)
+            //{
+            //    return BadRequest(new APIResponse<BankLookupsEntity>(null, true, e.Message));
+
+            //}
+            catch (System.Exception ex)
+            {
+                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                // Log.Information(message, logModel, ResponseStatus.Error);
+
+                return BadRequest(new APIPagedResponse<List<VoucherTypeEntity>>(null, true, "Exception occurred, please retry!"));
+
+            }
+
         }
 
+        //[HttpPost("GetVoucherTypeSetting")]
+        //public async Task<IEnumerable<VoucherTypeSettingEntity>> GetVoucherTypeSetting()
+        //{
+        //    return await this._service.GetVoucherTypeSettings();
+        //}
+
         [HttpPost("GetVoucherTypeSetting")]
-        public async Task<IEnumerable<VoucherTypeSettingEntity>> GetVoucherTypeSetting()
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<APIPagedResponse<VoucherTypeSettingEntity>>> GetVoucherTypeSetting()
         {
-            return await this._service.GetVoucherTypeSetting();
+            //IfmsVoucherTypeSetting logModel = new IfmsVoucherTypeSetting
+            //{
+            //    ActionName = "GetVoucherTypeSetting",
+            //    BranchName = bankSetupPostModel.Branch.BranchName,
+            //    Data = bankSetupPostModel
+            //};
+           
+
+            try
+            {
+                var lookups = await this._service.GetVoucherTypeSettings();
+
+
+                //Log.Information("Get all bank setups", logModel, ResponseStatus.Info);
+                return Ok(new APIPagedResponse<List<VoucherTypeSettingEntity>>(lookups));
+            }
+            //catch (CustomException e)
+            //{
+            //    return BadRequest(new APIResponse<BankLookupsEntity>(null, true, e.Message));
+
+            //}
+            catch (System.Exception ex)
+            {
+                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+               // Log.Information(message, logModel, ResponseStatus.Error);
+
+                return BadRequest(new APIPagedResponse<VoucherTypeSettingEntity>(null, true, "Exception occurred, please retry!"));
+                //return BadRequest(new APIPagedResponse<VoucherTypeSettingEntity>(null, true, "Exception occurred, please retry!"));
+
+            }
+
+        }
+
+
+        //public async Task<ActionResult<ApiPagedResponse<BankLookupsEntity>>> GetBankSetupLookups(APIPostModel<object> bankSetupPostModel)
+        // {
+        //    BusinessLogModel logModel = new BusinessLogModel
+        //    {
+        //        ActionName = "GetBankSetupLookups",
+        //        BranchName = bankSetupPostModel.Branch.BranchName,
+        //        Data = bankSetupPostModel
+        //    };
+        //
+        //    try
+        //    {
+        //        var lookups = await _service.GetBankLookups();
+        //        Log.Information("Get all bank setups", logModel, ResponseStatus.Info);
+        //        return Ok(new APIResponse<BankLookupsEntity>(lookups));
+        //    }
+        //    catch (CustomException e)
+        //    {
+        //        return BadRequest(new APIResponse<BankLookupsEntity>(null, true, e.Message));
+
+        //    }
+        //    catch (System.Exception ex)
+        //    {
+        //        string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+        //        Log.Information(message, logModel, ResponseStatus.Error);
+
+        //        return BadRequest(new APIResponse<BankLookupsEntity>(null, true, "Exception occurred, please retry!"));
+
+        //    }
+
+        // }
+
+        [HttpPost("SaveGeneraltSetting")]
+        public async Task SaveGeneraltSetting(SettingPostModel settingPostModel)
+        {
+            SettingEntity response = new SettingEntity();
+
+            try
+            {
+                SettingEntity settingEntity = settingPostModel.MapToEntity();
+
+                await this._service.SaveSetting(settingEntity);
+
+               // return response;
+            }
+            catch (Exception ex)
+            {
+                //response.ResponseStatus = ResponseStatus.Error.ToString();
+                //response.Message = "Closing accounts has not been saved successfully!";
+                //return null;
+            }
+        }
+
+        [HttpPost("SaveFixedAssetSetting")]
+        public async Task SaveFixedAssetSetting(FixedAssetPostModle fixedAssetPost)
+        {
+            FixedAssetSettingEntity response = new FixedAssetSettingEntity();
+
+            try
+            {
+                FixedAssetSettingEntity fixedEntity = fixedAssetPost.MapToEntity();
+
+                 await this._service.SaveFixedAssetSetting(fixedEntity);
+
+                //return response;
+            }
+            catch (Exception ex)
+            {
+                //response.ResponseStatus = ResponseStatus.Error.ToString();
+                //response.Message = "Closing accounts has not been saved successfully!";
+                //return null;
+            }
         }
 
         [HttpPost("GetChartOfAccount")]
@@ -125,5 +274,8 @@ namespace Presentation.Api.Controllers
         //        return response;
         //    }
         //}
+
+
+        
     }
 }

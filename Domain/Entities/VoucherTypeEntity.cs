@@ -22,7 +22,7 @@ namespace Domain.Entities
 
         public VoucherTypeEntity(LupVoucherType  lupVoucher)
         {
-            this.Id = lupVoucher.Id;
+           // this.Id = lupVoucher.Id;
             this.Name = lupVoucher.Name;
             this.Code = lupVoucher.Code;
             this.Description = lupVoucher.Description;

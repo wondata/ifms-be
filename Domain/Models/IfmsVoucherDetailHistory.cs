@@ -12,10 +12,10 @@ namespace Domain.Models
           
         }
 
-        public int Id { get; set; }
-        public int VoucherHeaderId { get; set; }
-        public int CostCenterId { get; set; }
-        public int ControlAccountId { get; set; }
+        public Guid Id { get; set; }
+        public Guid VoucherHeaderId { get; set; }
+        public Guid CostCenterId { get; set; }
+        public Guid ControlAccountId { get; set; }
         public Guid? SubsidiaryAccountId { get; set; }
         public float DebitAmount { get; set; }
         public float CreditAmount { get; set; }

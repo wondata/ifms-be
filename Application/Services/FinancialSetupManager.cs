@@ -39,7 +39,7 @@ namespace CyberErp.CoreSetting.Core.Service
             return costCodes;
         }
 
-        public async Task<IEnumerable<CostCenterEntity>> GetCostCenter()
+        public async Task<IEnumerable<CostCenterEntity>> GetCostCenters()
         {
             IEnumerable<CoreCostCenter> coreCost = await this._repository.GetAllAsync<CoreCostCenter>();
             IEnumerable<CostCenterEntity> costCodes = coreCost.Select(x => new CostCenterEntity(x));
@@ -47,22 +47,89 @@ namespace CyberErp.CoreSetting.Core.Service
             return costCodes;
         }
 
-        public async Task<IEnumerable<VoucherTypeEntity>> GetVoucherType()
+        public async Task<List<VoucherTypeEntity>> GetVoucherTypes()
         {
-            IEnumerable<LupVoucherType> lupVoucher = await this._repository.GetAllAsync<LupVoucherType>();
-            IEnumerable<VoucherTypeEntity> voucherType = lupVoucher.Select(x => new VoucherTypeEntity(x));
+            IQueryable<LupVoucherType> lupVoucher = await this._repository.GetAllAsync<LupVoucherType>();
+            List<VoucherTypeEntity> voucherType = lupVoucher.Select(x => new VoucherTypeEntity(x)).ToList();
 
             return voucherType;
         }
+     
 
-        public async Task<IEnumerable<VoucherTypeSettingEntity>> GetVoucherTypeSetting()
+        public async Task<List<VoucherTypeSettingEntity>> GetVoucherTypeSettings()
         {
 
-            IEnumerable<IfmsVoucherTypeSetting> ifmsVoucher = await this._repository.GetAllAsync<IfmsVoucherTypeSetting>();
-            
-            IEnumerable<VoucherTypeSettingEntity> voucherType = ifmsVoucher.Select(x => new VoucherTypeSettingEntity(x));
+            IQueryable<IfmsVoucherTypeSetting> ifmsVoucher = await this._repository.GetAllAsync<IfmsVoucherTypeSetting>();
+
+            List<VoucherTypeSettingEntity> voucherType = ifmsVoucher.Select(x => new VoucherTypeSettingEntity(x)).ToList();
 
             return voucherType;
+
+        }
+
+        public async Task SaveSetting(SettingEntity settingEntity)
+        {
+            Guid id;
+            Guid.TryParse(settingEntity.Id.ToString(), out id);
+            
+            IfmsSetting existingRecord = await this._repository.GetAsync<IfmsSetting>(x => x.Id == id);
+
+            if (existingRecord == null)
+            {
+                IfmsSetting ifmssetting = settingEntity.MapToModel();
+
+                await this._repository.AddAsync(ifmssetting);
+                await this._repository.UnitOfWork.SaveChanges();
+              
+            }
+            else
+            {
+                IfmsSetting ifmssetting = await this.GetSetting(id);
+                IfmsSetting setting = settingEntity.MapToModel(ifmssetting);
+
+                await this._repository.UpdateAsync(setting);
+                await this._repository.UnitOfWork.SaveChanges();
+
+                             
+            }
+        }
+
+
+        public async Task SaveFixedAssetSetting(FixedAssetSettingEntity fixedAssetSetting)
+        {
+            Guid id;
+            Guid.TryParse(fixedAssetSetting.Id.ToString(), out id);
+
+            IfmsFixedAssetSetting existingRecord = await this._repository.GetAsync<IfmsFixedAssetSetting>(x => x.Id == id);
+
+            if (existingRecord == null)
+            {
+                IfmsFixedAssetSetting setting = fixedAssetSetting.MapToModel();
+
+                await this._repository.AddAsync(setting);
+                await this._repository.UnitOfWork.SaveChanges();
+
+            }
+            else
+            {
+                IfmsFixedAssetSetting ifmsfixed = await this.GetFixedAssetSetting(id);
+                IfmsFixedAssetSetting setting = fixedAssetSetting.MapToModel(ifmsfixed);
+
+                await this._repository.UpdateAsync(setting);
+                await this._repository.UnitOfWork.SaveChanges();
+
+            }
+        }
+
+        public async Task<IfmsSetting> GetSetting(Guid id)
+        {
+            return (await this._repository.GetAsync<IfmsSetting>(x => x.Id == id));
+
+        }
+
+        public async Task<IfmsFixedAssetSetting> GetFixedAssetSetting(Guid id)
+        {
+            return (await this._repository.GetAsync<IfmsFixedAssetSetting>(x => x.Id == id));
 
         }
     }

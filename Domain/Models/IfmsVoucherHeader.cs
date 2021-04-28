@@ -12,22 +12,22 @@ namespace Domain.Models
             IfmsVoucherDetails_2 = new HashSet<IfmsVoucherDetail>();
         }
 
-        public int Id { get; set; }
-        public int CostCenterId { get; set; }
-        public int VoucherTypeId { get; set; }
+        public Guid Id { get; set; }
+        public Guid CostCenterId { get; set; }
+        public Guid VoucherTypeId { get; set; }
         public string ReferenceNo { get; set; }
         public string DocumentNo { get; set; }
         public DateTime? Date { get; set; }
-        public int PeriodId { get; set; }
+        public Guid PeriodId { get; set; }
         public string PayedToReceivedFrom { get; set; }
-        public int PurposeTemplateId { get; set; }
+        public Guid PurposeTemplateId { get; set; }
         public string Purpose { get; set; }
         public string Description { get; set; }
         public float Amount { get; set; }
         public string TaxId { get; set; }
-        public int ModeOfPaymentId { get; set; }
+        public Guid ModeOfPaymentId { get; set; }
         public string ChequeNo { get; set; }
-        public int ProjectId { get; set; }
+        public Guid ProjectId { get; set; }
         public bool? CreatedBy { get; set; }
         public bool? IsPosted { get; set; }
         public bool? IsAdjustment { get; set; }

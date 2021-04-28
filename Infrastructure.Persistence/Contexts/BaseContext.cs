@@ -28,8 +28,9 @@ namespace Infrastructure.Persistence.Contexts
         public virtual DbSet<IfmsVoucherDetailHistory> IfmsVoucherDetailHistory { get; set; }           
         public virtual DbSet<IfmsVoucherHeader> IfmsVoucherHeader { get; set; }
         public virtual DbSet<IfmsVoucherHeaderHistory> IfmsVoucherHeaderHistory { get; set; }
-
         public virtual DbSet<IfmsVoucherTypeSetting> IfmsVoucherTypeSetting { get; set; }
+        public virtual DbSet<IfmsSetting> IfmsSetting{ get; set; }
+        public virtual DbSet<IfmsFixedAssetSetting> IfmsFixedAssetSetting { get; set; }
 
         public virtual DbSet<LupVoucherType> LupVoucherType { get; set; }
 
@@ -121,6 +122,19 @@ namespace Infrastructure.Persistence.Contexts
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_coreSubsidiaryAccount_lupBalanceSide");
 
+                //entity.HasOne(d => d.BalanceSide)
+                //    .WithMany(p => p.CoreSubsidiaryAccount)
+                //    .HasForeignKey(d => d.SubsidiaryAccountTypeId)
+                //    .OnDelete(DeleteBehavior.ClientSetNull)
+                //    .HasConstraintName("FK_coreSubsidiaryAccount_lupSubsidiaryAccountType");
+
+
+                entity.HasOne(d => d.CoreControlAccounts)
+                  .WithMany(p => p.CoreSubsidiaryAccounts)
+                  .HasForeignKey(d => d.ControlAccountId)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_coreSubsidiaryAccount_coreControlAccount");
+
             });
 
             modelBuilder.Entity<CoreCostCenter>(entity =>
@@ -133,11 +147,11 @@ namespace Infrastructure.Persistence.Contexts
 
                 entity.Property(e => e.Code);
 
-                entity.Property(e => e.ParentId);
+            //    entity.Property(e => e.ParentId);
 
-          //      entity.Property(e => e.IsDeleted);
+            //  entity.Property(e => e.IsDeleted);
           
-          //      entity.Property(e => e.LastUpdated);
+            //  entity.Property(e => e.LastUpdated);
 
                 entity.HasOne(d => d.Parent)
                     .WithMany(p => p.InverseParent)
@@ -185,19 +199,11 @@ namespace Infrastructure.Persistence.Contexts
             {
                 entity.ToTable("ifmsVoucherHeader");
 
-                entity.Property(e => e.CostCenterId);
-
-                entity.Property(e => e.VoucherTypeId);
-
                 entity.Property(e => e.ReferenceNo);
 
                 entity.Property(e => e.DocumentNo);
 
-                entity.Property(e => e.PeriodId);
-
                 entity.Property(e => e.PayedToReceivedFrom);
-
-                entity.Property(e => e.PurposeTemplateId);
 
                 entity.Property(e => e.Purpose);
 
@@ -207,11 +213,7 @@ namespace Infrastructure.Persistence.Contexts
 
                 entity.Property(e => e.TaxId);
 
-                entity.Property(e => e.ModeOfPaymentId);
-
                 entity.Property(e => e.ChequeNo);
-
-                entity.Property(e => e.ProjectId);
 
                 entity.Property(e => e.PostedFromOperation);
 
@@ -241,19 +243,13 @@ namespace Infrastructure.Persistence.Contexts
             {
                 entity.ToTable("ifmsVoucherHeaderHistory");
 
-                entity.Property(e => e.VoucherTypeId);
-
                 entity.Property(e => e.ReferenceNo);
-
-                entity.Property(e => e.PeriodId);
 
                 entity.Property(e => e.PayedToReceivedFrom);
 
                 entity.Property(e => e.Purpose);
 
                 entity.Property(e => e.Amount);
-
-                entity.Property(e => e.ModeOfPaymentId);
 
                 entity.Property(e => e.ChequeNo);
 
@@ -264,17 +260,7 @@ namespace Infrastructure.Persistence.Contexts
 
             modelBuilder.Entity<IfmsVoucherDetail>(entity =>
             {
-                entity.ToTable("ifmsVoucherDetail");   
-
-                entity.Property(e => e.VoucherHeaderId);
-
-                entity.Property(e => e.CostCenterId);
-
-                entity.Property(e => e.CostCodeId);
-
-                entity.Property(e => e.ControlAccountId);
-
-                entity.Property(e => e.SubsidiaryAccountId);
+                entity.ToTable("ifmsVoucherDetail");       
 
                 entity.Property(e => e.DebitAmount);
 
@@ -282,7 +268,6 @@ namespace Infrastructure.Persistence.Contexts
 
                 entity.Property(e => e.IsInterBranchTransactionCleared);
 
-                entity.Property(e => e.IBTReferenceVoucherHeaderId);
 
                 entity.HasOne(d => d.CoreControlAccounts)
                 .WithMany(p => p.IfmsVoucherDetails)
@@ -369,14 +354,6 @@ namespace Infrastructure.Persistence.Contexts
             {
                 entity.ToTable("ifmsVoucherTypeSetting");
 
-                entity.Property(e => e.CostCenterId);
-
-                entity.Property(e => e.VoucherTypeId);
-
-                entity.Property(e => e.DefaultAccountId);
-
-                entity.Property(e => e.BalanceSideId);
-
                 entity.Property(e => e.StartingNumber);
 
                 entity.Property(e => e.EndingNumber);
@@ -387,9 +364,88 @@ namespace Infrastructure.Persistence.Contexts
 
                 entity.HasOne(d => d.CoreCostCenters)
                   .WithMany(p => p.IfmsVoucherTypeSettings)
-                  .HasForeignKey(d => d.CostCenterId)
-                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasForeignKey(d => d.CostCenterId)             
                   .HasConstraintName("FK_ifmsVoucherTypeSetting_coreCostCenter");
+
+                entity.HasOne(d => d.CoreSubsidiaryAccounts)
+                 .WithMany(p => p.IfmsVoucherTypeSettings)
+                 .HasForeignKey(d => d.DefaultAccountId)
+                 .HasConstraintName("FK_ifmsVoucherTypeSetting_coreSubsidiaryAccount");
+
+                entity.HasOne(d => d.LupBalanceSides)
+                .WithMany(p => p.IfmsVoucherTypeSettings)
+                .HasForeignKey(d => d.BalanceSideId)
+                .HasConstraintName("FK_ifmsVoucherTypeSetting_lupBalanceSide");
+
+                entity.HasOne(d => d.LupVoucherTypes)
+                   .WithMany(p => p.IfmsVoucherTypeSettings)
+                   .HasForeignKey(d => d.VoucherTypeId)
+                   .HasConstraintName("FK_ifmsVoucherTypeSetting_lupVoucherType");
+
+            });
+
+            modelBuilder.Entity<IfmsSetting>(entity =>
+            {
+                entity.ToTable("ifmsSetting");
+
+                entity.Property(e => e.CurrentFiscalYearId);
+
+                entity.Property(e => e.CurrentPeriodId);
+
+                entity.Property(e => e.CompanyTaxId);                
+
+                entity.HasOne(d => d.CoreControlAccounts)
+                  .WithMany(p => p.IfmsSettings)
+                  .HasForeignKey(d => d.InterBranchControlAccountId)
+                  .HasConstraintName("FK_ifmsSetting_coreControlAccount");
+
+                entity.HasOne(d => d.CoreCostCenters)
+                  .WithMany(p => p.IfmsSettings)
+                  .HasForeignKey(d => d.DefaultCostCenterId)
+                  .HasConstraintName("FK_ifmsSetting_coreCostCenter");
+
+                entity.HasOne(d => d.CoreSubsidiaryAccounts)
+                 .WithMany(p => p.IfmsSettings)
+                 .HasForeignKey(d => d.IncomeSummaryAccountId)
+                 .HasConstraintName("FK_ifmsSetting_coreSubsidiaryAccount");
+
+                entity.HasOne(d => d.CoreSubsidiaryAccounts_2)
+                 .WithMany(p => p.IfmsSettings_2)
+                 .HasForeignKey(d => d.ClosingCapitalAccountId)
+                 .HasConstraintName("FK_ifmsSetting_coreSubsidiaryAccount1");
+
+            });
+
+            modelBuilder.Entity<IfmsFixedAssetSetting>(entity =>
+            {
+                entity.ToTable("ifmsFixedAssetSetting");          
+
+                entity.HasOne(d => d.CoreCostCenters)
+                  .WithMany(p => p.IfmsFixedAssetSettings)
+                  .HasForeignKey(d => d.DefaultCostCenterId)
+                  .HasConstraintName("FK_ifmsFixedAssetSetting_coreCostCenter");
+
+                entity.HasOne(d => d.CoreSubsidiaryAccounts)
+                  .WithMany(p => p.IfmsFixedAssetSettings)
+                  .HasForeignKey(d => d.GainOnDisposalAccountId)
+                  .HasConstraintName("FK_ifmsFixedAssetSetting_coreSubsidiaryAccount");
+
+                entity.HasOne(d => d.CoreSubsidiaryAccounts_1)
+                 .WithMany(p => p.IfmsFixedAssetSettings_1)
+                 .HasForeignKey(d => d.LossOnDisposalAccountId)
+                 .HasConstraintName("FK_ifmsFixedAssetSetting_coreSubsidiaryAccount1");
+
+                entity.HasOne(d => d.CoreSubsidiaryAccounts_2)
+                 .WithMany(p => p.IfmsFixedAssetSettings_2)
+                 .HasForeignKey(d => d.CashAccountId)
+                 .HasConstraintName("FK_ifmsFixedAssetSetting_coreSubsidiaryAccount2");
+
+                entity.HasOne(d => d.LupVoucherTypes)
+                 .WithMany(p => p.IfmsFixedAssetSettings)
+                 .HasForeignKey(d => d.VoucherTypeId)
+                 .HasConstraintName("FK_ifmsFixedAssetSetting_lupVoucherType");
+
+             
 
             });
 

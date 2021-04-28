@@ -7,7 +7,7 @@ namespace Domain.Entities
 {
     public class CostCodeEntity
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
              
@@ -15,7 +15,7 @@ namespace Domain.Entities
         {
 
             if (ifmsCost == null) return;
-            this.Id = ifmsCost.Id;
+          //  this.Id = ifmsCost.Id;
             this.Name = ifmsCost.Name;
             this.Code = ifmsCost.Code;
         }

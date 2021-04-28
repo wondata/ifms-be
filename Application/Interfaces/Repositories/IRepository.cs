@@ -24,8 +24,7 @@ namespace Application.Interfaces.Repositories
 
         Task UpdateAsync<TEntity>(TEntity entity) where TEntity : class;
 
-        Task<IEnumerable<TEntity>> FindAsync<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : class;
-
+        Task<IEnumerable<TEntity>> FindAsync<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : class;        
     }
 
     public interface IUnitOfWork
