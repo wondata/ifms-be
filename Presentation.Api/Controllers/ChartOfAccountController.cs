@@ -71,7 +71,7 @@ namespace Presentation.Api.Controllers
             {
                 var lookups = await _service.GetVoucherTypes();
                 //Log.Information("Get all bank setups", logModel, ResponseStatus.Info);
-                return Ok(new APIPagedResponse<List<VoucherTypeEntity>>(lookups));
+                return Ok(new APIPagedResponse<List<VoucherTypeEntity>>(lookups, lookups.Count()));
             }
             //catch (CustomException e)
             //{
@@ -83,7 +83,7 @@ namespace Presentation.Api.Controllers
                 string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                 // Log.Information(message, logModel, ResponseStatus.Error);
 
-                return BadRequest(new APIPagedResponse<List<VoucherTypeEntity>>(null, true, "Exception occurred, please retry!"));
+                return BadRequest(new APIPagedResponse<List<VoucherTypeEntity>>(null, 0, true, "Exception occurred, please retry!"));
 
             }
 
@@ -110,11 +110,9 @@ namespace Presentation.Api.Controllers
 
             try
             {
-                var lookups = await this._service.GetVoucherTypeSettings();
-
-
+                var lookups = await this._service.GetVoucherTypeSettings();       
                 //Log.Information("Get all bank setups", logModel, ResponseStatus.Info);
-                return Ok(new APIPagedResponse<List<VoucherTypeSettingEntity>>(lookups));
+                return Ok(new APIPagedResponse<List<VoucherTypeSettingEntity>>(lookups, lookups.Count()));
             }
             //catch (CustomException e)
             //{
@@ -126,44 +124,13 @@ namespace Presentation.Api.Controllers
                 string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
                // Log.Information(message, logModel, ResponseStatus.Error);
 
-                return BadRequest(new APIPagedResponse<VoucherTypeSettingEntity>(null, true, "Exception occurred, please retry!"));
+                return BadRequest(new APIPagedResponse<VoucherTypeSettingEntity>(null, 0,  true, "Exception occurred, please retry!"));
                 //return BadRequest(new APIPagedResponse<VoucherTypeSettingEntity>(null, true, "Exception occurred, please retry!"));
 
             }
 
         }
 
-
-        //public async Task<ActionResult<ApiPagedResponse<BankLookupsEntity>>> GetBankSetupLookups(APIPostModel<object> bankSetupPostModel)
-        // {
-        //    BusinessLogModel logModel = new BusinessLogModel
-        //    {
-        //        ActionName = "GetBankSetupLookups",
-        //        BranchName = bankSetupPostModel.Branch.BranchName,
-        //        Data = bankSetupPostModel
-        //    };
-        //
-        //    try
-        //    {
-        //        var lookups = await _service.GetBankLookups();
-        //        Log.Information("Get all bank setups", logModel, ResponseStatus.Info);
-        //        return Ok(new APIResponse<BankLookupsEntity>(lookups));
-        //    }
-        //    catch (CustomException e)
-        //    {
-        //        return BadRequest(new APIResponse<BankLookupsEntity>(null, true, e.Message));
-
-        //    }
-        //    catch (System.Exception ex)
-        //    {
-        //        string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-        //        Log.Information(message, logModel, ResponseStatus.Error);
-
-        //        return BadRequest(new APIResponse<BankLookupsEntity>(null, true, "Exception occurred, please retry!"));
-
-        //    }
-
-        // }
 
         [HttpPost("SaveGeneraltSetting")]
         public async Task SaveGeneraltSetting(SettingPostModel settingPostModel)

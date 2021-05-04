@@ -7,16 +7,11 @@ namespace Application.DTOs
 {
     public class APIPagedResponse<T> :ResponseDTO
     {
-        public T Data { get; set; }
-        public int CurrentPage { get; set; }
-        public int PageSize { get; set; }
-        public int TotalCount { get; set; }
-       // public  ResponseStatus ResponseStatus { get; set; }
-       // public  string message { get; set; }
+      
 
         public APIPagedResponse()
         {
-          // this.ResponseStatus = ResponseStatus.Success;
+        //   this.ResponseStatus = ResponseStatus.Success;
         }
 
         //public APIPagedResponse(T t) : this()
@@ -24,16 +19,23 @@ namespace Application.DTOs
         //   this.Data = t;
         //}
 
-        public APIPagedResponse(T t, bool error = false, string msg = null, int totalCount=0, int currentPage = 1, int pageSize = 10) : this()
+        public APIPagedResponse(T t, int totalCount, bool error = false, string msg = null, int currentPage = 1, int pageSize = 10) : this()
         {
             //  if (error) ResponseStatus = ResponseStatus.Error;
-            Data = t;           
-          //  Message = msg;
+            Data = t;
+            Message = msg;
             TotalCount = totalCount;
-            CurrentPage = (currentPage < 0) ? 1 : currentPage;            
+            CurrentPage = (currentPage < 0) ? 1 : currentPage;
             PageSize = pageSize;
 
         }
+
+        public T Data { get; set; }
+        public int CurrentPage { get; set; }
+        public int PageSize { get; set; }
+        public int TotalCount { get; set; }
+        //     public  ResponseStatus ResponseStatus { get; set; }
+        //    public  string message { get; set; }
 
 
     }
