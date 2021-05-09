@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 using Presentation.Api.Providers.Formatters;
 using System;
 using System.Collections.Generic;
@@ -33,12 +34,19 @@ namespace Presentation.Api
         public void ConfigureServices(IServiceCollection services)
         {
             //services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
-            services.AddMvc(formatter => formatter.InputFormatters.Insert(0, new RawRequestBodyFormatter()))
-               ;
+            services.AddMvc(formatter => formatter.InputFormatters.Insert(0, new RawRequestBodyFormatter()));         
+
+            services.AddMvc().AddJsonOptions(o =>
+            {
+                o.JsonSerializerOptions.PropertyNamingPolicy = null;
+                o.JsonSerializerOptions.DictionaryKeyPolicy = null;
+            });
 
             services.AddDbContext<BaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("CyberERP")));
-
+            services.AddDbContext<FinancialContext>(options => options.UseSqlServer(Configuration.GetConnectionString("CyberERP")));
+            
             services.AddScoped<IRepository, GenericRepository>();
+            services.AddScoped<IFinancialRepository, FinancialRepository>();
 
             services.AddTransient<IFinancialSetupManager, FinancialSetupManager>();
 
@@ -54,8 +62,8 @@ namespace Presentation.Api
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "CyberErp - Core Setting",
-                    Description = "Core Settings Application",
+                    Title = "CyberErp - IFMS",
+                    Description = "IFMS Application",
                     License = new OpenApiLicense
                     {
                         Name = "Cybersoft PLC",

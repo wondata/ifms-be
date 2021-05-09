@@ -21,10 +21,10 @@ namespace Domain.Models
         public float CreditAmount { get; set; }
         public bool? IsDeleted { get; set; }
         public DateTime LastUpdated { get; set; }
-        public virtual CoreControlAccount CoreControlAccounts { get; set;}
-        public virtual CoreCostCenter CoreCostCenters { get; set; }
-        public virtual CoreSubsidiaryAccount CoreSubsidiaryAccounts{ get; set; }
-        public virtual IfmsVoucherHeaderHistory IfmsVoucherHeaderHistorys { get; set; }
+        //public virtual CoreControlAccount CoreControlAccounts { get; set;}
+        //public virtual CoreCostCenter CoreCostCenters { get; set; }
+        //public virtual CoreSubsidiaryAccount CoreSubsidiaryAccounts{ get; set; }
+        //public virtual IfmsVoucherHeaderHistory IfmsVoucherHeaderHistorys { get; set; }
 
     } 
 }

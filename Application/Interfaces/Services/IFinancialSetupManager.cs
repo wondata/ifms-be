@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Interfaces.Repositories;
+using Domain.Entities;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -8,15 +9,15 @@ using System.Threading.Tasks;
 
 namespace Application.Interfaces.Services
 {
-    public interface IFinancialSetupManager
+    public interface IFinancialSetupManager 
     {
         Task<IEnumerable<ChartOfAccountEntity>> GetChartOfAccount();
 
-        Task<IEnumerable<CostCodeEntity>> GetCostCodes();
+        Task<List<CostCodeEntity>> GetCostCodes();
 
         Task<IEnumerable<CostCenterEntity>> GetCostCenters();
 
-        Task<List<VoucherTypeSettingEntity>> GetVoucherTypeSettings();
+        Task<IEnumerable<VoucherTypeSettingEntity>> GetVoucherTypeSettings();
 
         Task<List<VoucherTypeEntity>> GetVoucherTypes();
 
@@ -24,7 +25,6 @@ namespace Application.Interfaces.Services
 
         Task SaveFixedAssetSetting(FixedAssetSettingEntity fixedAssetSetting);
 
-        Task<IfmsSetting> GetSetting(Guid id);
-
+        Task<SettingEntity> GetSetting(Guid id);
     }
 }

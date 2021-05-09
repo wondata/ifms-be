@@ -16,9 +16,9 @@ namespace Domain.Models
         public Guid CompanyTaxId { get; set; }
         public Guid InterBranchControlAccountId { get; set; }
 
-        public virtual CoreControlAccount CoreControlAccounts {get; set;}
-        public virtual CoreCostCenter CoreCostCenters { get; set; }
-        public virtual CoreSubsidiaryAccount CoreSubsidiaryAccounts { get; set; }
-        public virtual CoreSubsidiaryAccount CoreSubsidiaryAccounts_2 { get; set; }
+        //public virtual CoreControlAccount CoreControlAccounts {get; set;}
+        //public virtual CoreCostCenter CoreCostCenters { get; set; }
+        //public virtual CoreSubsidiaryAccount CoreSubsidiaryAccounts { get; set; }
+        //public virtual CoreSubsidiaryAccount CoreSubsidiaryAccounts_2 { get; set; }
     }
 }

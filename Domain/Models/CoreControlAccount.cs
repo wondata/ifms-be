@@ -3,16 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.Entities
+namespace Domain.Models
 {
     public partial class CoreControlAccount
     {
         public CoreControlAccount()
-        {
-            IfmsVoucherDetails = new HashSet<IfmsVoucherDetail>();
-            IfmsVoucherHeaderHistorys = new HashSet<IfmsVoucherHeaderHistory>();
-            IfmsVoucherDetailHistorys = new HashSet<IfmsVoucherDetailHistory>();
-            IfmsSettings = new HashSet<IfmsSetting>();
+        {            
             CoreSubsidiaryAccounts = new HashSet<CoreSubsidiaryAccount>();
         }
 
@@ -26,10 +22,8 @@ namespace Domain.Entities
         public DateTime? LastUpdated { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
-        public virtual ICollection<IfmsVoucherDetail> IfmsVoucherDetails { get; set; }
-        public virtual ICollection<IfmsVoucherHeaderHistory> IfmsVoucherHeaderHistorys { get; set; }
-        public virtual ICollection<IfmsVoucherDetailHistory> IfmsVoucherDetailHistorys { get; set; }
-        public virtual ICollection<IfmsSetting> IfmsSettings { get; set; }
+        
+        public virtual CoreAccountGroup AccountGroup { get; set; }
         public virtual ICollection<CoreSubsidiaryAccount> CoreSubsidiaryAccounts { get; set; }
 
     }

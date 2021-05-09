@@ -7,7 +7,7 @@ namespace Domain.Models
     {
         public CoreAccountGroup()
         {
-            //CoreControlAccount = new HashSet<CoreControlAccount>();
+            CoreControlAccount = new HashSet<CoreControlAccount>();
         }
 
         public Guid Id { get; set; }
@@ -20,6 +20,6 @@ namespace Domain.Models
         public DateTime UpdatedAt { get; set; }
 
         public virtual CoreAccountType AccountType { get; set; }
-        //public virtual ICollection<CoreControlAccount> CoreControlAccount { get; set; }
+        public virtual ICollection<CoreControlAccount> CoreControlAccount { get; set; }
     }
 }

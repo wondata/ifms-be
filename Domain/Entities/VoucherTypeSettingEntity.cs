@@ -7,8 +7,12 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    public partial class VoucherTypeSettingEntity
+    public partial class VoucherTypeSettingEntity 
     {
+        public VoucherTypeSettingEntity()
+        {
+        }
+        public Guid Id { get; set; }
         public Guid CostCenterId { get; set; }
         public Guid VoucherTypeId { get; set; }
         public Guid? DefaultAccountId { get; set; }
@@ -17,52 +21,23 @@ namespace Domain.Entities
         public int EndingNumber { get; set; }
         public int CurrentNumber { get; set; }
         public int NumberOfDigits { get; set; }
-        // public bool? IsDeleted { get; set; }
-        //public DateTime? LastUpdated { get; set; }
-        public IEnumerable<CostCenterEntity> CostCenters{ get; set; }
+        public CostCenterEntity CostCenter { get; set; }
+        public SubsidiaryAccountEntity SubsidiaryAccount { get; set; }
+        public VoucherTypeEntity VoucherType { get; set; }
 
-
-
-        public VoucherTypeSettingEntity()
-        {
-        }
 
         public VoucherTypeSettingEntity(IfmsVoucherTypeSetting ifmsVoucherType)
         {
             if (ifmsVoucherType == null) return;
 
-            // this.Id = ifmsVoucherType.Id;  
-
-            this.CostCenterId = ifmsVoucherType.CostCenterId;
-            this.VoucherTypeId = ifmsVoucherType.VoucherTypeId;
-            this.DefaultAccountId = ifmsVoucherType.DefaultAccountId;
-            this.BalanceSideId = ifmsVoucherType.BalanceSideId;
+            this.Id = ifmsVoucherType.Id;               
             this.StartingNumber = ifmsVoucherType.StartingNumber;
-            this.EndingNumber = ifmsVoucherType.EndingNumber;
-            this.CurrentNumber = ifmsVoucherType.CurrentNumber;
-            //this.CostCenters = ifmsVoucherType.CoreCostCenters.Select(x => new CostCenterEntity(x)).ToList();
-            this.CostCenters =
-               ifmsVoucherType.CoreCostCenters_2 == null ? new List<CostCenterEntity>() :
-               ifmsVoucherType.CoreCostCenters_2.Select(x => new CostCenterEntity(x)).ToList();
-
+            this.EndingNumber   = ifmsVoucherType.EndingNumber;
+            this.CurrentNumber  = ifmsVoucherType.CurrentNumber;          
+            this.CostCenter = new CostCenterEntity(ifmsVoucherType.CoreCostCenter);
+            this.SubsidiaryAccount = new SubsidiaryAccountEntity(ifmsVoucherType.CoreSubsidiaryAccount);
+            this.VoucherType = new VoucherTypeEntity(ifmsVoucherType.LupVoucherType);
         }
-
-        public VoucherTypeSettingEntity(IfmsVoucherTypeSetting ifmsVoucherType, IEnumerable<CostCenterEntity> costCenterEntities)
-        {
-            if (ifmsVoucherType == null) return;
-
-            // this.Id = ifmsVoucherType.Id;  
-
-            this.CostCenterId = ifmsVoucherType.CostCenterId;
-            this.VoucherTypeId = ifmsVoucherType.VoucherTypeId;
-            this.DefaultAccountId = ifmsVoucherType.DefaultAccountId;
-            this.BalanceSideId = ifmsVoucherType.BalanceSideId;
-            this.StartingNumber = ifmsVoucherType.StartingNumber;
-            this.EndingNumber = ifmsVoucherType.EndingNumber;
-            this.CurrentNumber = ifmsVoucherType.CurrentNumber;
-            this.CostCenters = costCenterEntities.Select(x => new CostCenterEntity(ifmsVoucherType.CoreCostCenters));           
-
-        }
-
+        
     }
 }

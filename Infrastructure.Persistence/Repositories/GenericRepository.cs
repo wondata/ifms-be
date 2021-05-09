@@ -36,12 +36,7 @@ namespace Infrastructure.Persistence.Repositories
             }
         }
 
-        public GenericRepository()
-        {
-
-        }
-
-        public GenericRepository(BaseContext context)
+        public GenericRepository(DbContext context)
         {
             if (context == null)
             {
@@ -50,6 +45,18 @@ namespace Infrastructure.Persistence.Repositories
 
             _context = context;
         }
+
+
+
+        //public GenericRepository(BaseContext context)
+        //{
+        //    if (context == null)
+        //    {
+        //        throw new ArgumentNullException("context");
+        //    }
+
+        //    _context = context;
+        //}
 
         public async Task AddAsync<TEntity>(TEntity entity) where TEntity : class
         {

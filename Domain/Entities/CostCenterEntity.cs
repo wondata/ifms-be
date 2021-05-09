@@ -2,21 +2,17 @@
 using Domain.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Domain.Entities
 {
-    public partial class CostCenterEntity : BaseEntity
-    {
-
-    //    public Guid Id { get; set; }
+    public partial class CostCenterEntity :BaseEntity
+    {        
         public string Name { get; set; }
         public string Code { get; set; }
-        public Guid ParentId { get; set; }
-      //  public byte[] IsDeleted { get; set; }
-      //  public DateTime? LastUpdated { get; set; }
-      //  public DateTime? CreatedAt { get; set; }
-      //  public DateTime? UpdatedAt { get; set; }
+        public Guid? ParentId { get; set; }   
+        public List<CostCenterEntity> Children { get; set; }
 
         public CostCenterEntity()
         {
@@ -27,8 +23,11 @@ namespace Domain.Entities
             this.Id = coreCost.Id.ToString();
             this.Name = coreCost.Name;
             this.Code = coreCost.Code;
-            this.ParentId = coreCost.ParentId;
-            
+            this.ParentId = coreCost.ParentId;          
+            this.Children =
+               coreCost.InverseParent == null ? new List<CostCenterEntity>() :
+               coreCost.InverseParent.Select(x => new CostCenterEntity(x)).ToList();
+
         }
 
         public override T MapToModel<T>()

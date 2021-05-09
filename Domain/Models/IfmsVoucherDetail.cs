@@ -18,12 +18,12 @@ namespace Domain.Models
         public bool? IsInterBranchTransactionCleared { get; set; }
         public Guid IBTReferenceVoucherHeaderId { get; set; }
 
-        public virtual IfmsCostCode CoreCostCodes { get; set; }
-        public virtual CoreCostCenter CoreCostCenters { get; set; }
-        public virtual CoreSubsidiaryAccount CoreSubsidiaryAccounts{ get; set; }
-        public virtual CoreControlAccount CoreControlAccounts { get; set; }
-        public virtual IfmsVoucherHeader IfmsVoucherHeaders { get; set; }
-        public virtual IfmsVoucherHeader IfmsVoucherHeaders_2 { get; set; }
+        //public virtual IfmsCostCode CoreCostCodes { get; set; }
+        //public virtual CoreCostCenter CoreCostCenters { get; set; }
+        //public virtual CoreSubsidiaryAccount CoreSubsidiaryAccounts{ get; set; }
+        //public virtual CoreControlAccount CoreControlAccounts { get; set; }
+        //public virtual IfmsVoucherHeader IfmsVoucherHeaders { get; set; }
+        //public virtual IfmsVoucherHeader IfmsVoucherHeaders_2 { get; set; }
 
 
     }

@@ -14,54 +14,53 @@ namespace CyberErp.CoreSetting.Core.Service
 {
     public class FinancialSetupManager : IFinancialSetupManager
     {
-        private readonly IRepository _repository;
+        private readonly IFinancialRepository _financialRepository;
         private readonly IConfiguration _configuration;
 
-        public FinancialSetupManager(IRepository repository, IConfiguration configuration)
+        public FinancialSetupManager(IFinancialRepository financialRepository, IConfiguration configuration)
         {
-            _repository = repository;
+            _financialRepository = financialRepository;
             _configuration = configuration;
         }
 
         public async Task<IEnumerable<ChartOfAccountEntity>> GetChartOfAccount()
         {
-            IEnumerable<CoreAccountType> coreAccountCategories = await this._repository.GetAllAsync<CoreAccountType>();
+            IEnumerable<CoreAccountType> coreAccountCategories = await this._financialRepository.GetChartOfAccount();
             IEnumerable<ChartOfAccountEntity> chartOfAccounts = coreAccountCategories.Select(x => new ChartOfAccountEntity(x));
 
             return chartOfAccounts;
         }
 
-        public async Task<IEnumerable<CostCodeEntity>> GetCostCodes()
+        public async Task<List<CostCodeEntity>> GetCostCodes()
         {
-            IEnumerable<IfmsCostCode> ifmsCost = await this._repository.GetAllAsync<IfmsCostCode>();
-            IEnumerable<CostCodeEntity> costCodes = ifmsCost.Select(x => new CostCodeEntity(x));
+            IQueryable<IfmsCostCode> ifmsCost = await this._financialRepository.GetCostCodes();
+            List<CostCodeEntity> costCodes = ifmsCost.Select(x => new CostCodeEntity(x)).ToList();
 
             return costCodes;
         }
 
         public async Task<IEnumerable<CostCenterEntity>> GetCostCenters()
         {
-            IEnumerable<CoreCostCenter> coreCost = await this._repository.GetAllAsync<CoreCostCenter>();
-            IEnumerable<CostCenterEntity> costCodes = coreCost.Select(x => new CostCenterEntity(x));
+            IEnumerable<CoreCostCenter> coreCost = await this._financialRepository.GetCostCenters();
+           // coreCost = coreCost.Where(x => x.ParentId == null).ToList();
+            IEnumerable<CostCenterEntity> costCenter = coreCost.Select(x => new CostCenterEntity(x));
 
-            return costCodes;
+            return costCenter;
         }
 
         public async Task<List<VoucherTypeEntity>> GetVoucherTypes()
         {
-            IQueryable<LupVoucherType> lupVoucher = await this._repository.GetAllAsync<LupVoucherType>();
+            IQueryable<LupVoucherType> lupVoucher = await this._financialRepository.GetAllAsync<LupVoucherType>();
             List<VoucherTypeEntity> voucherType = lupVoucher.Select(x => new VoucherTypeEntity(x)).ToList();
 
             return voucherType;
         }
      
 
-        public async Task<List<VoucherTypeSettingEntity>> GetVoucherTypeSettings()
+        public async Task<IEnumerable<VoucherTypeSettingEntity>> GetVoucherTypeSettings()
         {
-
-            IQueryable<IfmsVoucherTypeSetting> ifmsVoucher = await this._repository.GetAllAsync<IfmsVoucherTypeSetting>();
-
-            List<VoucherTypeSettingEntity> voucherType = ifmsVoucher.Select(x => new VoucherTypeSettingEntity(x)).ToList();
+            IEnumerable<IfmsVoucherTypeSetting> ifmsVoucher = await this._financialRepository.GetVoucherTypeSettings();
+            IEnumerable<VoucherTypeSettingEntity> voucherType = ifmsVoucher.Select(x => new VoucherTypeSettingEntity(x));
 
             return voucherType;
 
@@ -72,14 +71,14 @@ namespace CyberErp.CoreSetting.Core.Service
             Guid id;
             Guid.TryParse(settingEntity.Id.ToString(), out id);
             
-            IfmsSetting existingRecord = await this._repository.GetAsync<IfmsSetting>(x => x.Id == id);
+            IfmsSetting existingRecord = await this._financialRepository.GetAsync<IfmsSetting>(x => x.Id == id);
 
             if (existingRecord == null)
             {
                 IfmsSetting ifmssetting = settingEntity.MapToModel();
 
-                await this._repository.AddAsync(ifmssetting);
-                await this._repository.UnitOfWork.SaveChanges();
+                await this._financialRepository.AddAsync(ifmssetting);
+                await this._financialRepository.UnitOfWork.SaveChanges();
               
             }
             else
@@ -87,8 +86,8 @@ namespace CyberErp.CoreSetting.Core.Service
                 IfmsSetting ifmssetting = await this.GetSetting(id);
                 IfmsSetting setting = settingEntity.MapToModel(ifmssetting);
 
-                await this._repository.UpdateAsync(setting);
-                await this._repository.UnitOfWork.SaveChanges();
+                await this._financialRepository.UpdateAsync(setting);
+                await this._financialRepository.UnitOfWork.SaveChanges();
 
                              
             }
@@ -100,14 +99,14 @@ namespace CyberErp.CoreSetting.Core.Service
             Guid id;
             Guid.TryParse(fixedAssetSetting.Id.ToString(), out id);
 
-            IfmsFixedAssetSetting existingRecord = await this._repository.GetAsync<IfmsFixedAssetSetting>(x => x.Id == id);
+            IfmsFixedAssetSetting existingRecord = await this._financialRepository.GetAsync<IfmsFixedAssetSetting>(x => x.Id == id);
 
             if (existingRecord == null)
             {
                 IfmsFixedAssetSetting setting = fixedAssetSetting.MapToModel();
 
-                await this._repository.AddAsync(setting);
-                await this._repository.UnitOfWork.SaveChanges();
+                await this._financialRepository.AddAsync(setting);
+                await this._financialRepository.UnitOfWork.SaveChanges();
 
             }
             else
@@ -115,22 +114,27 @@ namespace CyberErp.CoreSetting.Core.Service
                 IfmsFixedAssetSetting ifmsfixed = await this.GetFixedAssetSetting(id);
                 IfmsFixedAssetSetting setting = fixedAssetSetting.MapToModel(ifmsfixed);
 
-                await this._repository.UpdateAsync(setting);
-                await this._repository.UnitOfWork.SaveChanges();
+                await this._financialRepository.UpdateAsync(setting);
+                await this._financialRepository.UnitOfWork.SaveChanges();
 
             }
         }
 
         public async Task<IfmsSetting> GetSetting(Guid id)
         {
-            return (await this._repository.GetAsync<IfmsSetting>(x => x.Id == id));
+            return (await this._financialRepository.GetAsync<IfmsSetting>(x => x.Id == id));
 
         }
 
         public async Task<IfmsFixedAssetSetting> GetFixedAssetSetting(Guid id)
         {
-            return (await this._repository.GetAsync<IfmsFixedAssetSetting>(x => x.Id == id));
+            return (await this._financialRepository.GetAsync<IfmsFixedAssetSetting>(x => x.Id == id));
 
+        }
+
+        Task<SettingEntity> IFinancialSetupManager.GetSetting(Guid id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

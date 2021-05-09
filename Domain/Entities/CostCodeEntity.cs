@@ -15,7 +15,7 @@ namespace Domain.Entities
         {
 
             if (ifmsCost == null) return;
-          //  this.Id = ifmsCost.Id;
+            this.Id = ifmsCost.Id;
             this.Name = ifmsCost.Name;
             this.Code = ifmsCost.Code;
         }

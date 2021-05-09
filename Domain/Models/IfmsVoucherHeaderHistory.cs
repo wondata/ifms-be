@@ -8,7 +8,7 @@ namespace Domain.Models
     {
         public IfmsVoucherHeaderHistory()
         {
-            IfmsVoucherDetailHistorys = new HashSet<IfmsVoucherDetailHistory>();
+            //IfmsVoucherDetailHistorys = new HashSet<IfmsVoucherDetailHistory>();
         }
 
         public Guid Id { get; set; }
@@ -28,6 +28,6 @@ namespace Domain.Models
         public bool? IsDeleted { get; set; }
         public DateTime? LastUpdated { get; set; }
 
-        public virtual ICollection<IfmsVoucherDetailHistory> IfmsVoucherDetailHistorys { get; set; }
+        //public virtual ICollection<IfmsVoucherDetailHistory> IfmsVoucherDetailHistorys { get; set; }
     }
 }

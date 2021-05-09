@@ -8,8 +8,8 @@ namespace Domain.Models
     {
         public IfmsVoucherHeader()
         {
-            IfmsVoucherDetails = new HashSet<IfmsVoucherDetail>();
-            IfmsVoucherDetails_2 = new HashSet<IfmsVoucherDetail>();
+            //IfmsVoucherDetails = new HashSet<IfmsVoucherDetail>();
+            //IfmsVoucherDetails_2 = new HashSet<IfmsVoucherDetail>();
         }
 
         public Guid Id { get; set; }
@@ -38,11 +38,11 @@ namespace Domain.Models
         public bool? IsDeleted { get; set; }
         public DateTime? LastUpdated { get; set; }
 
-        public ICollection<IfmsVoucherDetail> IfmsVoucherDetails { get; set; }
+        //public ICollection<IfmsVoucherDetail> IfmsVoucherDetails { get; set; }
 
-        public ICollection<IfmsVoucherDetail> IfmsVoucherDetails_2 { get; set; }
+        //public ICollection<IfmsVoucherDetail> IfmsVoucherDetails_2 { get; set; }
 
-        public virtual CoreCostCenter CoreCostCenter { get; set; }
+        //public virtual CoreCostCenter CoreCostCenter { get; set; }
 
     }
 }

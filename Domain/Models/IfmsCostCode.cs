@@ -8,7 +8,7 @@ namespace Domain.Models
     {
         public IfmsCostCode()
         {
-            IfmsVoucherDetails = new HashSet<IfmsVoucherDetail>();
+           // IfmsVoucherDetails = new HashSet<IfmsVoucherDetail>();
         }
 
         public Guid Id { get; set; }
@@ -17,7 +17,7 @@ namespace Domain.Models
 
         public string Code { get; set; }
 
-        public ICollection<IfmsVoucherDetail> IfmsVoucherDetails { get; set; }
+       // public ICollection<IfmsVoucherDetail> IfmsVoucherDetails { get; set; }
 
     }
 }
