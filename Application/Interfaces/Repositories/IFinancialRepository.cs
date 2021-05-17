@@ -17,12 +17,16 @@ namespace Application.Interfaces.Repositories
 
         Task<IQueryable<CoreCostCenter>> GetCostCenters();
 
+        Task<IQueryable<IfmsCashier>> GetCashiers();
+
         Task<IQueryable<IfmsVoucherTypeSetting>> GetVoucherTypeSettings();
 
-     //   Task<List<IfmsVouc>> GetVoucherTypes();
+     // Task<List<IfmsVouc>> GetVoucherTypes();
 
         Task<IQueryable<IfmsSetting>> GetSetting(Guid id);
 
         Task<IQueryable<LupBalanceSide>> GetBalanceSides();
+
+        Task<IQueryable<IfmsVoucherHeader>> GetVoucherHeaders();
     }
 }

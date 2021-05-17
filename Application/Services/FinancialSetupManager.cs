@@ -136,5 +136,21 @@ namespace CyberErp.CoreSetting.Core.Service
         {
             throw new NotImplementedException();
         }
+
+        public async Task<IEnumerable<CashierEntity>> GetCashiers()
+        {
+            IQueryable<IfmsCashier> ifmsCashier = await this._financialRepository.GetCashiers();
+            IEnumerable<CashierEntity> cashiers = ifmsCashier.Select(x => new CashierEntity(x));
+
+            return cashiers;
+        }
+
+        public async Task<IEnumerable<VoucherHeaderEntity>> GetVoucherHeaders()
+        {
+            IQueryable<IfmsVoucherHeader> ifmsVoucher = await this._financialRepository.GetVoucherHeaders();
+            IEnumerable<VoucherHeaderEntity> voucher = ifmsVoucher.Select(x => new VoucherHeaderEntity(x));
+
+            return voucher;
+        }
     }
 }

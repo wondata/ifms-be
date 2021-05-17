@@ -21,7 +21,7 @@ namespace Application.DTOs
 
         public APIPagedResponse(T t, int totalCount, bool error = false, string msg = null, int currentPage = 1, int pageSize = 10) : this()
         {
-            //  if (error) ResponseStatus = ResponseStatus.Error;
+            ResponseStatus =error ? ResponseStatusEnum.Error.ToString(): ResponseStatusEnum.Success.ToString();
             Data = t;
             Message = msg;
             TotalCount = totalCount;
@@ -34,7 +34,7 @@ namespace Application.DTOs
         public int CurrentPage { get; set; }
         public int PageSize { get; set; }
         public int TotalCount { get; set; }
-        //     public  ResponseStatus ResponseStatus { get; set; }
+        // public ResponseStatus ResponseStatus { get; set; }
         //    public  string message { get; set; }
 
 

@@ -10,7 +10,7 @@ namespace Application.DTOs
         public string Message { get; set; }
     }
 
-    public enum ResponseStatus
+    public enum ResponseStatusEnum
     {
         Success,
         Error

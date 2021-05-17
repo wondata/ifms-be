@@ -26,5 +26,8 @@ namespace Application.Interfaces.Services
         Task SaveFixedAssetSetting(FixedAssetSettingEntity fixedAssetSetting);
 
         Task<SettingEntity> GetSetting(Guid id);
+        Task<IEnumerable<CashierEntity>> GetCashiers();
+
+        Task<IEnumerable<VoucherHeaderEntity>> GetVoucherHeaders();
     }
 }
