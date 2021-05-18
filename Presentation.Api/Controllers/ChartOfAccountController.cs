@@ -149,6 +149,28 @@ namespace Presentation.Api.Controllers
 
         }
 
+        [HttpPost("GetVoucherHeaders")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<APIPagedResponse<VoucherHeaderEntity>>> GetVoucherHeaders()
+        {           
+
+            try
+            {
+                var lookups = await this._service.GetVoucherHeaders();
+                //Log.Information("Get all Voucher Headers", logModel, ResponseStatus.Info);
+                return Ok(new APIPagedResponse<IEnumerable<VoucherHeaderEntity>>(lookups, lookups.Count()));
+            }
+            catch (System.Exception ex)
+            {
+                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                // Log.Information(message, logModel, ResponseStatus.Error);
+                return BadRequest(new APIPagedResponse<VoucherHeaderEntity>(null, 0, true, "Exception occurred, please retry!"));
+                //return BadRequest(new APIPagedResponse<VoucherHeaderEntity>(null, true, "Exception occurred, please retry!"));
+            }
+
+        }
+
 
         [HttpPost("SaveGeneraltSetting")]
         public async Task SaveGeneraltSetting(SettingPostModel settingPostModel)
@@ -198,6 +220,31 @@ namespace Presentation.Api.Controllers
             //return Ok(await Mediator.Send(new GetAllAccountTypesQuery()));
           //  var charAccount = await this._service.GetChartOfAccount();
             return null;
+        }
+
+
+        [HttpPost("GetCashiers")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<APIPagedResponse<CashierEntity>>> GetCashiers()
+        {            
+
+            try
+            {
+                var lookups = await _service.GetCashiers();
+                //Log.Information("Get all Voucher Types", logModel, ResponseStatus.Info);
+                return Ok(new APIPagedResponse<IEnumerable<CashierEntity>>(lookups, lookups.Count()));
+            }
+           
+            catch (System.Exception ex)
+            {
+                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                // Log.Information(message, logModel, ResponseStatus.Error);
+
+                return BadRequest(new APIPagedResponse<IEnumerable<CashierEntity>>(null, 0, true, "Exception occurred, please retry!"));
+
+            }
+
         }
 
         //[HttpPost("SaveAccountGroup")]
@@ -262,6 +309,6 @@ namespace Presentation.Api.Controllers
         //}
 
 
-        
+
     }
 }

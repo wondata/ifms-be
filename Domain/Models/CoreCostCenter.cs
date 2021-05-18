@@ -10,6 +10,8 @@ namespace Domain.Models
         {           
             InverseParent = new HashSet<CoreCostCenter>();
             IfmsVoucherTypeSettings = new HashSet<IfmsVoucherTypeSetting>();
+            IfmsVoucherHeaders = new HashSet<IfmsVoucherHeader>();
+           
         }
 
         public Guid Id { get; set; }
@@ -20,6 +22,7 @@ namespace Domain.Models
         public virtual CoreCostCenter Parent { get; set; }
         public virtual ICollection<CoreCostCenter> InverseParent { get; set; }
         public virtual ICollection<IfmsVoucherTypeSetting> IfmsVoucherTypeSettings { get; set; }
+        public virtual ICollection<IfmsVoucherHeader> IfmsVoucherHeaders { get; set; }
 
 
     }

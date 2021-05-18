@@ -7,14 +7,14 @@ namespace Domain.Entities
 {
     public partial class SubsidiaryAccountEntity 
     {
-        //public Guid? Id { get; set; }
+        public Guid Id { get; set; }
         public Guid ControlAccountId { get; set; }
         public Guid BalanceSideId { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
         public string CreatedBy { get; set; }
-        public double RunningBalance { get; set; }
-        public Guid SubsidiaryAccountTypeId { get; set; }
+        public decimal RunningBalance { get; set; }
+        public Guid? SubsidiaryAccountTypeId { get; set; }
         public bool IsDeleted { get; set; }
         public byte[] LastUpdated { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -28,7 +28,7 @@ namespace Domain.Entities
         {
             if (coreSubsidiary == null) return;
 
-        //    this.Id = coreSubsidiary.Id.ToString();
+            this.Id = coreSubsidiary.Id;
             this.ControlAccountId = coreSubsidiary.ControlAccountId;
             this.BalanceSideId = coreSubsidiary.BalanceSideId;
             this.Name = coreSubsidiary.Name;

@@ -27,6 +27,7 @@ namespace Infrastructure.Persistence.Contexts
         public virtual DbSet<IfmsVoucherTypeSetting> IfmsVoucherTypeSetting { get; set; }
         public virtual DbSet<IfmsSetting> IfmsSetting { get; set; }
         public virtual DbSet<IfmsFixedAssetSetting> IfmsFixedAssetSetting { get; set; }
+        public virtual DbSet<IfmsCashier> IfmsCashier { get; set; }
         public virtual DbSet<CoreCostCenter> CoreCostCenter { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -58,6 +59,20 @@ namespace Infrastructure.Persistence.Contexts
 
             });
 
+            modelBuilder.Entity<IfmsCashier>(entity =>
+            {
+                entity.ToTable("ifmsCashier");
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.Property(e => e.FullName);
+
+                entity.HasOne(d => d.SubsidiaryAccount)
+                    .WithMany(p => p.IfmsCashiers)
+                    .HasForeignKey(d => d.SubsidiaryAccountId)
+                    .HasConstraintName("FK_ifmsCashier_coreSubsidiaryAccount");
+            });
+
 
             modelBuilder.Entity<IfmsVoucherHeader>(entity =>
             {
@@ -73,32 +88,33 @@ namespace Infrastructure.Persistence.Contexts
 
                 entity.Property(e => e.Description);
 
-                entity.Property(e => e.Amount);
-
-                entity.Property(e => e.TaxId);
+                entity.Property(e => e.Amount);           
 
                 entity.Property(e => e.ChequeNo);
 
-                entity.Property(e => e.PostedFromOperation);
+                entity.HasOne(d => d.CostCenter)
+                   .WithMany(p => p.IfmsVoucherHeaders)
+                   .HasForeignKey(d => d.CostCenterId)
+                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   .HasConstraintName("FK_ifmsVoucherHeader_coreCostCenter");
 
-                //entity.HasOne(d => d.CoreCostCenter)
-                //   .WithMany(p => p.IfmsVoucherHeaders)
-                //   .HasForeignKey(d => d.CostCenterId)
-                //   .OnDelete(DeleteBehavior.ClientSetNull)
-                //   .HasConstraintName("FK_ifmsVoucherHeader_coreCostCenter");
+                entity.HasOne(d => d.CorePeriod)
+                    .WithMany(p => p.IfmsVoucherHeader)
+                    .HasForeignKey(d => d.PeriodId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ifmsVoucherHeader_corePeriod");
 
-                //entity.HasOne(d => d.CoreCostCenter)
-                //              .WithMany(p => p.IfmsVoucherHeader)
-                //              .HasForeignKey(d => d.ProjectId)
-                //              .OnDelete(DeleteBehavior.ClientSetNull)
-                //              .HasConstraintName("FK_ifmsVoucherHeader_coreCostCenterProject");
+                entity.HasOne(d => d.VoucherType)
+                    .WithMany(p => p.IfmsVoucherHeaders)
+                    .HasForeignKey(d => d.VoucherTypeId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ifmsVoucherHeader_lupVoucherType");
 
-                // import table corePeriod
-                //entity.HasOne(d => d.CorePeriod)
-                //    .WithMany(p => p.IfmsVoucherHeader)
-                //    .HasForeignKey(d => d.PeriodId)
-                //    .OnDelete(DeleteBehavior.ClientSetNull)
-                //    .HasConstraintName("FK_ifmsVoucherHeader_corePeriod");
+                entity.HasOne(d => d.ModeOfPayment)
+                   .WithMany(p => p.IfmsVoucherHeaders)
+                   .HasForeignKey(d => d.ModeOfPaymentId)
+                   .OnDelete(DeleteBehavior.ClientSetNull)
+                   .HasConstraintName("FK_ifmsVoucherHeader_lupModeOfPayment");
 
             });
 

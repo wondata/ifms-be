@@ -8,7 +8,8 @@ namespace Domain.Models
     {
         public CoreSubsidiaryAccount()
         {
-           // IfmsVoucherTypeSettings = new HashSet<IfmsVoucherTypeSetting>();
+            // IfmsVoucherTypeSettings = new HashSet<IfmsVoucherTypeSetting>();
+            IfmsCashiers = new HashSet<IfmsCashier>();
         }
 
         public Guid Id { get; set; }
@@ -17,16 +18,18 @@ namespace Domain.Models
         public string Name { get; set; }
         public string Code { get; set; }
         public string CreatedBy { get; set; }
-        public double RunningBalance { get; set; }
-        public Guid SubsidiaryAccountTypeId { get; set; }
+        public decimal RunningBalance { get; set; }
+        public Guid? SubsidiaryAccountTypeId { get; set; }
         public bool IsDeleted { get; set; }
         public byte[] LastUpdated { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
         public virtual LupBalanceSide BalanceSide { get; set; }
-     //   public virtual CoreControlAccount CoreControlAccount { get; set; }
-        public virtual ICollection<IfmsVoucherTypeSetting> IfmsVoucherTypeSettings { get; set; }
 
-     }
+     // public virtual CoreControlAccount CoreControlAccount { get; set; }
+        public virtual ICollection<IfmsVoucherTypeSetting> IfmsVoucherTypeSettings { get; set; }
+        public virtual ICollection<IfmsCashier> IfmsCashiers { get; set; }
+
+    }
 }

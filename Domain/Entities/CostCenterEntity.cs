@@ -7,8 +7,9 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    public partial class CostCenterEntity :BaseEntity
-    {        
+    public partial class CostCenterEntity 
+    {   
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
         public Guid? ParentId { get; set; }   
@@ -20,7 +21,7 @@ namespace Domain.Entities
 
         public CostCenterEntity(CoreCostCenter coreCost)
         {
-            this.Id = coreCost.Id.ToString();
+            this.Id = coreCost.Id;
             this.Name = coreCost.Name;
             this.Code = coreCost.Code;
             this.ParentId = coreCost.ParentId;          
@@ -30,14 +31,6 @@ namespace Domain.Entities
 
         }
 
-        public override T MapToModel<T>()
-        {
-            throw new NotImplementedException();
-        }
-
-        public override T MapToModel<T>(T t)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

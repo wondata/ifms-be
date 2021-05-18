@@ -23,6 +23,12 @@ namespace Infrastructure.Persistence.Repositories
             return (await this.GetAllAsync<LupBalanceSide>());
         }
 
+        public async Task<IQueryable<IfmsCashier>> GetCashiers()
+        {
+            return (await this.GetAllAsync<IfmsCashier>())
+                 .Include(x => x.SubsidiaryAccount);
+        }
+
         public async Task<IQueryable<CoreAccountType>> GetChartOfAccount()
         {
             var chartOfAccount = (await this.GetAllAsync<CoreAccountType>())
@@ -49,6 +55,16 @@ namespace Infrastructure.Persistence.Repositories
         public async Task<IQueryable<IfmsSetting>> GetSetting(Guid id)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<IQueryable<IfmsVoucherHeader>> GetVoucherHeaders()
+        {
+            var voucherHeader = (await this.GetAllAsync<IfmsVoucherHeader>())
+               .Include(x => x.CostCenter)
+               .Include(x => x.CorePeriod)
+               .Include(x => x.VoucherType).Take(300);
+
+            return voucherHeader;
         }
 
         public async Task<IQueryable<IfmsVoucherTypeSetting>> GetVoucherTypeSettings()
