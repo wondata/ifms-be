@@ -121,6 +121,44 @@ namespace Presentation.Api.Controllers
 
         }
 
+
+
+        [HttpPost("GetVoucherDetails")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<APIPagedResponse<VoucherDetailEntity>>> GetVoucherDetails()
+        {
+            //BusinessLogModel logModel = new BusinessLogModel
+            //{
+            //    ActionName = "GetBankSetupLookups",
+            //    BranchName = bankSetupPostModel.Branch.BranchName,
+            //    Data = bankSetupPostModel
+            //};
+
+            try
+            {
+                var lookups = await _service.GetVoucherDetails();
+                //Log.Information("Get all Voucher Detail", logModel, ResponseStatus.Info);
+                return Ok(new APIPagedResponse<IEnumerable<VoucherDetailEntity>>(lookups, lookups.Count()));
+            }
+            //catch (CustomException e)
+            //{
+            //    return BadRequest(new APIResponse<VoucherDetailEntity>(null, true, e.Message));
+
+            //}
+            catch (System.Exception ex)
+            {
+                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                // Log.Information(message, logModel, ResponseStatus.Error);
+
+                return BadRequest(new APIPagedResponse<IEnumerable<VoucherDetailEntity>>(null, 0, true, "Exception occurred, please retry!"));
+
+            }
+
+        }
+
+
+
         [HttpPost("GetVoucherTypeSetting")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesDefaultResponseType]

@@ -23,7 +23,7 @@ namespace Infrastructure.Persistence.Contexts
         public virtual DbSet<CoreControlAccount> CoreControlAccount { get; set; }
         public virtual DbSet<LupBalanceSide> LupBalanceSide { get; set; }      
         public virtual DbSet<LupVoucherType> LupVoucherType { get; set; }
-
+        public virtual DbSet<CoreCompany> CoreCompany { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            
@@ -83,6 +83,25 @@ namespace Infrastructure.Persistence.Contexts
                 //    .HasConstraintName("FK_coreAccountType_lupBalanceSide");
             });
 
+            modelBuilder.Entity<CoreCompany>(entity =>
+            {
+                entity.ToTable("CoreCompany");
+
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.Name);
+
+                entity.Property(e => e.Code);
+
+                entity.Property(e => e.Description);
+
+                entity.HasOne(d => d.Parent)
+                    .WithMany(p => p.InverseParent)
+                    .HasForeignKey(d => d.ParentId)
+                    .HasConstraintName("FK_coreCompany_coreCompany");
+
+            });
+
             modelBuilder.Entity<CoreControlAccount>(entity =>
             {
                 entity.ToTable("coreControlAccount");
@@ -94,26 +113,20 @@ namespace Infrastructure.Persistence.Contexts
                     .HasMaxLength(100);
 
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.LastUpdated)
-                    .IsRequired()
-                    .IsRowVersion();
-
+                
                 entity.Property(e => e.Name)
                     .IsRequired()
                     .HasMaxLength(100);
 
                 entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
 
-                entity.HasOne(d => d.AccountGroup)
-                    .WithMany(p => p.CoreControlAccount)
-                    .HasForeignKey(d => d.AccountGroupId)
-                    .HasConstraintName("FK_coreControlAccount_coreAccountGroup");
+
+                entity.HasOne(d => d.Company)
+                    .WithMany(p => p.CoreControlAccounts)
+                    .HasForeignKey(d => d.CompanyId)
+                    .HasConstraintName("FK_coreControlAccount_coreCompany");
+
             });
-
-
-
-
 
             modelBuilder.Entity<CoreSubsidiaryAccount>(entity =>
             {
@@ -145,11 +158,11 @@ namespace Infrastructure.Persistence.Contexts
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_coreSubsidiaryAccount_lupBalanceSide");
 
-                //entity.HasOne(d => d.CoreControlAccount)
-                //  .WithMany(p => p.CoreSubsidiaryAccounts)
-                //  .HasForeignKey(d => d.ControlAccountId)
-                //  .OnDelete(DeleteBehavior.ClientSetNull)
-                //  .HasConstraintName("FK_coreSubsidiaryAccount_coreControlAccount");
+                entity.HasOne(d => d.CoreControlAccount)
+                  .WithMany(p => p.CoreSubsidiaryAccounts)
+                  .HasForeignKey(d => d.ControlAccountId)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_coreSubsidiaryAccount_coreControlAccount");
 
             });
 
@@ -179,7 +192,7 @@ namespace Infrastructure.Persistence.Contexts
             });
 
 
-            }
+        }
 
     }
 }

@@ -7,12 +7,13 @@ namespace Domain.Models
     {
         public CoreAccountGroup()
         {
-            CoreControlAccount = new HashSet<CoreControlAccount>();
+
         }
 
         public Guid Id { get; set; }
         public Guid? AccountTypeId { get; set; }
         public string Name { get; set; }
+        public string NoteNo { get; set; }
         public string Code { get; set; }
         public bool IsDeleted { get; set; }
         public byte[] LastUpdated { get; set; }
@@ -20,6 +21,5 @@ namespace Domain.Models
         public DateTime UpdatedAt { get; set; }
 
         public virtual CoreAccountType AccountType { get; set; }
-        public virtual ICollection<CoreControlAccount> CoreControlAccount { get; set; }
     }
 }
