@@ -40,13 +40,19 @@ namespace Domain.Entities
             if (ifmsVoucherHeader == null) return;
        
             this.ReferenceNo = ifmsVoucherHeader.ReferenceNo;
-            this.DocumentNo = ifmsVoucherHeader.DocumentNo;          
+            this.DocumentNo = ifmsVoucherHeader.DocumentNo;
+            this.Date = ifmsVoucherHeader.Date;
             this.PayedToReceivedFrom = ifmsVoucherHeader.PayedToReceivedFrom;        
             this.Purpose = ifmsVoucherHeader.Purpose;            
             this.Description = ifmsVoucherHeader.Description;
             this.Amount = ifmsVoucherHeader.Amount;         
-            this.ChequeNo = ifmsVoucherHeader.ChequeNo;                 
+            this.ChequeNo = ifmsVoucherHeader.ChequeNo;
+            this.CreatedBy = ifmsVoucherHeader.CreatedBy;
             this.IsDeleted = ifmsVoucherHeader.IsDeleted;
+            this.IsAdjustment = ifmsVoucherHeader.IsAdjustment;
+            this.IsVoid = ifmsVoucherHeader.IsVoid;
+            this.IsDeleted = ifmsVoucherHeader.IsDeleted;
+            
             this.CostCenter = new CostCenterEntity(ifmsVoucherHeader.CostCenter);
             this.Period = new PeriodEntity(ifmsVoucherHeader.CorePeriod);
             this.VoucherType = new VoucherTypeEntity(ifmsVoucherHeader.VoucherType);

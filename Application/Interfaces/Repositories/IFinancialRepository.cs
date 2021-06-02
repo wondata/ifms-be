@@ -28,5 +28,7 @@ namespace Application.Interfaces.Repositories
         Task<IQueryable<LupBalanceSide>> GetBalanceSides();
 
         Task<IQueryable<IfmsVoucherHeader>> GetVoucherHeaders();
+
+        Task<IQueryable<IfmsVoucherDetail>> GetVoucherDetails();
     }
 }

@@ -144,34 +144,31 @@ namespace Infrastructure.Persistence.Contexts
 
                 entity.Property(e => e.DebitAmount);
 
-                entity.Property(e => e.CreditAmount);
+                entity.Property(e => e.CreditAmount);              
 
-                entity.Property(e => e.IsInterBranchTransactionCleared);
+                entity.HasOne(d => d.CoreControlAccount)
+                    .WithMany(p => p.IfmsVoucherDetails)
+                    .HasForeignKey(d => d.ControlAccountId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ifmsVoucherDetail_coreControlAccount");
 
+                entity.HasOne(d => d.CoreCostCenter)
+                     .WithMany(p => p.IfmsVoucherDetails)
+                     .HasForeignKey(d => d.CostCenterId)
+                     .OnDelete(DeleteBehavior.ClientSetNull)
+                     .HasConstraintName("FK_ifmsVoucherDetail_coreCostCenter");
 
-                //entity.HasOne(d => d.CoreControlAccounts)
-                //.WithMany(p => p.IfmsVoucherDetails)
-                //.HasForeignKey(d => d.ControlAccountId)
-                //.OnDelete(DeleteBehavior.ClientSetNull)
-                //.HasConstraintName("FK_ifmsVoucherDetail_coreControlAccount");
+                entity.HasOne(d => d.CoreSubsidiaryAccount)
+                  .WithMany(p => p.IfmsVoucherDetails)
+                  .HasForeignKey(d => d.SubsidiaryAccountId)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_ifmsVoucherDetail_coreSubsidiaryAccount");
 
-                //entity.HasOne(d => d.CoreCostCenters)
-                // .WithMany(p => p.IfmsVoucherDetails)
-                // .HasForeignKey(d => d.CostCenterId)
-                // .OnDelete(DeleteBehavior.ClientSetNull)
-                // .HasConstraintName("FK_ifmsVoucherDetail_coreCostCenter");
-
-                //entity.HasOne(d => d.CoreSubsidiaryAccounts)
-                //  .WithMany(p => p.IfmsVoucherDetails)
-                //  .HasForeignKey(d => d.SubsidiaryAccountId)
-                //  .OnDelete(DeleteBehavior.ClientSetNull)
-                //  .HasConstraintName("FK_ifmsVoucherDetail_coreSubsidiaryAccount");
-
-                //entity.HasOne(d => d.CoreCostCodes)
-                // .WithMany(p => p.IfmsVoucherDetails)
-                // .HasForeignKey(d => d.CostCodeId)
-                // .OnDelete(DeleteBehavior.ClientSetNull)
-                // .HasConstraintName("FK_ifmsVoucherDetail_ifmsCostCode");
+                entity.HasOne(d => d.IfmsCostCode)
+                 .WithMany(p => p.IfmsVoucherDetails)
+                 .HasForeignKey(d => d.CostCodeId)
+                 .OnDelete(DeleteBehavior.ClientSetNull)
+                 .HasConstraintName("FK_ifmsVoucherDetail_ifmsCostCode");
 
                 //entity.HasOne(d => d.IfmsVoucherHeaders)
                 // .WithMany(p => p.IfmsVoucherDetails)

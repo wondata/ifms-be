@@ -55,7 +55,16 @@ namespace CyberErp.CoreSetting.Core.Service
 
             return voucherType;
         }
-     
+
+
+        public async Task<IEnumerable<VoucherDetailEntity>> GetVoucherDetails()
+        {
+            IQueryable<IfmsVoucherDetail> ifmsVoucher = await this._financialRepository.GetVoucherDetails();
+            List<VoucherDetailEntity> voucherDetail = ifmsVoucher.Select(x => new VoucherDetailEntity(x)).ToList();
+
+            return voucherDetail;
+        }
+
 
         public async Task<IEnumerable<VoucherTypeSettingEntity>> GetVoucherTypeSettings()
         {

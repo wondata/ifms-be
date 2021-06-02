@@ -57,6 +57,18 @@ namespace Infrastructure.Persistence.Repositories
             throw new NotImplementedException();
         }
 
+        public async Task<IQueryable<IfmsVoucherDetail>> GetVoucherDetails()
+        {
+            var voucherDetail = (await this.GetAllAsync<IfmsVoucherDetail>())
+               .Include(x => x.CoreCostCenter)
+               .Include(x => x.IfmsCostCode)           
+               //.Include(x => x.CoreSubsidiaryAccount).Take(300);
+               .Include(x => x.CoreControlAccount).Take(300);
+
+
+            return voucherDetail;
+        }
+
         public async Task<IQueryable<IfmsVoucherHeader>> GetVoucherHeaders()
         {
             var voucherHeader = (await this.GetAllAsync<IfmsVoucherHeader>())

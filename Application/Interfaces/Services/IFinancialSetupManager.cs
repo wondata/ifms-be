@@ -28,6 +28,7 @@ namespace Application.Interfaces.Services
         Task<SettingEntity> GetSetting(Guid id);
         Task<IEnumerable<CashierEntity>> GetCashiers();
 
+        Task<IEnumerable<VoucherDetailEntity>> GetVoucherDetails();
         Task<IEnumerable<VoucherHeaderEntity>> GetVoucherHeaders();
     }
 }

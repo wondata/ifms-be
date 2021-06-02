@@ -8,16 +8,29 @@ namespace Domain.Entities
     public partial class ControlAccountEntity
     {       
 
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
         public string NoteNo { get; set; }
-        public int AccountGroupId { get; set; }
+        public Guid? AccountGroupId { get; set; }
         public DateTime? DateCreated { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTime? LastUpdated { get; set; }
+        public byte[]  LastUpdated { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
+        public ControlAccountEntity()
+        {
+        }
+
+        public ControlAccountEntity(CoreControlAccount coreControl)
+        {
+            this.Id = coreControl.Id;
+            this.Name = coreControl.Name;
+            this.Code = coreControl.Code;
+            this.NoteNo = coreControl.NoteNo;
+            this.AccountGroupId = coreControl.AccountGroupId;
+            this.DateCreated = coreControl.DateCreated;
+        }
     }
 }

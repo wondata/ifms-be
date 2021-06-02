@@ -10,6 +10,7 @@ namespace Domain.Models
         {
             // IfmsVoucherTypeSettings = new HashSet<IfmsVoucherTypeSetting>();
             IfmsCashiers = new HashSet<IfmsCashier>();
+            IfmsVoucherDetails = new HashSet<IfmsVoucherDetail>();
         }
 
         public Guid Id { get; set; }
@@ -26,10 +27,10 @@ namespace Domain.Models
         public DateTime UpdatedAt { get; set; }
 
         public virtual LupBalanceSide BalanceSide { get; set; }
-
-     // public virtual CoreControlAccount CoreControlAccount { get; set; }
+        public virtual CoreControlAccount CoreControlAccount { get; set; }
         public virtual ICollection<IfmsVoucherTypeSetting> IfmsVoucherTypeSettings { get; set; }
         public virtual ICollection<IfmsCashier> IfmsCashiers { get; set; }
+        public virtual ICollection<IfmsVoucherDetail> IfmsVoucherDetails { get; set; }
 
     }
 }
