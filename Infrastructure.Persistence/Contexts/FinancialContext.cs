@@ -29,6 +29,7 @@ namespace Infrastructure.Persistence.Contexts
         public virtual DbSet<IfmsFixedAssetSetting> IfmsFixedAssetSetting { get; set; }
         public virtual DbSet<IfmsCashier> IfmsCashier { get; set; }
         public virtual DbSet<CoreCostCenter> CoreCostCenter { get; set; }
+        public virtual DbSet<IfmsCostCenterUser> IfmsCostCenterUser { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -56,6 +57,17 @@ namespace Infrastructure.Persistence.Contexts
                 entity.Property(e => e.Name);
 
                 entity.Property(e => e.Code);
+
+            });
+
+            modelBuilder.Entity<IfmsCostCenterUser>(entity =>
+            {
+                entity.ToTable("ifmsCostCenterUser");
+
+                entity.HasOne(d => d.CoreCostCenter)
+                      .WithMany(p => p.IfmsCostCenterUsers)
+                      .HasForeignKey(d => d.CostCenterId)
+                      .HasConstraintName("FK_ifmsCostCenterUser_coreCostCenter");
 
             });
 
@@ -279,10 +291,10 @@ namespace Infrastructure.Persistence.Contexts
                 //  .HasForeignKey(d => d.InterBranchControlAccountId)
                 //  .HasConstraintName("FK_ifmsSetting_coreControlAccount");
 
-                //entity.HasOne(d => d.CoreCostCenters)
-                //  .WithMany(p => p.IfmsSettings)
-                //  .HasForeignKey(d => d.DefaultCostCenterId)
-                //  .HasConstraintName("FK_ifmsSetting_coreCostCenter");
+                entity.HasOne(d => d.CoreCostCenter)
+                  .WithMany(p => p.IfmsSettings)
+                  .HasForeignKey(d => d.DefaultCostCenterId)
+                  .HasConstraintName("FK_ifmsSetting_coreCostCenter");
 
                 //entity.HasOne(d => d.CoreSubsidiaryAccounts)
                 // .WithMany(p => p.IfmsSettings)

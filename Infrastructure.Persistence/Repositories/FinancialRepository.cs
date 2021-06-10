@@ -25,8 +25,8 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<IQueryable<IfmsCashier>> GetCashiers()
         {
-            return (await this.GetAllAsync<IfmsCashier>())
-                 .Include(x => x.SubsidiaryAccount);
+            return (await this.GetAllAsync<IfmsCashier>());
+              //   .Include(x => x.SubsidiaryAccount).ThenInclude(x => x.CoreControlAccount);
         }
 
         public async Task<IQueryable<CoreAccountType>> GetChartOfAccount()
@@ -37,6 +37,11 @@ namespace Infrastructure.Persistence.Repositories
                //.ThenInclude(x => x.CoreSubsidiaryAccount);
 
             return chartOfAccount;
+        }
+
+        public async Task<IQueryable<CoreControlAccount>> GetControlAccounts()
+        {
+            return (await this.GetAllAsync<CoreControlAccount>());
         }
 
         public async Task<IQueryable<CoreCostCenter>> GetCostCenters()
@@ -53,6 +58,21 @@ namespace Infrastructure.Persistence.Repositories
         }
 
         public async Task<IQueryable<IfmsSetting>> GetSetting(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<IQueryable<IfmsSetting>> GetSettings()
+        {
+            return (await this.GetAllAsync<IfmsSetting>()).Include(x => x.CoreCostCenter);
+        }
+
+        public async Task<IQueryable<CoreSubsidiaryAccount>> GetSubsidiaryAccount()
+        {
+            return (await this.GetAllAsync<CoreSubsidiaryAccount>());
+        }
+
+        public Task<IQueryable<CoreSubsidiaryAccount>> GetSubsidiaryAccounts()
         {
             throw new NotImplementedException();
         }

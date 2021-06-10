@@ -28,8 +28,7 @@ namespace Domain.Entities
         {
             if (coreSubsidiary == null) return;
 
-            this.Id = coreSubsidiary.Id;
-            this.ControlAccountId = coreSubsidiary.ControlAccountId;
+            this.Id = coreSubsidiary.Id;         
             this.BalanceSideId = coreSubsidiary.BalanceSideId;
             this.Name = coreSubsidiary.Name;
             this.Code = coreSubsidiary.Code;

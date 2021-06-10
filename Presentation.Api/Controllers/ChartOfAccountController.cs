@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Presentation.Api.Model.PostModel;
+using Presentation.Api.Model.ViewModel;
 using Serilog;
 
 namespace Presentation.Api.Controllers
@@ -42,7 +43,58 @@ namespace Presentation.Api.Controllers
             }            
         }
 
-   
+        [HttpPost("GetAccounts")]
+        public async Task<IEnumerable<SubsidiaryAccountEntity>> GetAccounts(string accountCode)
+        {
+            return await this._service.GetSubsidiaryAccounts(accountCode);
+        }
+
+
+        [HttpPost("GetControlAccountsByParam")]
+        public async Task<IEnumerable<ControlAccountEntity>> GetControlAccountsByParam(string accountCode)
+        {
+            return await this._service.GetControlAccountsByParam(accountCode);
+        }
+
+
+        [HttpPost("GetFilteredCostCenters")]
+        public async Task<IEnumerable<CostCenterEntity>> GetFilteredCostCenters(string filteredCostCeter)
+        {
+            return await this._service.GetFilteredCostCenters(filteredCostCeter);
+        }
+
+        [HttpPost("GetDefaultCostCenter")]
+        public async Task<IEnumerable<DefaultCostCenterViewModle>> GetDefaultCostCenter()
+        {
+
+            IEnumerable<SettingEntity> settingEntities = await this._service.GetSettings();
+            IEnumerable<DefaultCostCenterViewModle> settings = settingEntities.Select(x => new DefaultCostCenterViewModle(x));
+
+            return settings;
+        }
+
+        [HttpPost("GetVoucher")]
+        public async Task<IEnumerable<VoucherHeaderEntity>> GetVoucher(string voucherId)
+        {
+            Guid id;
+            Guid.TryParse(voucherId, out id);
+
+            return await this._service.GetVoucher(id);
+        }
+
+        [HttpPost("GetVoucherDetails")]
+        public async Task<IEnumerable<VoucherDetailEntity>> GetVoucherDetails(string voucherId)
+        {
+            Guid id;
+            Guid.TryParse(voucherId, out id);
+
+            return await this._service.GetVoucherDetails(id);
+        }
+
+
+
+
+
         [HttpPost("GetCostCodes")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesDefaultResponseType]
@@ -123,10 +175,10 @@ namespace Presentation.Api.Controllers
 
 
 
-        [HttpPost("GetVoucherDetails")]
+        [HttpPost("GetAllVouchers")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<APIPagedResponse<VoucherDetailEntity>>> GetVoucherDetails()
+        public async Task<ActionResult<APIPagedResponse<VoucherDetailEntity>>> GetAllVouchers()
         {
             //BusinessLogModel logModel = new BusinessLogModel
             //{
@@ -209,46 +261,69 @@ namespace Presentation.Api.Controllers
 
         }
 
-
-        [HttpPost("SaveGeneraltSetting")]
-        public async Task SaveGeneraltSetting(SettingPostModel settingPostModel)
+        [HttpPost("GetAllHeaders")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<APIPagedResponse<VoucherHeaderEntity>>> GetAllHeaders(int start, int limit, string sort, string dir, string record)
         {
-            SettingEntity response = new SettingEntity();
 
             try
             {
-                SettingEntity settingEntity = settingPostModel.MapToEntity();
+                var lookups = await this._service.GetAllHeaders(start, limit, sort, dir, record);
+                //Log.Information("Get all Voucher Headers", logModel, ResponseStatus.Info);
+                return Ok(new APIPagedResponse<IEnumerable<VoucherHeaderEntity>>(lookups, lookups.Count()));
+            }
+            catch (System.Exception ex)
+            {
+                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                // Log.Information(message, logModel, ResponseStatus.Error);
+                return BadRequest(new APIPagedResponse<VoucherHeaderEntity>(null, 0, true, "Exception occurred, please retry!"));
+                //return BadRequest(new APIPagedResponse<VoucherHeaderEntity>(null, true, "Exception occurred, please retry!"));
+            }
 
-                await this._service.SaveSetting(settingEntity);
+        }
 
-               // return response;
+
+        [HttpPost("SaveGeneraltSetting")]
+        public async Task<ResponseDTO> SaveGeneraltSetting(SettingEntity setting)
+        {
+            ResponseDTO response = new ResponseDTO();
+            try
+            {               
+                await this._service.SaveSetting(setting);
+
+                response.ResponseStatus = ResponseStatusEnum.Success.ToString();
+                response.Message = "Record saved successfully!";
+                return response;
+
+                return response;
             }
             catch (Exception ex)
             {
-                //response.ResponseStatus = ResponseStatus.Error.ToString();
-                //response.Message = "Closing accounts has not been saved successfully!";
-                //return null;
+                response.ResponseStatus = ResponseStatusEnum.Error.ToString();
+                response.Message = "Closing accounts has not been saved successfully!";
+                return response;
             }
         }
 
         [HttpPost("SaveFixedAssetSetting")]
-        public async Task SaveFixedAssetSetting(FixedAssetPostModle fixedAssetPost)
+        public async Task<ResponseDTO> SaveFixedAssetSetting(FixedAssetSettingEntity fixedAsset)
         {
-            FixedAssetSettingEntity response = new FixedAssetSettingEntity();
-
+            ResponseDTO response = new ResponseDTO();
             try
             {
-                FixedAssetSettingEntity fixedEntity = fixedAssetPost.MapToEntity();
+                await this._service.SaveFixedAssetSetting(fixedAsset);
 
-                 await this._service.SaveFixedAssetSetting(fixedEntity);
+                response.ResponseStatus = ResponseStatusEnum.Success.ToString();
+                response.Message = "Fixed asset setting has been added successfully!";
 
-                //return response;
+                return response;
             }
             catch (Exception ex)
             {
-                //response.ResponseStatus = ResponseStatus.Error.ToString();
-                //response.Message = "Closing accounts has not been saved successfully!";
-                //return null;
+                response.ResponseStatus = ResponseStatusEnum.Error.ToString();
+                response.Message = "Closing accounts has not been saved successfully!";
+                return null;
             }
         }
 

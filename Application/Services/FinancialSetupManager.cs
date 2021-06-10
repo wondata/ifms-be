@@ -47,7 +47,25 @@ namespace CyberErp.CoreSetting.Core.Service
 
             return costCenter;
         }
+        public async Task<IEnumerable<SettingEntity>> GetSettings()
+        {
+            IQueryable<IfmsSetting> ifmsSettings = await this._financialRepository.GetSettings();
+            //  string defaultCostCenter = ifmsSettings.
+            //  string DefaultCostCenter;
+            // string DefaultCostCenterId;
+            IEnumerable<SettingEntity> settings = ifmsSettings.Select(x => new SettingEntity(x));
 
+            //var returnValue = new LookupModel
+            //{
+            //    Code = settings.Select(x => x.CostCenter.Code).ToString(),
+            //    Name = settings.Select(x => x.DefaultCostCenterId).ToString()
+            // };
+            //var DefaultCostCenter = ifmsSettings.Select(x => x.CoreCostCenter.Code);
+            //var DefaultCostCenterId = ifmsSettings.Select(x => x.DefaultCostCenterId);
+
+
+            return settings; 
+        }
         public async Task<List<VoucherTypeEntity>> GetVoucherTypes()
         {
             IQueryable<LupVoucherType> lupVoucher = await this._financialRepository.GetAllAsync<LupVoucherType>();
@@ -160,6 +178,66 @@ namespace CyberErp.CoreSetting.Core.Service
             IEnumerable<VoucherHeaderEntity> voucher = ifmsVoucher.Select(x => new VoucherHeaderEntity(x));
 
             return voucher;
+        }
+
+        public async Task<IEnumerable<SubsidiaryAccountEntity>> GetSubsidiaryAccounts(string accountCode)
+        {            
+            IQueryable<CoreSubsidiaryAccount> CoreSubsidiary = await this._financialRepository.GetSubsidiaryAccounts();
+            CoreSubsidiary = CoreSubsidiary.Where(x => x.Code == accountCode);
+            IEnumerable<SubsidiaryAccountEntity> subsidiaries = CoreSubsidiary.Select(x => new SubsidiaryAccountEntity(x));
+
+            return subsidiaries;
+        }
+
+        public async Task<IEnumerable<ControlAccountEntity>> GetControlAccountsByParam(string accountCode)
+        {
+            IQueryable<CoreControlAccount> CoreControl = await this._financialRepository.GetControlAccounts();
+            CoreControl = CoreControl.Where(x => x.Code == accountCode);
+            IEnumerable<ControlAccountEntity> control = CoreControl.Select(x => new ControlAccountEntity(x));
+
+            return control;
+        }
+
+        public async Task<IEnumerable<CostCenterEntity>> GetFilteredCostCenters(string accountCode)
+        {
+            IQueryable<CoreCostCenter> CoreCost = await this._financialRepository.GetCostCenters();
+            CoreCost = CoreCost.Where(x => x.Code == accountCode);
+            IEnumerable<CostCenterEntity> cost = CoreCost.Select(x => new CostCenterEntity(x));
+
+            return cost;
+        }
+
+     
+
+        public async Task<IEnumerable<VoucherHeaderEntity>> GetAllHeaders(int start, int limit, string sort, string dir, string record)
+        {
+            //var currentUser = Session[Constants.CurrentUser] as coreUser;
+            //int currentUserId = currentUser != null ? currentUser.Id : 0;
+
+            IQueryable<IfmsVoucherHeader> ifmsVoucher = await this._financialRepository.GetVoucherHeaders();
+            ifmsVoucher = ifmsVoucher.Where(x => x.VoucherType.Name != "PCPV");
+            // ifmsVoucher = ifmsVoucher.Where(x => x.CostCenter.IfmsCostCenterUsers.Any(v => v.UserId == currentUserId ));
+            IEnumerable<VoucherHeaderEntity> voucher = ifmsVoucher.Select(x => new VoucherHeaderEntity(x));
+
+            return voucher;
+        }
+
+        public async Task<IEnumerable<VoucherHeaderEntity>> GetVoucher(Guid id)
+        {
+            IQueryable<IfmsVoucherHeader> ifmsVoucher = await this._financialRepository.GetVoucherHeaders();
+            ifmsVoucher = ifmsVoucher.Where(x => x.Id == id);            
+            IEnumerable<VoucherHeaderEntity> voucher = ifmsVoucher.Select(x => new VoucherHeaderEntity(x));
+
+            return voucher;
+        }
+
+        public async Task<IEnumerable<VoucherDetailEntity>> GetVoucherDetails(Guid id)
+        {
+            IQueryable<IfmsVoucherDetail> ifmsVoucher = await this._financialRepository.GetVoucherDetails();
+            ifmsVoucher = ifmsVoucher.Where(x => x.VoucherHeaderId == id);
+            IEnumerable<VoucherDetailEntity> voucherDetail = ifmsVoucher.Select(x => new VoucherDetailEntity(x)).ToList();
+
+            return voucherDetail;
         }
     }
 }

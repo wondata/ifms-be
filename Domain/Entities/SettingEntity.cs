@@ -8,13 +8,17 @@ namespace Domain.Entities
     public class SettingEntity 
     {
         public Guid Id { get; set; }
-        public Guid CurrentFiscalYearId { get; set; }
-        public Guid CurrentPeriodId { get; set; }
-        public Guid IncomeSummaryAccountId { get; set; }
-        public Guid ClosingCapitalAccountId { get; set; }
-        public Guid DefaultCostCenterId { get; set; }
-        public Guid CompanyTaxId { get; set; }
-        public Guid InterBranchControlAccountId { get; set; }
+        public Guid? CurrentFiscalYearId { get; set; }
+        public Guid? CurrentPeriodId { get; set; }
+        public Guid? IncomeSummaryAccountId { get; set; }
+        public Guid? ClosingCapitalAccountId { get; set; }
+        public Guid? DefaultCostCenterId { get; set; }
+        public Guid? CompanyTaxId { get; set; }
+        public Guid? InterBranchControlAccountId { get; set; }
+        public bool IsDeleted{ get; set; }
+
+        public CostCenterEntity CostCenter { get; set; }
+
 
         public SettingEntity()
         {
@@ -23,14 +27,17 @@ namespace Domain.Entities
         public SettingEntity(IfmsSetting ifmsSetting)
         {
             if (ifmsSetting == null) return;
-            //this.Id = ifmsSetting.Id;
-            //this.CurrentFiscalYearId = ifmsSetting.CurrentFiscalYearId;
-            //this.CurrentPeriodId = ifmsSetting.CurrentPeriodId;
-            //this.IncomeSummaryAccountId = ifmsSetting.IncomeSummaryAccountId;
-            //this.ClosingCapitalAccountId = ifmsSetting.ClosingCapitalAccountId;
-            //this.DefaultCostCenterId = ifmsSetting.DefaultCostCenterId;
-           // this.CompanyTaxId = ifmsSetting.CompanyTaxId;
-            //this.InterBranchControlAccountId = ifmsSetting.InterBranchControlAccountId;
+            this.Id = ifmsSetting.Id;
+            this.CurrentFiscalYearId = ifmsSetting.CurrentFiscalYearId;
+            this.CurrentPeriodId = ifmsSetting.CurrentPeriodId;
+            this.IncomeSummaryAccountId = ifmsSetting.IncomeSummaryAccountId;
+            this.ClosingCapitalAccountId = ifmsSetting.ClosingCapitalAccountId;
+            this.DefaultCostCenterId = ifmsSetting.DefaultCostCenterId;
+            this.CompanyTaxId = ifmsSetting.CompanyTaxId;
+            this.InterBranchControlAccountId = ifmsSetting.InterBranchControlAccountId;
+            this.CostCenter = new CostCenterEntity(ifmsSetting.CoreCostCenter);
+
+            this.IsDeleted = ifmsSetting.IsDeleted;
         }
 
         public IfmsSetting MapToModel()
@@ -45,8 +52,9 @@ namespace Domain.Entities
                 ClosingCapitalAccountId = this.ClosingCapitalAccountId,
                 DefaultCostCenterId = this.DefaultCostCenterId,
                 CompanyTaxId = this.CompanyTaxId,
-                InterBranchControlAccountId = this.InterBranchControlAccountId
-            };
+                InterBranchControlAccountId = this.InterBranchControlAccountId,
+                IsDeleted = this.IsDeleted
+        };
 
             return ifmsSetting;
         }
@@ -61,6 +69,7 @@ namespace Domain.Entities
             ifmsSetting.DefaultCostCenterId = DefaultCostCenterId;
             ifmsSetting.CompanyTaxId = CompanyTaxId;
             ifmsSetting.InterBranchControlAccountId = InterBranchControlAccountId;
+            ifmsSetting.IsDeleted = IsDeleted;
 
             return ifmsSetting;
         }

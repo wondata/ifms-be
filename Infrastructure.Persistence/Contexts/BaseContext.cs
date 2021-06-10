@@ -158,11 +158,11 @@ namespace Infrastructure.Persistence.Contexts
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_coreSubsidiaryAccount_lupBalanceSide");
 
-                entity.HasOne(d => d.CoreControlAccount)
-                  .WithMany(p => p.CoreSubsidiaryAccounts)
-                  .HasForeignKey(d => d.ControlAccountId)
-                  .OnDelete(DeleteBehavior.ClientSetNull)
-                  .HasConstraintName("FK_coreSubsidiaryAccount_coreControlAccount");
+                //entity.HasOne(d => d.CoreControlAccount)
+                //  .WithMany(p => p.CoreSubsidiaryAccounts)
+                //  .HasForeignKey(d => d.ControlAccountId)
+                //  .OnDelete(DeleteBehavior.ClientSetNull)
+                //  .HasConstraintName("FK_coreSubsidiaryAccount_coreControlAccount");
 
             });
 

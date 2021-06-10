@@ -38,7 +38,7 @@ namespace Domain.Entities
         public VoucherHeaderEntity(IfmsVoucherHeader ifmsVoucherHeader)
         {
             if (ifmsVoucherHeader == null) return;
-       
+                
             this.ReferenceNo = ifmsVoucherHeader.ReferenceNo;
             this.DocumentNo = ifmsVoucherHeader.DocumentNo;
             this.Date = ifmsVoucherHeader.Date;
