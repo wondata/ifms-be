@@ -31,6 +31,8 @@ namespace Infrastructure.Persistence.Contexts
         public virtual DbSet<CoreCostCenter> CoreCostCenter { get; set; }
         public virtual DbSet<IfmsCostCenterUser> IfmsCostCenterUser { get; set; }
 
+        public virtual DbSet<LupModeOfPayment> LupModeOfPayment { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -353,6 +355,16 @@ namespace Infrastructure.Persistence.Contexts
                 entity.Property(e => e.Description);
 
                 //entity.Property(e => e.IsFinanceVoucher);          
+
+            });
+
+            modelBuilder.Entity<LupModeOfPayment>(entity =>
+            {
+                entity.ToTable("lupModeOfPayment");
+
+                entity.Property(e => e.Name);
+
+                entity.Property(e => e.Code);                                   
 
             });
         }

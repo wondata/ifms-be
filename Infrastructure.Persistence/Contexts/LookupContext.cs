@@ -31,7 +31,7 @@ namespace Infrastructure.Persistence.Contexts
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+             //   entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.LastUpdated)
                     .IsRequired()
@@ -41,7 +41,7 @@ namespace Infrastructure.Persistence.Contexts
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
+             //   entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
 
             });
         }

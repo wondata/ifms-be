@@ -23,10 +23,8 @@ namespace Application.Interfaces.Services
         Task SaveFixedAssetSetting(FixedAssetSettingEntity fixedAssetSetting);
         Task<IEnumerable<SettingEntity>> GetSettings();
         Task<SettingEntity> GetSetting(Guid id);
-        Task<IEnumerable<CashierEntity>> GetCashiers();
-
+        Task<IEnumerable<CashierEntity>> GetCashiers();      
         Task<IEnumerable<VoucherDetailEntity>> GetVoucherDetails();
-
         Task<IEnumerable<VoucherHeaderEntity>> GetAllHeaders(int start, int limit, string sort, string dir, string record);
         Task<IEnumerable<VoucherHeaderEntity>> GetVoucher(Guid id);
         Task<IEnumerable<VoucherDetailEntity>> GetVoucherDetails(Guid id);

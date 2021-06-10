@@ -239,5 +239,7 @@ namespace CyberErp.CoreSetting.Core.Service
 
             return voucherDetail;
         }
+
+        
     }
 }

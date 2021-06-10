@@ -91,10 +91,6 @@ namespace Presentation.Api.Controllers
             return await this._service.GetVoucherDetails(id);
         }
 
-
-
-
-
         [HttpPost("GetCostCodes")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesDefaultResponseType]
