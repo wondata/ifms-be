@@ -93,6 +93,15 @@ namespace CyberErp.CoreSetting.Core.Service
 
         }
 
+        public async Task<IEnumerable<VoucherTypeSettingEntity>> GetVoucherTypesSettingByParam(Guid id)
+        {
+            IQueryable<IfmsVoucherTypeSetting> ifmsVoucherTypes = await this._financialRepository.GetVoucherTypeSettings();
+            ifmsVoucherTypes = ifmsVoucherTypes.Where(x => x.Id == id);
+            IEnumerable<VoucherTypeSettingEntity> VoucherTypeEntity = ifmsVoucherTypes.Select(x => new VoucherTypeSettingEntity(x));
+
+            return VoucherTypeEntity;
+        }
+
         public async Task SaveSetting(SettingEntity settingEntity)
         {
             Guid id;
@@ -172,7 +181,7 @@ namespace CyberErp.CoreSetting.Core.Service
             return cashiers;
         }
 
-        public async Task<IEnumerable<VoucherHeaderEntity>> GetVoucherHeaders()
+        public async Task<IEnumerable<VoucherHeaderEntity>> GetTransactionHeaders()
         {
             IQueryable<IfmsVoucherHeader> ifmsVoucher = await this._financialRepository.GetVoucherHeaders();
             IEnumerable<VoucherHeaderEntity> voucher = ifmsVoucher.Select(x => new VoucherHeaderEntity(x));
@@ -209,14 +218,11 @@ namespace CyberErp.CoreSetting.Core.Service
 
      
 
-        public async Task<IEnumerable<VoucherHeaderEntity>> GetAllHeaders(int start, int limit, string sort, string dir, string record)
-        {
-            //var currentUser = Session[Constants.CurrentUser] as coreUser;
-            //int currentUserId = currentUser != null ? currentUser.Id : 0;
+        public async Task<IEnumerable<VoucherHeaderEntity>> GetAllVouchers(int start, int limit, string sort, string dir, string record)
+        {            
 
             IQueryable<IfmsVoucherHeader> ifmsVoucher = await this._financialRepository.GetVoucherHeaders();
             ifmsVoucher = ifmsVoucher.Where(x => x.VoucherType.Name != "PCPV");
-            // ifmsVoucher = ifmsVoucher.Where(x => x.CostCenter.IfmsCostCenterUsers.Any(v => v.UserId == currentUserId ));
             IEnumerable<VoucherHeaderEntity> voucher = ifmsVoucher.Select(x => new VoucherHeaderEntity(x));
 
             return voucher;
@@ -240,6 +246,18 @@ namespace CyberErp.CoreSetting.Core.Service
             return voucherDetail;
         }
 
-        
+        public async Task<IEnumerable<VoucherDetailEntity>> GetTransactionList(int start, int limit, string sort, string dir, string record)
+        {
+            Guid id;
+            Guid.TryParse(record, out id);
+
+            IQueryable<IfmsVoucherDetail> ifmsVoucher = await this._financialRepository.GetVoucherDetails();
+            ifmsVoucher = ifmsVoucher.Where(x => x.VoucherHeaderId == id);
+            IEnumerable<VoucherDetailEntity> voucherDetail = ifmsVoucher.Select(x => new VoucherDetailEntity(x)).ToList();
+
+            return voucherDetail;
+        }
+
+       
     }
 }

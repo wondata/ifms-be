@@ -43,6 +43,7 @@ namespace Presentation.Api.Controllers
             }            
         }
 
+        
         [HttpPost("GetAccounts")]
         public async Task<IEnumerable<SubsidiaryAccountEntity>> GetAccounts(string accountCode)
         {
@@ -73,6 +74,107 @@ namespace Presentation.Api.Controllers
             return settings;
         }
 
+        
+
+        [HttpPost("GetCostCodes")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<APIPagedResponse<CostCodeEntity>>> GetCostCodes()
+        {
+            try
+            {
+                var lookups = await _service.GetCostCodes();
+                return Ok(new APIPagedResponse<List<CostCodeEntity>>(lookups, lookups.Count()));
+            }          
+            catch (System.Exception ex)
+            {
+                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new APIPagedResponse<List<CostCodeEntity>>(null, 0, true, "Exception occurred, please retry!"));
+
+            }
+        }
+
+        [HttpPost("GetCostCenters")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<APIPagedResponse<CostCenterEntity>>> GetCostCenters()
+        {
+            try
+            {
+                var lookups = await _service.GetCostCenters();
+                return Ok(new APIPagedResponse<IEnumerable<CostCenterEntity>>(lookups, lookups.Count()));
+            }
+            catch (System.Exception ex)
+            {
+                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new APIPagedResponse<IEnumerable<CostCenterEntity>>(null, 0, true, "Exception occurred, please retry!"));
+
+            }
+        }
+
+        [HttpPost("GetVoucherType")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<APIPagedResponse<VoucherTypeEntity>>> GetVoucherType()
+        {            
+
+            try
+            {
+                var lookups = await _service.GetVoucherTypes();
+                return Ok(new APIPagedResponse<List<VoucherTypeEntity>>(lookups, lookups.Count()));
+            }            
+            catch (System.Exception ex)
+            {
+                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new APIPagedResponse<List<VoucherTypeEntity>>(null, 0, true, "Exception occurred, please retry!"));
+
+            }
+
+        }
+
+
+        #region Voucher
+        
+        [HttpPost("GetAllVouchersList")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<APIPagedResponse<VoucherDetailEntity>>> GetAllVoucherList()
+        {           
+            try
+            {
+                var lookups = await _service.GetVoucherDetails();
+                return Ok(new APIPagedResponse<IEnumerable<VoucherDetailEntity>>(lookups, lookups.Count()));
+            }           
+            catch (System.Exception ex)
+            {
+                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+
+                return BadRequest(new APIPagedResponse<IEnumerable<VoucherDetailEntity>>(null, 0, true, "Exception occurred, please retry!"));
+
+            }
+
+        }
+
+        [HttpPost("GetAllVouchers")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<APIPagedResponse<VoucherHeaderEntity>>> GetAllVouchers(int start, int limit, string sort, string dir, string record)
+        {
+
+            try
+            {
+                var lookups = await this._service.GetAllVouchers(start, limit, sort, dir, record);
+                return Ok(new APIPagedResponse<IEnumerable<VoucherHeaderEntity>>(lookups, lookups.Count()));
+            }
+            catch (System.Exception ex)
+            {
+                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new APIPagedResponse<VoucherHeaderEntity>(null, 0, true, "Exception occurred, please retry!"));
+            }
+
+        }
+
+
         [HttpPost("GetVoucher")]
         public async Task<IEnumerable<VoucherHeaderEntity>> GetVoucher(string voucherId)
         {
@@ -91,119 +193,39 @@ namespace Presentation.Api.Controllers
             return await this._service.GetVoucherDetails(id);
         }
 
-        [HttpPost("GetCostCodes")]
+        #endregion
+
+       
+
+        #region Transaction
+
+        [HttpPost("GetTransactionHeaders")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<APIPagedResponse<CostCodeEntity>>> GetCostCodes()
-        {
+        public async Task<ActionResult<APIPagedResponse<VoucherHeaderEntity>>> GetTransactionHeaders()
+        {           
+
             try
             {
-                var lookups = await _service.GetCostCodes();
-                //Log.Information("Get all cost codes", logModel, ResponseStatus.Info);
-                return Ok(new APIPagedResponse<List<CostCodeEntity>>(lookups, lookups.Count()));
-            }          
-            catch (System.Exception ex)
-            {
-                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                // Log.Information(message, logModel, ResponseStatus.Error);
-
-                return BadRequest(new APIPagedResponse<List<CostCodeEntity>>(null, 0, true, "Exception occurred, please retry!"));
-
-            }
-        }
-
-        [HttpPost("GetCostCenters")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<APIPagedResponse<CostCenterEntity>>> GetCostCenters()
-        {
-            try
-            {
-
-                //IEnumerable<CostCenterEntity> costCenterEntities = await this._service.GetCostCenters();
-                var lookups = await _service.GetCostCenters();
-                //Log.Information("Get all cost codes", logModel, ResponseStatus.Info);
-                return Ok(new APIPagedResponse<IEnumerable<CostCenterEntity>>(lookups, lookups.Count()));
+                var lookups = await this._service.GetTransactionHeaders();
+                return Ok(new APIPagedResponse<IEnumerable<VoucherHeaderEntity>>(lookups, lookups.Count()));
             }
             catch (System.Exception ex)
             {
                 string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                // Log.Information(message, logModel, ResponseStatus.Error);
-
-                return BadRequest(new APIPagedResponse<IEnumerable<CostCenterEntity>>(null, 0, true, "Exception occurred, please retry!"));
-
+                return BadRequest(new APIPagedResponse<VoucherHeaderEntity>(null, 0, true, "Exception occurred, please retry!"));
             }
+
         }
 
-        [HttpPost("GetVoucherType")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<APIPagedResponse<VoucherTypeEntity>>> GetVoucherType()
+        [HttpPost("GetTransactionList")]
+        public async Task<IEnumerable<VoucherDetailEntity>> GetTransactionList(int start, int limit, string sort, string dir, string record)
         {
-            //BusinessLogModel logModel = new BusinessLogModel
-            //{
-            //    ActionName = "GetBankSetupLookups",
-            //    BranchName = bankSetupPostModel.Branch.BranchName,
-            //    Data = bankSetupPostModel
-            //};
 
-            try
-            {
-                var lookups = await _service.GetVoucherTypes();
-                //Log.Information("Get all Voucher Types", logModel, ResponseStatus.Info);
-                return Ok(new APIPagedResponse<List<VoucherTypeEntity>>(lookups, lookups.Count()));
-            }
-            //catch (CustomException e)
-            //{
-            //    return BadRequest(new APIResponse<BankLookupsEntity>(null, true, e.Message));
-
-            //}
-            catch (System.Exception ex)
-            {
-                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                // Log.Information(message, logModel, ResponseStatus.Error);
-
-                return BadRequest(new APIPagedResponse<List<VoucherTypeEntity>>(null, 0, true, "Exception occurred, please retry!"));
-
-            }
-
+            return await this._service.GetTransactionList(start, limit, sort, dir, record);
         }
 
-
-
-        [HttpPost("GetAllVouchers")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<APIPagedResponse<VoucherDetailEntity>>> GetAllVouchers()
-        {
-            //BusinessLogModel logModel = new BusinessLogModel
-            //{
-            //    ActionName = "GetBankSetupLookups",
-            //    BranchName = bankSetupPostModel.Branch.BranchName,
-            //    Data = bankSetupPostModel
-            //};
-
-            try
-            {
-                var lookups = await _service.GetVoucherDetails();
-                //Log.Information("Get all Voucher Detail", logModel, ResponseStatus.Info);
-                return Ok(new APIPagedResponse<IEnumerable<VoucherDetailEntity>>(lookups, lookups.Count()));
-            }
-            //catch (CustomException e)
-            //{
-            //    return BadRequest(new APIResponse<VoucherDetailEntity>(null, true, e.Message));
-
-            //}
-            catch (System.Exception ex)
-            {
-                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                // Log.Information(message, logModel, ResponseStatus.Error);
-
-                return BadRequest(new APIPagedResponse<IEnumerable<VoucherDetailEntity>>(null, 0, true, "Exception occurred, please retry!"));
-
-            }
-
-        }
+        #endregion
 
 
 
@@ -212,71 +234,25 @@ namespace Presentation.Api.Controllers
         [ProducesDefaultResponseType]
         public async Task<ActionResult<APIPagedResponse<VoucherTypeSettingEntity>>> GetVoucherTypeSetting()
         {
-            //IfmsVoucherTypeSetting logModel = new IfmsVoucherTypeSetting
-            //{
-            //    ActionName = "GetVoucherTypeSetting",
-            //    BranchName = bankSetupPostModel.Branch.BranchName,
-            //    Data = bankSetupPostModel
-            //};
-           
             try
             {
-                var lookups = await this._service.GetVoucherTypeSettings();       
-                //Log.Information("Get all voucher Type Setting ", logModel, ResponseStatus.Info);
+                var lookups = await this._service.GetVoucherTypeSettings();
                 return Ok(new APIPagedResponse<IEnumerable<VoucherTypeSettingEntity>>(lookups, lookups.Count()));
-            }            
-            catch (System.Exception ex)
-            {
-                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-               // Log.Information(message, logModel, ResponseStatus.Error);
-                return BadRequest(new APIPagedResponse<VoucherTypeSettingEntity>(null, 0,  true, "Exception occurred, please retry!"));
-                //return BadRequest(new APIPagedResponse<VoucherTypeSettingEntity>(null, true, "Exception occurred, please retry!"));
-            }
-
-        }
-
-        [HttpPost("GetVoucherHeaders")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<APIPagedResponse<VoucherHeaderEntity>>> GetVoucherHeaders()
-        {           
-
-            try
-            {
-                var lookups = await this._service.GetVoucherHeaders();
-                //Log.Information("Get all Voucher Headers", logModel, ResponseStatus.Info);
-                return Ok(new APIPagedResponse<IEnumerable<VoucherHeaderEntity>>(lookups, lookups.Count()));
             }
             catch (System.Exception ex)
             {
                 string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                // Log.Information(message, logModel, ResponseStatus.Error);
-                return BadRequest(new APIPagedResponse<VoucherHeaderEntity>(null, 0, true, "Exception occurred, please retry!"));
-                //return BadRequest(new APIPagedResponse<VoucherHeaderEntity>(null, true, "Exception occurred, please retry!"));
+                return BadRequest(new APIPagedResponse<VoucherTypeSettingEntity>(null, 0, true, "Exception occurred, please retry!"));
             }
 
         }
 
-        [HttpPost("GetAllHeaders")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<APIPagedResponse<VoucherHeaderEntity>>> GetAllHeaders(int start, int limit, string sort, string dir, string record)
+        [HttpPost("GetVoucherTypesSettingByParam")]
+        public async Task<IEnumerable<VoucherTypeSettingEntity>> GetVoucherTypesSettingByParam(string voucherCode)
         {
-
-            try
-            {
-                var lookups = await this._service.GetAllHeaders(start, limit, sort, dir, record);
-                //Log.Information("Get all Voucher Headers", logModel, ResponseStatus.Info);
-                return Ok(new APIPagedResponse<IEnumerable<VoucherHeaderEntity>>(lookups, lookups.Count()));
-            }
-            catch (System.Exception ex)
-            {
-                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                // Log.Information(message, logModel, ResponseStatus.Error);
-                return BadRequest(new APIPagedResponse<VoucherHeaderEntity>(null, 0, true, "Exception occurred, please retry!"));
-                //return BadRequest(new APIPagedResponse<VoucherHeaderEntity>(null, true, "Exception occurred, please retry!"));
-            }
-
+            Guid id;
+            Guid.TryParse(voucherCode, out id);
+            return await this._service.GetVoucherTypesSettingByParam(id);
         }
 
 
@@ -290,8 +266,6 @@ namespace Presentation.Api.Controllers
 
                 response.ResponseStatus = ResponseStatusEnum.Success.ToString();
                 response.Message = "Record saved successfully!";
-                return response;
-
                 return response;
             }
             catch (Exception ex)
