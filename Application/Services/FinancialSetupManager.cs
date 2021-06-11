@@ -258,6 +258,13 @@ namespace CyberErp.CoreSetting.Core.Service
             return voucherDetail;
         }
 
-       
+        public async Task<IEnumerable<VoucherHeaderEntity>> GetCollectionVouchers()
+        {
+            IQueryable<IfmsVoucherHeader> ifmsVoucher = await this._financialRepository.GetVoucherHeaders();
+            ifmsVoucher = ifmsVoucher.Where(x => x.IsPosted == false && x.Description == "Collection Voucher" && (x.VoucherType.Name == "CRV" || x.VoucherType.Name == "BD") );
+            IEnumerable<VoucherHeaderEntity> voucher = ifmsVoucher.Select(x => new VoucherHeaderEntity(x));
+
+            return voucher;
+        }
     }
 }

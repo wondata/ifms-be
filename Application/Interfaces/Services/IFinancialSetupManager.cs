@@ -32,5 +32,6 @@ namespace Application.Interfaces.Services
         Task<IEnumerable<VoucherHeaderEntity>> GetTransactionHeaders();
         Task<IEnumerable<VoucherDetailEntity>> GetTransactionList(int start, int limit, string sort, string dir, string record);
 
+        Task<IEnumerable<VoucherHeaderEntity>> GetCollectionVouchers();
     }
 }
