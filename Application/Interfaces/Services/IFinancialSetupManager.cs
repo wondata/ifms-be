@@ -27,11 +27,13 @@ namespace Application.Interfaces.Services
         Task<IEnumerable<CashierEntity>> GetCashiers();      
         Task<IEnumerable<VoucherDetailEntity>> GetVoucherDetails();
         Task<IEnumerable<VoucherHeaderEntity>> GetAllVouchers(int start, int limit, string sort, string dir, string record);
+        Task<IEnumerable<VoucherHeaderEntity>> GetAllVoucherList();
         Task<IEnumerable<VoucherHeaderEntity>> GetVoucher(Guid id);
         Task<IEnumerable<VoucherDetailEntity>> GetVoucherDetails(Guid id);
         Task<IEnumerable<VoucherHeaderEntity>> GetTransactionHeaders();
         Task<IEnumerable<VoucherDetailEntity>> GetTransactionList(int start, int limit, string sort, string dir, string record);
 
         Task<IEnumerable<VoucherHeaderEntity>> GetCollectionVouchers();
+        Task<IEnumerable<VoucherHeaderEntity>> GetPaymentVouchers();
     }
 }

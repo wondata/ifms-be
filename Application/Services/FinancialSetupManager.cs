@@ -228,6 +228,16 @@ namespace CyberErp.CoreSetting.Core.Service
             return voucher;
         }
 
+        public async Task<IEnumerable<VoucherHeaderEntity>> GetAllVoucherList()
+        {
+
+            IQueryable<IfmsVoucherHeader> ifmsVoucher = await this._financialRepository.GetVoucherHeaders();
+            ifmsVoucher = ifmsVoucher.Where(x => x.VoucherType.Name != "PCPV");
+            IEnumerable<VoucherHeaderEntity> voucher = ifmsVoucher.Select(x => new VoucherHeaderEntity(x));
+
+            return voucher;
+        }
+
         public async Task<IEnumerable<VoucherHeaderEntity>> GetVoucher(Guid id)
         {
             IQueryable<IfmsVoucherHeader> ifmsVoucher = await this._financialRepository.GetVoucherHeaders();
@@ -261,7 +271,16 @@ namespace CyberErp.CoreSetting.Core.Service
         public async Task<IEnumerable<VoucherHeaderEntity>> GetCollectionVouchers()
         {
             IQueryable<IfmsVoucherHeader> ifmsVoucher = await this._financialRepository.GetVoucherHeaders();
-            ifmsVoucher = ifmsVoucher.Where(x => x.IsPosted == false && x.Description == "Collection Voucher" && (x.VoucherType.Name == "CRV" || x.VoucherType.Name == "BD") );
+            //ifmsVoucher = ifmsVoucher.Where(x => x.IsPosted == false && x.Description == "Collection Voucher" && (x.VoucherType.Name == "CRV" || x.VoucherType.Name == "BD") );
+            IEnumerable<VoucherHeaderEntity> voucher = ifmsVoucher.Select(x => new VoucherHeaderEntity(x));
+
+            return voucher;
+        }
+
+        public async Task<IEnumerable<VoucherHeaderEntity>> GetPaymentVouchers()
+        {
+            IQueryable<IfmsVoucherHeader> ifmsVoucher = await this._financialRepository.GetVoucherHeaders();
+            //ifmsVoucher = ifmsVoucher.Where(x => x.IsPosted == false && x.Description == "Payment Voucher" && (x.VoucherType.Name == "BPV" || x.VoucherType.Name == "PCPV") );
             IEnumerable<VoucherHeaderEntity> voucher = ifmsVoucher.Select(x => new VoucherHeaderEntity(x));
 
             return voucher;

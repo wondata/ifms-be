@@ -137,21 +137,21 @@ namespace Presentation.Api.Controllers
 
         #region Voucher
         
-        [HttpPost("GetAllVouchersList")]
+        [HttpPost("GetAllVoucherList")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<APIPagedResponse<VoucherDetailEntity>>> GetAllVoucherList()
+        public async Task<ActionResult<APIPagedResponse<VoucherHeaderEntity>>> GetAllVoucherList()
         {           
             try
             {
-                var lookups = await _service.GetVoucherDetails();
-                return Ok(new APIPagedResponse<IEnumerable<VoucherDetailEntity>>(lookups, lookups.Count()));
+                var lookups = await _service.GetAllVoucherList();
+                return Ok(new APIPagedResponse<IEnumerable<VoucherHeaderEntity>>(lookups, lookups.Count()));
             }           
             catch (System.Exception ex)
             {
                 string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
 
-                return BadRequest(new APIPagedResponse<IEnumerable<VoucherDetailEntity>>(null, 0, true, "Exception occurred, please retry!"));
+                return BadRequest(new APIPagedResponse<IEnumerable<VoucherHeaderEntity>>(null, 0, true, "Exception occurred, please retry!"));
 
             }
 
@@ -276,6 +276,48 @@ namespace Presentation.Api.Controllers
         #endregion
 
 
+        #region Payment Voucher
+        [HttpPost("GetPaymentVouchers")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<APIPagedResponse<VoucherHeaderEntity>>> GetPaymentVouchers()
+        {
+
+            try
+            {
+                var lookups = await this._service.GetPaymentVouchers();
+                return Ok(new APIPagedResponse<IEnumerable<VoucherHeaderEntity>>(lookups, lookups.Count()));
+            }
+            catch (System.Exception ex)
+            {
+                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new APIPagedResponse<VoucherHeaderEntity>(null, 0, true, "Exception occurred, please retry!"));
+            }
+
+        }
+
+        [HttpPost("GetPaymentVoucherTypes")]
+        public async Task<IEnumerable<object>> GetPaymentVoucherTypes()
+        {
+            const string VoucherType = "lupVoucherType";
+            var filtered = await this._lookupManager.GetAllLookup(VoucherType);
+            filtered = filtered.Where(l => l.Name == "CPV" || l.Name == "BPV" || l.Name == "PCPV");
+
+            var voucherTypes = filtered.Select(costCenter => new
+            {
+                costCenter.Id,
+                costCenter.Name,
+                costCenter.Code
+            });
+
+
+            return voucherTypes;
+        }
+
+
+        #endregion
+
+
         #region VoucherTypeSetting
         [HttpPost("GetVoucherTypeSetting")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -301,6 +343,41 @@ namespace Presentation.Api.Controllers
             Guid id;
             Guid.TryParse(voucherCode, out id);
             return await this._service.GetVoucherTypesSettingByParam(id);
+        }
+
+
+        #endregion
+
+        #region Payment Request
+
+        [HttpPost("GetApprovedPaymentRequests")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<APIPagedResponse<object>>> GetApprovedPaymentRequests()
+        {                     
+
+            try
+            {
+                const string paymentRequests = "psmsPaymentRequest";
+                var filtered = await this._lookupManager.GetAllLookup(paymentRequests);
+                //filtered = filtered.Where(l => l.Name == "CPV" || l.Name == "BPV" || l.Name == "PCPV");
+
+                var voucherTypes = filtered.Select(x => new
+                {
+                    x.Id,
+                    x.Name,
+                    x.Code,
+                });
+
+
+                return Ok(new APIPagedResponse<object>(voucherTypes, voucherTypes.Count()));
+            }
+            catch (System.Exception ex)
+            {
+                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new APIPagedResponse<object>(null, 0, true, "Exception occurred, please retry!"));
+            }
+
         }
 
 
@@ -349,11 +426,25 @@ namespace Presentation.Api.Controllers
         }
 
         [HttpPost("GetChartOfAccount")]
-        public async Task<IEnumerable<AccountTypeEntity>> GetChartOfAccount()
+        public async Task<ChartOfAccountViewModel> GetChartOfAccount()
         {
             //return Ok(await Mediator.Send(new GetAllAccountTypesQuery()));
-          //  var charAccount = await this._service.GetChartOfAccount();
-            return null;
+            //  var charAccount = await this._service.GetChartOfAccount();
+
+            IEnumerable<ChartOfAccountEntity> chartOfAccountEntities = await this._service.GetChartOfAccount();
+            IEnumerable<ChartOfAccountViewModel> chartOfAccountViewModels = chartOfAccountEntities.Select(x => new ChartOfAccountViewModel(x));
+
+            ChartOfAccountViewModel chartOfAccounts = new ChartOfAccountViewModel
+            {
+                Id = null,
+                text = "Chart Of Accounts",
+                expanded = true,
+                iconCls = "x-fa fa-sitemap",
+                children = chartOfAccountViewModels.ToList()
+            };
+
+            return chartOfAccounts;
+            
         }
 
 

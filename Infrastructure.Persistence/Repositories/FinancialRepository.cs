@@ -94,7 +94,9 @@ namespace Infrastructure.Persistence.Repositories
             var voucherHeader = (await this.GetAllAsync<IfmsVoucherHeader>())
                .Include(x => x.CostCenter)
                .Include(x => x.CorePeriod)
-               .Include(x => x.VoucherType).Take(300);
+               .Include(x => x.VoucherType)
+               .Include(x => x.PurposeTemplate)
+               .Include(x => x.ModeOfPayment).Take(300);
 
             return voucherHeader;
         }

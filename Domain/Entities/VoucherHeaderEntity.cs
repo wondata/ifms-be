@@ -30,6 +30,7 @@ namespace Domain.Entities
         public CostCenterEntity CostCenter { get; set; }
         public PeriodEntity Period { get; set; }
         public VoucherTypeEntity VoucherType { get; set; }
+        public PurposeTemplate PurposeTemplate { get; set; }
 
         public VoucherHeaderEntity()
         {
@@ -38,13 +39,18 @@ namespace Domain.Entities
         public VoucherHeaderEntity(IfmsVoucherHeader ifmsVoucherHeader)
         {
             if (ifmsVoucherHeader == null) return;
-                
+            this.Id = ifmsVoucherHeader.Id;
+            this.CostCenterId = ifmsVoucherHeader.CostCenterId;
+            this.VoucherTypeId = ifmsVoucherHeader.VoucherTypeId;
             this.ReferenceNo = ifmsVoucherHeader.ReferenceNo;
             this.DocumentNo = ifmsVoucherHeader.DocumentNo;
             this.Date = ifmsVoucherHeader.Date;
-            this.PayedToReceivedFrom = ifmsVoucherHeader.PayedToReceivedFrom;        
+            this.PeriodId = ifmsVoucherHeader.PeriodId;
+            this.PayedToReceivedFrom = ifmsVoucherHeader.PayedToReceivedFrom;
+            this.PurposeTemplateId = ifmsVoucherHeader.PurposeTemplateId;
             this.Purpose = ifmsVoucherHeader.Purpose;            
             this.Description = ifmsVoucherHeader.Description;
+            this.ModeOfPaymentId = ifmsVoucherHeader.ModeOfPaymentId;
             this.Amount = ifmsVoucherHeader.Amount;         
             this.ChequeNo = ifmsVoucherHeader.ChequeNo;
             this.CreatedBy = ifmsVoucherHeader.CreatedBy;
@@ -56,6 +62,7 @@ namespace Domain.Entities
             this.CostCenter = new CostCenterEntity(ifmsVoucherHeader.CostCenter);
             this.Period = new PeriodEntity(ifmsVoucherHeader.CorePeriod);
             this.VoucherType = new VoucherTypeEntity(ifmsVoucherHeader.VoucherType);
+            this.PurposeTemplate = new PurposeTemplate(ifmsVoucherHeader.PurposeTemplate);
         }
 
     }
