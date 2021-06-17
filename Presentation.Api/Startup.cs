@@ -1,6 +1,8 @@
 using Application.Interfaces.Repositories;
 using Application.Interfaces.Services;
+using Application.Services;
 using CyberErp.CoreSetting.Core.Service;
+using CyberErp.Infrastructure.Repository;
 using Infrastructure.Persistence.Contexts;
 using Infrastructure.Persistence.Repositories;
 using Microsoft.AspNetCore.Builder;
@@ -44,11 +46,15 @@ namespace Presentation.Api
 
             services.AddDbContext<BaseContext>(options => options.UseSqlServer(Configuration.GetConnectionString("CyberERP")));
             services.AddDbContext<FinancialContext>(options => options.UseSqlServer(Configuration.GetConnectionString("CyberERP")));
-            
+            services.AddDbContext<LookupContext>(options => options.UseSqlServer(Configuration.GetConnectionString("CyberERP")));
+
             services.AddScoped<IRepository, GenericRepository>();
             services.AddScoped<IFinancialRepository, FinancialRepository>();
+            services.AddScoped<ILookupRepository, LookupRepository>();
 
             services.AddTransient<IFinancialSetupManager, FinancialSetupManager>();
+            services.AddTransient<ILookupManager, LookupManager>();
+
 
             services.AddCors(o => o.AddPolicy("CorsPolicy", builder =>
             {

@@ -23,7 +23,7 @@ namespace Domain.Entities
         public int NumberOfDigits { get; set; }
         public CostCenterEntity CostCenter { get; set; }
         public SubsidiaryAccountEntity SubsidiaryAccount { get; set; }
-        public VoucherTypeEntity VoucherType { get; set; }
+        public VoucherTypeEntity VoucherType { get; set; }     
 
 
         public VoucherTypeSettingEntity(IfmsVoucherTypeSetting ifmsVoucherType)
@@ -36,7 +36,7 @@ namespace Domain.Entities
             this.CurrentNumber  = ifmsVoucherType.CurrentNumber;          
             this.CostCenter = new CostCenterEntity(ifmsVoucherType.CoreCostCenter);
             this.SubsidiaryAccount = new SubsidiaryAccountEntity(ifmsVoucherType.CoreSubsidiaryAccount);
-            this.VoucherType = new VoucherTypeEntity(ifmsVoucherType.LupVoucherType);
+            this.VoucherType = new VoucherTypeEntity(ifmsVoucherType.LupVoucherType);            
         }
         
     }

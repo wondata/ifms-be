@@ -18,7 +18,7 @@ namespace Infrastructure.Persistence.Contexts
             : base(options)
         {
         }
-
+        
         public virtual DbSet<IfmsCostCode> IfmsCostCode { get; set; }
         public virtual DbSet<IfmsVoucherDetail> IfmsVoucherDetail { get; set; }
         public virtual DbSet<IfmsVoucherDetailHistory> IfmsVoucherDetailHistory { get; set; }
@@ -27,11 +27,42 @@ namespace Infrastructure.Persistence.Contexts
         public virtual DbSet<IfmsVoucherTypeSetting> IfmsVoucherTypeSetting { get; set; }
         public virtual DbSet<IfmsSetting> IfmsSetting { get; set; }
         public virtual DbSet<IfmsFixedAssetSetting> IfmsFixedAssetSetting { get; set; }
-        public virtual DbSet<IfmsCashier> IfmsCashier { get; set; }
+        public virtual DbSet<IfmsCashier> IfmsCashier { get; set; }     
+        public virtual DbSet<IfmsCostCenterUser> IfmsCostCenterUser { get; set; }
+        public virtual DbSet<IfmsPurposeTemplate> IfmsPurposeTemplate { get; set; }
+        public virtual DbSet<LupModeOfPayment> LupModeOfPayment { get; set; }
+        public virtual DbSet<CoreAccountType> CoreAccountType { get; set; }
         public virtual DbSet<CoreCostCenter> CoreCostCenter { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+            modelBuilder.Entity<CoreAccountType>(entity =>
+            {
+                entity.ToTable("coreAccountType");
+
+                entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.Code)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.LastUpdated)
+                    .IsRequired()
+                    .IsRowVersion();
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
+
+                entity.HasOne(d => d.BalanceSide)
+                    .WithMany(p => p.CoreAccountTypes)
+                    .HasForeignKey(d => d.BalanceSideId)
+                    .HasConstraintName("FK_coreAccountType_lupBalanceSide");
+            });
 
             modelBuilder.Entity<CoreCostCenter>(entity =>
             {
@@ -56,6 +87,17 @@ namespace Infrastructure.Persistence.Contexts
                 entity.Property(e => e.Name);
 
                 entity.Property(e => e.Code);
+
+            });
+
+            modelBuilder.Entity<IfmsCostCenterUser>(entity =>
+            {
+                entity.ToTable("ifmsCostCenterUser");
+
+                entity.HasOne(d => d.CoreCostCenter)
+                      .WithMany(p => p.IfmsCostCenterUsers)
+                      .HasForeignKey(d => d.CostCenterId)
+                      .HasConstraintName("FK_ifmsCostCenterUser_coreCostCenter");
 
             });
 
@@ -115,6 +157,12 @@ namespace Infrastructure.Persistence.Contexts
                    .HasForeignKey(d => d.ModeOfPaymentId)
                    .OnDelete(DeleteBehavior.ClientSetNull)
                    .HasConstraintName("FK_ifmsVoucherHeader_lupModeOfPayment");
+
+                entity.HasOne(d => d.PurposeTemplate)
+                  .WithMany(p => p.IfmsVoucherHeaders)
+                  .HasForeignKey(d => d.PurposeTemplateId)
+                  .OnDelete(DeleteBehavior.ClientSetNull)
+                  .HasConstraintName("FK_ifmsVoucherHeader_ifmsPurposeTemplate");
 
             });
 
@@ -279,10 +327,10 @@ namespace Infrastructure.Persistence.Contexts
                 //  .HasForeignKey(d => d.InterBranchControlAccountId)
                 //  .HasConstraintName("FK_ifmsSetting_coreControlAccount");
 
-                //entity.HasOne(d => d.CoreCostCenters)
-                //  .WithMany(p => p.IfmsSettings)
-                //  .HasForeignKey(d => d.DefaultCostCenterId)
-                //  .HasConstraintName("FK_ifmsSetting_coreCostCenter");
+                entity.HasOne(d => d.CoreCostCenter)
+                  .WithMany(p => p.IfmsSettings)
+                  .HasForeignKey(d => d.DefaultCostCenterId)
+                  .HasConstraintName("FK_ifmsSetting_coreCostCenter");
 
                 //entity.HasOne(d => d.CoreSubsidiaryAccounts)
                 // .WithMany(p => p.IfmsSettings)
@@ -329,6 +377,16 @@ namespace Infrastructure.Persistence.Contexts
 
             });
 
+            modelBuilder.Entity<IfmsPurposeTemplate>(entity =>
+            {
+                entity.ToTable("ifmsPurposeTemplate");
+
+                entity.Property(e => e.Code);
+
+                entity.Property(e => e.Purpose);
+
+            });
+
 
             modelBuilder.Entity<LupVoucherType>(entity =>
             {
@@ -341,6 +399,16 @@ namespace Infrastructure.Persistence.Contexts
                 entity.Property(e => e.Description);
 
                 //entity.Property(e => e.IsFinanceVoucher);          
+
+            });
+
+            modelBuilder.Entity<LupModeOfPayment>(entity =>
+            {
+                entity.ToTable("lupModeOfPayment");
+
+                entity.Property(e => e.Name);
+
+                entity.Property(e => e.Code);                                   
 
             });
         }

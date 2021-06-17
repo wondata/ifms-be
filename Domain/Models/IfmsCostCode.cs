@@ -12,12 +12,10 @@ namespace Domain.Models
         }
 
         public Guid Id { get; set; }
-
         public string Name { get; set; }
-
         public string Code { get; set; }
 
-        public ICollection<IfmsVoucherDetail> IfmsVoucherDetails { get; set; }
+        public virtual ICollection<IfmsVoucherDetail> IfmsVoucherDetails { get; set; }
 
     }
 }

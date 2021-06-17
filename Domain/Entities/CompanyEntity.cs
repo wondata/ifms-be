@@ -30,32 +30,32 @@ namespace Domain.Entities
             this.IconCls = coreCompany.IconCls;
             this.ParentId = coreCompany.ParentId;
 
-            this.Children =
-               coreCompany.CoreControlAccounts == null ? new List<CompanyEntity>() :
-               coreCompany.CoreControlAccounts.Select(x => new CompanyEntity(x)).ToList();
+            //this.Children =
+            //   coreCompany.CoreControlAccounts == null ? new List<CompanyEntity>() :
+            //   coreCompany.CoreControlAccounts.Select(x => new CompanyEntity(x)).ToList();
         }
 
 
-        public CompanyEntity(CoreControlAccount coreControl)
-        {
-            this.Id = coreControl.Id;
-            this.Name = coreControl.Name;
-            this.Code = coreControl.Code;
-            this.ParentId = coreControl.CompanyId;
-            this.Children =
-               coreControl.CoreSubsidiaryAccounts == null ? new List<CompanyEntity>() :
-               coreControl.CoreSubsidiaryAccounts.Select(x => new CompanyEntity(x)).ToList();
-        }
+        //public CompanyEntity(CoreControlAccount coreControl)
+        //{
+        //    this.Id = coreControl.Id;
+        //    this.Name = coreControl.Name;
+        //    this.Code = coreControl.Code;
+        //    this.ParentId = coreControl.CompanyId;
+        //    this.Children =
+        //       coreControl.CoreSubsidiaryAccounts == null ? new List<CompanyEntity>() :
+        //       coreControl.CoreSubsidiaryAccounts.Select(x => new CompanyEntity(x)).ToList();
+        //}
 
-        public CompanyEntity(CoreSubsidiaryAccount coreSubsidiary)
-        {
-            this.Id = coreSubsidiary.Id;
-            this.Name = coreSubsidiary.Name;
-            this.Code = coreSubsidiary.Code;
-            this.ParentId = coreSubsidiary.ControlAccountId;
-            this.Children = new List<CompanyEntity>();
+        //public CompanyEntity(CoreSubsidiaryAccount coreSubsidiary)
+        //{
+        //    this.Id = coreSubsidiary.Id;
+        //    this.Name = coreSubsidiary.Name;
+        //    this.Code = coreSubsidiary.Code;
+        //    this.ParentId = coreSubsidiary.ControlAccountId;
+        //    this.Children = new List<CompanyEntity>();
 
-        }
+        //}
 
 
 

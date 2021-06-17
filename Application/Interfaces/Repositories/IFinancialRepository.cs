@@ -13,6 +13,10 @@ namespace Application.Interfaces.Repositories
 
         Task<IQueryable<CoreAccountType>> GetChartOfAccount();
 
+        Task<IQueryable<CoreSubsidiaryAccount>> GetSubsidiaryAccounts();
+
+        Task<IQueryable<CoreControlAccount>> GetControlAccounts();
+
         Task<IQueryable<IfmsCostCode>> GetCostCodes();
 
         Task<IQueryable<CoreCostCenter>> GetCostCenters();
@@ -21,8 +25,8 @@ namespace Application.Interfaces.Repositories
 
         Task<IQueryable<IfmsVoucherTypeSetting>> GetVoucherTypeSettings();
 
-     // Task<List<IfmsVouc>> GetVoucherTypes();
-
+        // Task<List<IfmsVouc>> GetVoucherTypes();
+        Task<IQueryable<IfmsSetting>> GetSettings();
         Task<IQueryable<IfmsSetting>> GetSetting(Guid id);
 
         Task<IQueryable<LupBalanceSide>> GetBalanceSides();
@@ -30,5 +34,6 @@ namespace Application.Interfaces.Repositories
         Task<IQueryable<IfmsVoucherHeader>> GetVoucherHeaders();
 
         Task<IQueryable<IfmsVoucherDetail>> GetVoucherDetails();
+       
     }
 }

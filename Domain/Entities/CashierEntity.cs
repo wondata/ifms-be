@@ -14,7 +14,7 @@ namespace Domain.Entities
         public bool IsDeleted { get; set; }
         public byte[] LastUpdated { get; set; }
 
-        public SubsidiaryAccountEntity SubsidiaryAccount { get; set; }
+      //  public SubsidiaryAccountEntity SubsidiaryAccount { get; set; }
 
         public CashierEntity()
         {
@@ -28,7 +28,7 @@ namespace Domain.Entities
             this.UserId = ifmsCashier.UserId;
             this.IsDeleted = ifmsCashier.IsDeleted;
             this.LastUpdated = ifmsCashier.LastUpdated;
-            this.SubsidiaryAccount = new SubsidiaryAccountEntity(ifmsCashier.SubsidiaryAccount);
+         //   this.SubsidiaryAccount = new SubsidiaryAccountEntity(ifmsCashier.SubsidiaryAccount);
         }
     }
 }

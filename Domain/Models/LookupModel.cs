@@ -13,8 +13,8 @@ namespace Domain.Models
         public string Code { get; set; }
         public bool IsDeleted { get; set; }
         public byte[] LastUpdated { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+      //  public DateTime CreatedAt { get; set; }
+      //  public DateTime UpdatedAt { get; set; }
 
     }
 }

@@ -9,6 +9,7 @@ namespace Domain.Models
         {            
             IfmsVoucherTypeSettings = new HashSet<IfmsVoucherTypeSetting>();
             CoreSubsidiaryAccount = new HashSet<CoreSubsidiaryAccount>();
+            CoreAccountTypes = new HashSet<CoreAccountType>();
         }
 
         public Guid Id { get; set; }
@@ -21,6 +22,7 @@ namespace Domain.Models
        
         public virtual ICollection<IfmsVoucherTypeSetting> IfmsVoucherTypeSettings { get; set; }
         public virtual ICollection<CoreSubsidiaryAccount> CoreSubsidiaryAccount { get; set; }
+        public virtual ICollection<CoreAccountType> CoreAccountTypes { get; set; }
 
     }
 }

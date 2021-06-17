@@ -12,6 +12,8 @@ namespace Domain.Models
             IfmsVoucherTypeSettings = new HashSet<IfmsVoucherTypeSetting>();
             IfmsVoucherHeaders = new HashSet<IfmsVoucherHeader>();
             IfmsVoucherDetails = new HashSet<IfmsVoucherDetail>();
+            IfmsSettings = new HashSet<IfmsSetting>();
+            IfmsCostCenterUsers = new HashSet<IfmsCostCenterUser>();
         }
 
         public Guid Id { get; set; }
@@ -24,6 +26,8 @@ namespace Domain.Models
         public virtual ICollection<IfmsVoucherTypeSetting> IfmsVoucherTypeSettings { get; set; }
         public virtual ICollection<IfmsVoucherHeader> IfmsVoucherHeaders { get; set; }
         public virtual ICollection<IfmsVoucherDetail> IfmsVoucherDetails { get; set; }
+        public virtual ICollection<IfmsSetting> IfmsSettings { get; set; }
+        public virtual ICollection<IfmsCostCenterUser> IfmsCostCenterUsers{ get; set; }
 
 
     }

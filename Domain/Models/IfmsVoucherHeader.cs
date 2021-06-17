@@ -35,5 +35,6 @@ namespace Domain.Models
         public virtual CorePeriod CorePeriod { get; set; }
         public virtual LupVoucherType VoucherType { get; set; }
         public virtual LupModeOfPayment ModeOfPayment { get; set; }
+        public virtual IfmsPurposeTemplate PurposeTemplate { get; set; }
     }
 }

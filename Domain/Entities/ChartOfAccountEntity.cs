@@ -52,17 +52,17 @@ namespace Domain.Entities
         }
 
 
-        public ChartOfAccountEntity(CoreSubsidiaryAccount subsidiaryAccount)
-        {
-            if (subsidiaryAccount == null) return;
+        //public ChartOfAccountEntity(CoreSubsidiaryAccount subsidiaryAccount)
+        //{
+        //    if (subsidiaryAccount == null) return;
 
-            this.Id = subsidiaryAccount.Id.ToString();
-            this.Name = subsidiaryAccount.Name;
-            this.Code = subsidiaryAccount.Code;
-            this.Type = SUBSIDIARY_ACCOUNT;
+        //    this.Id = subsidiaryAccount.Id.ToString();
+        //    this.Name = subsidiaryAccount.Name;
+        //    this.Code = subsidiaryAccount.Code;
+        //    this.Type = SUBSIDIARY_ACCOUNT;
 
-            this.Children = new List<ChartOfAccountEntity>();
-        }
+        //    this.Children = new List<ChartOfAccountEntity>();
+        //}
 
         public override T MapToModel<T>()
         {
