@@ -74,6 +74,36 @@ namespace CyberErp.CoreSetting.Core.Service
             return voucherType;
         }
 
+        public async Task SaveVoucherTypesSetting(VoucherTypeSettingEntity voucherTypeSetting)
+        {
+            Guid.TryParse(voucherTypeSetting.Id, out Guid id);
+
+            IfmsVoucherTypeSetting existingRecord = await this._financialRepository.GetAsync<IfmsVoucherTypeSetting>(x => x.Id == id);
+
+            if (existingRecord == null)
+            {
+                IfmsVoucherTypeSetting voucherType = voucherTypeSetting.MapToModel<IfmsVoucherTypeSetting>();
+
+                await this._financialRepository.AddAsync(voucherType);
+                await this._financialRepository.UnitOfWork.SaveChanges();
+            }
+            else
+            {
+                IfmsVoucherTypeSetting ifmsVoucher = await this._financialRepository.GetAsync<IfmsVoucherTypeSetting>(x => x.Id == id);
+                IfmsVoucherTypeSetting voucherType = voucherTypeSetting.MapToModel(ifmsVoucher);
+
+                await this._financialRepository.UpdateAsync(voucherType);
+                await this._financialRepository.UnitOfWork.SaveChanges();
+            }
+
+        }
+
+        public async Task DeleteVoucherTypeSetting(Guid id)
+        {
+            await this._financialRepository.DeleteAsync<IfmsVoucherTypeSetting>(x => x.Id == id);
+            await this._financialRepository.UnitOfWork.SaveChanges();
+        }
+
 
         public async Task<IEnumerable<VoucherDetailEntity>> GetVoucherDetails()
         {
@@ -93,7 +123,7 @@ namespace CyberErp.CoreSetting.Core.Service
 
         }
 
-        public async Task<IEnumerable<VoucherTypeSettingEntity>> GetVoucherTypesSettingByParam(Guid id)
+        public async Task<IEnumerable<VoucherTypeSettingEntity>> GetVoucherTypeSettingByParam(Guid id)
         {
             IQueryable<IfmsVoucherTypeSetting> ifmsVoucherTypes = await this._financialRepository.GetVoucherTypeSettings();
             ifmsVoucherTypes = ifmsVoucherTypes.Where(x => x.Id == id);
@@ -104,9 +134,8 @@ namespace CyberErp.CoreSetting.Core.Service
 
         public async Task SaveSetting(SettingEntity settingEntity)
         {
-            Guid id;
-            Guid.TryParse(settingEntity.Id.ToString(), out id);
-            
+            Guid.TryParse(settingEntity.Id.ToString(), out Guid id);
+
             IfmsSetting existingRecord = await this._financialRepository.GetAsync<IfmsSetting>(x => x.Id == id);
 
             if (existingRecord == null)
@@ -132,8 +161,7 @@ namespace CyberErp.CoreSetting.Core.Service
 
         public async Task SaveFixedAssetSetting(FixedAssetSettingEntity fixedAssetSetting)
         {
-            Guid id;
-            Guid.TryParse(fixedAssetSetting.Id.ToString(), out id);
+            Guid.TryParse(fixedAssetSetting.Id.ToString(), out Guid id);
 
             IfmsFixedAssetSetting existingRecord = await this._financialRepository.GetAsync<IfmsFixedAssetSetting>(x => x.Id == id);
 
@@ -256,10 +284,9 @@ namespace CyberErp.CoreSetting.Core.Service
             return voucherDetail;
         }
 
-        public async Task<IEnumerable<VoucherDetailEntity>> GetTransactionList(int start, int limit, string sort, string dir, string record)
+        public async Task<IEnumerable<VoucherDetailEntity>> GetTransactionDetails(Guid id)
         {
-            Guid id;
-            Guid.TryParse(record, out id);
+          
 
             IQueryable<IfmsVoucherDetail> ifmsVoucher = await this._financialRepository.GetVoucherDetails();
             ifmsVoucher = ifmsVoucher.Where(x => x.VoucherHeaderId == id);
