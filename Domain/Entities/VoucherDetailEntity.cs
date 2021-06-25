@@ -1,13 +1,13 @@
-﻿using Domain.Models;
+﻿using Domain.Common;
+using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Domain.Entities
 {
-    public class VoucherDetailEntity
+    public class VoucherDetailEntity : BaseEntity
     {
-        public Guid Id { get; set; }
         public Guid VoucherHeaderId { get; set; }
         public int SNo { get; set; }
         public Guid CostCenterId { get; set; }
@@ -37,7 +37,7 @@ namespace Domain.Entities
         public VoucherDetailEntity(IfmsVoucherDetail ifmsVoucher)
         {
             if (ifmsVoucher == null) return;
-            this.Id = ifmsVoucher.Id;
+            this.Id = ifmsVoucher.Id.ToString();
             this.DebitAmount = ifmsVoucher.DebitAmount;
             this.CreditAmount = ifmsVoucher.CreditAmount;
             this.IsInterBranchTransactionCleared = ifmsVoucher.IsInterBranchTransactionCleared;
@@ -48,9 +48,14 @@ namespace Domain.Entities
             this.Account = new ControlAccountEntity(ifmsVoucher.CoreControlAccount);
         }
 
+        public override T MapToModel<T>()
+        {
+            throw new NotImplementedException();
+        }
 
-
-
-
+        public override T MapToModel<T>(T t)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

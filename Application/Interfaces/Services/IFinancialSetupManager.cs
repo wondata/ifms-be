@@ -18,7 +18,9 @@ namespace Application.Interfaces.Services
         Task<List<CostCodeEntity>> GetCostCodes();
         Task<IEnumerable<CostCenterEntity>> GetCostCenters();
         Task<IEnumerable<VoucherTypeSettingEntity>> GetVoucherTypeSettings();
-        Task<IEnumerable<VoucherTypeSettingEntity>> GetVoucherTypesSettingByParam(Guid id);
+        Task DeleteVoucherTypeSetting( Guid Id);
+        Task SaveVoucherTypesSetting(VoucherTypeSettingEntity voucherTypeSetting);
+        Task<IEnumerable<VoucherTypeSettingEntity>> GetVoucherTypeSettingByParam(Guid id);
         Task<List<VoucherTypeEntity>> GetVoucherTypes();
         Task SaveSetting(SettingEntity settingEntity);
         Task SaveFixedAssetSetting(FixedAssetSettingEntity fixedAssetSetting);
@@ -31,8 +33,7 @@ namespace Application.Interfaces.Services
         Task<IEnumerable<VoucherHeaderEntity>> GetVoucher(Guid id);
         Task<IEnumerable<VoucherDetailEntity>> GetVoucherDetails(Guid id);
         Task<IEnumerable<VoucherHeaderEntity>> GetTransactionHeaders();
-        Task<IEnumerable<VoucherDetailEntity>> GetTransactionList(int start, int limit, string sort, string dir, string record);
-
+        Task<IEnumerable<VoucherDetailEntity>> GetTransactionDetails(Guid id);
         Task<IEnumerable<VoucherHeaderEntity>> GetCollectionVouchers();
         Task<IEnumerable<VoucherHeaderEntity>> GetPaymentVouchers();
     }
