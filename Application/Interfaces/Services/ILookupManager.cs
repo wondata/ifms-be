@@ -9,6 +9,7 @@ namespace Application.Interfaces.Services
     public interface ILookupManager
     {
         Task<IEnumerable<LookupEntity>> GetAllLookup(string table);
+        Task<LookupEntity> Get(string table);
 
     }
 }

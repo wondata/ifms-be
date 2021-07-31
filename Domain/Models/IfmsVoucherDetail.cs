@@ -7,6 +7,11 @@ namespace Domain.Models
 {
     public partial class IfmsVoucherDetail
     {
+        public IfmsVoucherDetail()
+        {
+            IfmsBankReconciliationDetails = new HashSet<IfmsBankReconciliationDetail>();
+        }
+
         public Guid Id { get; set; }
         public Guid VoucherHeaderId { get; set; }
         public int SNo { get; set; }
@@ -24,11 +29,13 @@ namespace Domain.Models
         public bool IsInterBranchTransactionCleared { get; set; }
         public Guid? IBTReferenceVoucherHeaderId { get; set; }
         public Guid? ProjectTaskId { get; set; }
+        public bool IsDeleted { get; set; }
 
-        public virtual IfmsCostCode IfmsCostCode { get; set; }
-        public virtual CoreCostCenter CoreCostCenter { get; set; }
-        public virtual CoreSubsidiaryAccount CoreSubsidiaryAccount { get; set; }
-        public virtual CoreControlAccount CoreControlAccount { get; set; }
+        public virtual IfmsCostCode CostCode { get; set; }
+        public virtual CoreCostCenter CostCenter { get; set; }
+        public virtual CoreSubsidiaryAccount SubsidiaryAccount { get; set; }
+        public virtual CoreControlAccount ControlAccount { get; set; }
+        public virtual ICollection<IfmsBankReconciliationDetail> IfmsBankReconciliationDetails { get; set; }
     //public virtual IfmsVoucherHeader IfmsVoucherHeaders { get; set; }
     //public virtual IfmsVoucherHeader IfmsVoucherHeaders_2 { get; set; }
 

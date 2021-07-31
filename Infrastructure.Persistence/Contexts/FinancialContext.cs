@@ -33,6 +33,9 @@ namespace Infrastructure.Persistence.Contexts
         public virtual DbSet<LupModeOfPayment> LupModeOfPayment { get; set; }
         public virtual DbSet<CoreAccountType> CoreAccountType { get; set; }
         public virtual DbSet<CoreCostCenter> CoreCostCenter { get; set; }
+        public virtual DbSet<CoreControlAccount> CoreControlAccount { get; set; }
+        public virtual DbSet<PsmsPaymentRequest> PsmPaymentRequest { get; set; }
+        public virtual DbSet<IfmsBankReconciliationDetail> IfmsBankReconciliationDetail { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
@@ -80,6 +83,32 @@ namespace Infrastructure.Persistence.Contexts
                     .HasConstraintName("FK_coreCostCenter_coreCostCenter");
             });
 
+            modelBuilder.Entity<CoreControlAccount>(entity =>
+            {
+                entity.ToTable("coreControlAccount");
+
+                //  entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+
+                entity.Property(e => e.Code)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(100);
+
+                entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
+
+
+                entity.HasOne(d => d.ChartOfAccount)
+                    .WithMany(p => p.CoreControlAccounts)
+                    .HasForeignKey(d => d.ChartAccountID)
+                    .HasConstraintName("FK_coreControlAccount_coreChartOfAccount");
+
+            });
+
             modelBuilder.Entity<IfmsCostCode>(entity =>
             {
                 entity.ToTable("ifmsCostCode");
@@ -109,10 +138,25 @@ namespace Infrastructure.Persistence.Contexts
 
                 entity.Property(e => e.FullName);
 
+                entity.HasOne(d => d.User)
+                   .WithMany(p => p.IfmsCashiers)
+                   .HasForeignKey(d => d.UserId)
+                   .HasConstraintName("FK_ifmsCashier_coreUser");
+
                 entity.HasOne(d => d.SubsidiaryAccount)
                     .WithMany(p => p.IfmsCashiers)
                     .HasForeignKey(d => d.SubsidiaryAccountId)
                     .HasConstraintName("FK_ifmsCashier_coreSubsidiaryAccount");
+            });
+
+            modelBuilder.Entity<IfmsBankReconciliationDetail>(entity =>
+            {
+                entity.ToTable("ifmsBankReconciliationDetail");             
+
+                entity.HasOne(d => d.VoucherDetail)
+                    .WithMany(p => p.IfmsBankReconciliationDetails)
+                    .HasForeignKey(d => d.VoucherDetailId)
+                    .HasConstraintName("FK_ifmsBankReconciliationDetail_ifmsVoucherDetail");
             });
 
 
@@ -192,27 +236,27 @@ namespace Infrastructure.Persistence.Contexts
 
                 entity.Property(e => e.DebitAmount);
 
-                entity.Property(e => e.CreditAmount);              
+                entity.Property(e => e.CreditAmount);
 
-                entity.HasOne(d => d.CoreControlAccount)
+                entity.HasOne(d => d.ControlAccount)
                     .WithMany(p => p.IfmsVoucherDetails)
                     .HasForeignKey(d => d.ControlAccountId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_ifmsVoucherDetail_coreControlAccount");
 
-                entity.HasOne(d => d.CoreCostCenter)
+                entity.HasOne(d => d.CostCenter)
                      .WithMany(p => p.IfmsVoucherDetails)
                      .HasForeignKey(d => d.CostCenterId)
                      .OnDelete(DeleteBehavior.ClientSetNull)
                      .HasConstraintName("FK_ifmsVoucherDetail_coreCostCenter");
 
-                entity.HasOne(d => d.CoreSubsidiaryAccount)
+                entity.HasOne(d => d.SubsidiaryAccount)
                   .WithMany(p => p.IfmsVoucherDetails)
                   .HasForeignKey(d => d.SubsidiaryAccountId)
                   .OnDelete(DeleteBehavior.ClientSetNull)
                   .HasConstraintName("FK_ifmsVoucherDetail_coreSubsidiaryAccount");
 
-                entity.HasOne(d => d.IfmsCostCode)
+                entity.HasOne(d => d.CostCode)
                  .WithMany(p => p.IfmsVoucherDetails)
                  .HasForeignKey(d => d.CostCodeId)
                  .OnDelete(DeleteBehavior.ClientSetNull)
@@ -240,15 +284,13 @@ namespace Infrastructure.Persistence.Contexts
 
                 entity.Property(e => e.CostCenterId);
 
-                entity.Property(e => e.ControlAccountId);
-
                 entity.Property(e => e.SubsidiaryAccountId);
 
                 entity.Property(e => e.DebitAmount);
 
                 entity.Property(e => e.CreditAmount);
 
-                //entity.HasOne(d => d.CoreControlAccounts)
+                //entity.HasOne(d => d.ControlAccounts)
                 //   .WithMany(p => p.IfmsVoucherDetailHistorys)
                 //   .HasForeignKey(d => d.ControlAccountId)
                 //   .OnDelete(DeleteBehavior.ClientSetNull)
@@ -322,7 +364,7 @@ namespace Infrastructure.Persistence.Contexts
 
                 entity.Property(e => e.CompanyTaxId);
 
-                //entity.HasOne(d => d.CoreControlAccounts)
+                //entity.HasOne(d => d.ControlAccount)
                 //  .WithMany(p => p.IfmsSettings)
                 //  .HasForeignKey(d => d.InterBranchControlAccountId)
                 //  .HasConstraintName("FK_ifmsSetting_coreControlAccount");
@@ -387,6 +429,19 @@ namespace Infrastructure.Persistence.Contexts
 
             });
 
+            modelBuilder.Entity<PsmsPaymentRequest>(entity =>
+            {
+                entity.ToTable("psmsPaymentRequest");
+
+                entity.Property(e => e.PayeeName);
+
+                entity.Property(e => e.Priority);
+                entity.Property(e => e.AttachedDocuments);
+                entity.Property(e => e.Type);
+                entity.Property(e => e.Remark);
+
+            });
+
 
             modelBuilder.Entity<LupVoucherType>(entity =>
             {
@@ -397,8 +452,7 @@ namespace Infrastructure.Persistence.Contexts
                 entity.Property(e => e.Code);
 
                 entity.Property(e => e.Description);
-
-                //entity.Property(e => e.IsFinanceVoucher);          
+     
 
             });
 

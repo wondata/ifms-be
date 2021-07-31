@@ -18,6 +18,7 @@ namespace Domain.Entities
         public bool IsDeleted{ get; set; }
 
         public CostCenterEntity CostCenter { get; set; }
+        public ControlAccountEntity ControlAccount { get; set; }
 
 
         public SettingEntity()
@@ -35,9 +36,11 @@ namespace Domain.Entities
             this.DefaultCostCenterId = ifmsSetting.DefaultCostCenterId;
             this.CompanyTaxId = ifmsSetting.CompanyTaxId;
             this.InterBranchControlAccountId = ifmsSetting.InterBranchControlAccountId;
-            this.CostCenter = new CostCenterEntity(ifmsSetting.CoreCostCenter);
-
             this.IsDeleted = ifmsSetting.IsDeleted;
+
+            this.CostCenter = new CostCenterEntity(ifmsSetting.CoreCostCenter);
+         //   this.ControlAccount = new ControlAccountEntity(ifmsSetting.ControlAccount);
+
         }
 
         public IfmsSetting MapToModel()

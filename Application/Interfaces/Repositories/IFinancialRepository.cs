@@ -11,7 +11,7 @@ namespace Application.Interfaces.Repositories
    public interface IFinancialRepository : IRepository
     {
 
-        Task<IQueryable<CoreAccountType>> GetChartOfAccount();
+        Task<IQueryable<CoreChartOfAccount>> GetChartOfAccount();
 
         Task<IQueryable<CoreSubsidiaryAccount>> GetSubsidiaryAccounts();
 
@@ -23,17 +23,19 @@ namespace Application.Interfaces.Repositories
 
         Task<IQueryable<IfmsCashier>> GetCashiers();
 
+        Task<IQueryable<CoreUser>> GetUsers();
+
         Task<IQueryable<IfmsVoucherTypeSetting>> GetVoucherTypeSettings();
 
-        // Task<List<IfmsVouc>> GetVoucherTypes();
         Task<IQueryable<IfmsSetting>> GetSettings();
+
         Task<IQueryable<IfmsSetting>> GetSetting(Guid id);
 
         Task<IQueryable<LupBalanceSide>> GetBalanceSides();
 
-        Task<IQueryable<IfmsVoucherHeader>> GetVoucherHeaders();
+        Task<IQueryable<IfmsPurposeTemplate>> GetPurposeTemplates();
 
-        Task<IQueryable<IfmsVoucherDetail>> GetVoucherDetails();
-       
+        Task<IQueryable<PsmsPaymentRequest>> GetApprovedPaymentRequest();
+
     }
 }

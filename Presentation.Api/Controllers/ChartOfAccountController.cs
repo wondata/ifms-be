@@ -43,86 +43,48 @@ namespace Presentation.Api.Controllers
                 return null;
             }            
         }
-        
-                    
-
-        [HttpPost("GetDefaultCostCenter")]
-        public async Task<IEnumerable<DefaultCostCenterViewModle>> GetDefaultCostCenter()
-        {
-
-            IEnumerable<SettingEntity> settingEntities = await this._service.GetSettings();
-            IEnumerable<DefaultCostCenterViewModle> settings = settingEntities.Select(x => new DefaultCostCenterViewModle(x));
-
-            return settings;
-        }
-
+                                    
         
 
-        [HttpPost("GetCostCodes")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<APIPagedResponse<CostCodeEntity>>> GetCostCodes()
-        {
-            try
-            {
-                var lookups = await _service.GetCostCodes();
-                return Ok(new APIPagedResponse<List<CostCodeEntity>>(lookups, lookups.Count()));
-            }          
-            catch (System.Exception ex)
-            {
-                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return BadRequest(new APIPagedResponse<List<CostCodeEntity>>(null, 0, true, "Exception occurred, please retry!"));
-
-            }
-        }
-
-        [HttpPost("GetCostCenters")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<APIPagedResponse<CostCenterEntity>>> GetCostCenters()
-        {
-            try
-            {
-                var lookups = await _service.GetCostCenters();
-                return Ok(new APIPagedResponse<IEnumerable<CostCenterEntity>>(lookups, lookups.Count()));
-            }
-            catch (System.Exception ex)
-            {
-                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return BadRequest(new APIPagedResponse<IEnumerable<CostCenterEntity>>(null, 0, true, "Exception occurred, please retry!"));
-
-            }
-        }
-        
-
-        #region Payment Request
+        #region Payment Request        
 
         [HttpPost("GetApprovedPaymentRequests")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesDefaultResponseType]
-        public async Task<ActionResult<APIPagedResponse<object>>> GetApprovedPaymentRequests()
-        {                     
-
+        public async Task<ActionResult<PaymentRequest>> GetApprovedPaymentRequests()
+        {
             try
             {
-                const string paymentRequests = "psmsPaymentRequest";
-                var filtered = await this._lookupManager.GetAllLookup(paymentRequests);
-                //filtered = filtered.Where(l => l.Name == "CPV" || l.Name == "BPV" || l.Name == "PCPV");
+                var lookups = await this._service.GetApprovedPaymentRequest();
 
-                var voucherTypes = filtered.Select(x => new
-                {
-                    x.Id,
-                    x.Name,
-                    x.Code,
+                var transaction = lookups.Select(item => new {
+                    item.Id,
+                    item.PayeeName,
+                   // item.hrmsEmployee.corePerson.FirstName,
+                   // item.hrmsEmployee.corePerson.FatherName,
+                    item.Amount,
+                   // item.IsIncludingVAT,
+                    item.Purpose,
+                    item.AttachedDocuments,
+                    item.NoOfPages,
+                    item.Date,
+                   // PaymentMode = item.lupModeOfPayment.Name,
+                  //  Status = item.lupVoucherStatus.Name,
+                    item.StatusId,
+                   // CertifiedBy = item.hrmsEmployee1 != null ? (item.hrmsEmployee1.corePerson.FirstName + " " + item.hrmsEmployee1.corePerson.FatherName) : "",
+                    item.CertifiedDate,
+                   // ApprovedBy = item.hrmsEmployee2 != null ? (item.hrmsEmployee2.corePerson.FirstName + " " + item.hrmsEmployee2.corePerson.FatherName) : "",
+                    item.ApprovedDate,
+                   // item.ApprovedAmount,
+                   // item.RemaininigAmount
                 });
 
-
-                return Ok(new APIPagedResponse<object>(voucherTypes, voucherTypes.Count()));
+                return Ok(new APIPagedResponse<IEnumerable<object>>(transaction, lookups.Count()));
             }
             catch (System.Exception ex)
             {
                 string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return BadRequest(new APIPagedResponse<object>(null, 0, true, "Exception occurred, please retry!"));
+                return BadRequest(new APIPagedResponse<VoucherHeaderEntity>(null, 0, true, "Exception occurred, please retry!"));
             }
 
         }
@@ -154,29 +116,7 @@ namespace Presentation.Api.Controllers
         }
 
 
-        [HttpPost("GetCashiers")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesDefaultResponseType]
-        public async Task<ActionResult<APIPagedResponse<CashierEntity>>> GetCashiers()
-        {            
-
-            try
-            {
-                var lookups = await _service.GetCashiers();
-                //Log.Information("Get all Voucher Types", logModel, ResponseStatus.Info);
-                return Ok(new APIPagedResponse<IEnumerable<CashierEntity>>(lookups, lookups.Count()));
-            }
-           
-            catch (System.Exception ex)
-            {
-                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                // Log.Information(message, logModel, ResponseStatus.Error);
-
-                return BadRequest(new APIPagedResponse<IEnumerable<CashierEntity>>(null, 0, true, "Exception occurred, please retry!"));
-
-            }
-
-        }
+       
 
         //[HttpPost("SaveAccountGroup")]
         //public async Task<Response<bool>> SaveAccountGroup(AccountGroupEntity param)

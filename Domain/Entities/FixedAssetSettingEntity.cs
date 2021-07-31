@@ -9,7 +9,7 @@ namespace Domain.Entities
     {
         public Guid Id { get; set; }
         public Guid DefaultCostCenterId { get; set; }
-        public Guid VoucherTypeId { get; set; }
+        public Guid DefaultVoucherTypeId { get; set; }
         public Guid GainOnDisposalAccountId { get; set; }
         public Guid LossOnDisposalAccountId { get; set; }
         public Guid CashAccountId { get; set; }
@@ -23,7 +23,7 @@ namespace Domain.Entities
             if (ifmsFixedAsset == null) return;
                 Id = ifmsFixedAsset.Id;
                 DefaultCostCenterId = ifmsFixedAsset.DefaultCostCenterId;
-                VoucherTypeId = ifmsFixedAsset.VoucherTypeId;
+                DefaultVoucherTypeId = ifmsFixedAsset.VoucherTypeId;
                 GainOnDisposalAccountId = ifmsFixedAsset.GainOnDisposalAccountId;
                 LossOnDisposalAccountId = ifmsFixedAsset.LossOnDisposalAccountId;
                 CashAccountId = ifmsFixedAsset.CashAccountId;
@@ -36,7 +36,7 @@ namespace Domain.Entities
             {
                 //Id = this.Id,
                 DefaultCostCenterId = this.DefaultCostCenterId,
-                VoucherTypeId = this.VoucherTypeId,
+                VoucherTypeId = this.DefaultVoucherTypeId,
                 GainOnDisposalAccountId = this.GainOnDisposalAccountId,
                 LossOnDisposalAccountId = this.LossOnDisposalAccountId,
                 CashAccountId = this.CashAccountId,               
@@ -49,7 +49,7 @@ namespace Domain.Entities
         {
             //Id = this.Id,
             ifmsFixed.DefaultCostCenterId = DefaultCostCenterId;
-            ifmsFixed.VoucherTypeId = VoucherTypeId;
+            ifmsFixed.VoucherTypeId = DefaultVoucherTypeId;
             ifmsFixed.GainOnDisposalAccountId = GainOnDisposalAccountId;
             ifmsFixed.LossOnDisposalAccountId = LossOnDisposalAccountId;
             ifmsFixed.DefaultCostCenterId = DefaultCostCenterId;

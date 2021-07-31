@@ -20,7 +20,6 @@ namespace Domain.Models
         public int? CurrentNumber { get; set; }
         public int NumberOfDigits { get; set; }
         public bool IsDeleted { get; set; }
-        public byte[] LastUpdated { get; set; }
       
 
         public virtual CoreCostCenter CoreCostCenter {get; set;}                

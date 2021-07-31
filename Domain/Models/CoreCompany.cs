@@ -8,7 +8,7 @@ namespace Domain.Models
     {
 
         public CoreCompany() {
-            CoreControlAccounts = new HashSet<CoreControlAccount>();
+            CoreChartOfAccounts = new HashSet<CoreChartOfAccount>();
             InverseParent = new HashSet<CoreCompany>();
         }
 
@@ -20,8 +20,8 @@ namespace Domain.Models
         public string IconCls { get; set; }
 
         public virtual CoreCompany Parent { get; set; }
-        public virtual ICollection<CoreCompany> InverseParent { get; set; }
-        public virtual ICollection<CoreControlAccount> CoreControlAccounts { get; set; }
+        public virtual ICollection<CoreCompany> InverseParent { get; set; }    
+        public virtual ICollection<CoreChartOfAccount> CoreChartOfAccounts { get; set; }
 
 
 

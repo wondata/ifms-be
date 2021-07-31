@@ -25,10 +25,11 @@ namespace Domain.Entities
         public Guid? IBTReferenceVoucherHeaderId { get; set; }
         public Guid? ProjectTaskId { get; set; }
 
-        public CostCenterEntity CostCenter{ get; set; }
-        public CostCodeEntity CostCode { get; set; }
-        public SubsidiaryAccountEntity Subsidiary { get; set; }
-        public ControlAccountEntity Account{ get; set; }
+        public  CostCenterEntity CostCenters { get; set; }
+        public  CostCodeEntity CostCodes { get; set; }
+        public  SubsidiaryAccountEntity SubsidiaryAccount { get; set; }
+        public  ControlAccountEntity ControlAccount{ get; set; }
+
 
         public VoucherDetailEntity()
         {
@@ -37,15 +38,29 @@ namespace Domain.Entities
         public VoucherDetailEntity(IfmsVoucherDetail ifmsVoucher)
         {
             if (ifmsVoucher == null) return;
+
             this.Id = ifmsVoucher.Id.ToString();
+            this.VoucherHeaderId = ifmsVoucher.VoucherHeaderId;
+            this.SNo = ifmsVoucher.SNo;
+            this.CostCenterId = ifmsVoucher.CostCenterId;
+            this.CaseId = ifmsVoucher.CaseId;
+            this.ControlAccountId = ifmsVoucher.ControlAccountId;
+            this.SubsidiaryAccountId = ifmsVoucher.SubsidiaryAccountId;
+
             this.DebitAmount = ifmsVoucher.DebitAmount;
             this.CreditAmount = ifmsVoucher.CreditAmount;
+            this.Remark = ifmsVoucher.Remark;
+            this.IsReconciled = ifmsVoucher.IsReconciled;
             this.IsInterBranchTransactionCleared = ifmsVoucher.IsInterBranchTransactionCleared;
             this.IBTReferenceVoucherHeaderId = ifmsVoucher.IBTReferenceVoucherHeaderId;
-            this.CostCenter = new CostCenterEntity(ifmsVoucher.CoreCostCenter);
-            this.CostCode = new CostCodeEntity(ifmsVoucher.IfmsCostCode);
-            this.Subsidiary = new SubsidiaryAccountEntity(ifmsVoucher.CoreSubsidiaryAccount);
-            this.Account = new ControlAccountEntity(ifmsVoucher.CoreControlAccount);
+            this.ProjectTaskId = ifmsVoucher.ProjectTaskId;
+
+            this.IsDeleted = ifmsVoucher.IsDeleted;
+
+            this.CostCenters = new CostCenterEntity(ifmsVoucher.CostCenter);
+            this.CostCodes = new CostCodeEntity(ifmsVoucher.CostCode);
+            this.SubsidiaryAccount = new SubsidiaryAccountEntity(ifmsVoucher.SubsidiaryAccount);
+            this.ControlAccount = new ControlAccountEntity(ifmsVoucher.ControlAccount);
         }
 
         public override T MapToModel<T>()

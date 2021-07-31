@@ -35,8 +35,8 @@ namespace Presentation.Api.Model.ViewModel
          //   this.ParentId = chartOfAccountEntity.ParentId?.ToString();
 
             this.text = chartOfAccountEntity.Name;
-            this.leaf = (chartOfAccountEntity.Children.Count() > 0 && chartOfAccountEntity.Type != ChartOfAccountEntity.ACCOUNT_TYPE) ? false : true;
-            this.expanded = chartOfAccountEntity.Type == "Account Category" ? true : false;
+            this.leaf = (chartOfAccountEntity.Children.Count() > 0 && chartOfAccountEntity.Type != ChartOfAccountEntity.SUBSIDIARY_ACCOUNT) ? false : true;
+            this.expanded = chartOfAccountEntity.Type == "Chart Account" ? true : false;
             this.iconCls = this.leaf ? "x-fa fa-circle" : "";
             this.children =
                 (chartOfAccountEntity.Children == null || chartOfAccountEntity.Type == ChartOfAccountEntity.ACCOUNT_TYPE) ?
