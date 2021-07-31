@@ -24,8 +24,8 @@ namespace Domain.Entities
    
         public CostCenterEntity CostCenter { get; set; }
         public SubsidiaryAccountEntity SubsidiaryAccount { get; set; }
-        public VoucherTypeEntity VoucherType { get; set; }     
-
+        public VoucherTypeEntity VoucherType { get; set; }
+        public LookupEntity BalanceSide { get; set; }
 
         public VoucherTypeSettingEntity(IfmsVoucherTypeSetting ifmsVoucherType)
         {
@@ -41,8 +41,14 @@ namespace Domain.Entities
             this.CurrentNumber  = ifmsVoucherType.CurrentNumber;          
             this.CostCenter = new CostCenterEntity(ifmsVoucherType.CoreCostCenter);
             this.SubsidiaryAccount = new SubsidiaryAccountEntity(ifmsVoucherType.CoreSubsidiaryAccount);
-            this.VoucherType = new VoucherTypeEntity(ifmsVoucherType.LupVoucherType);            
+            this.VoucherType = new VoucherTypeEntity(ifmsVoucherType.LupVoucherType);
+
+            this.BalanceSide = LookupEntity.Map(ifmsVoucherType.LupBalanceSide);
+
+
         }
+
+
 
         public override T MapToModel<T>()
         {
@@ -52,6 +58,10 @@ namespace Domain.Entities
             IfmsVoucherTypeSetting voucherType = new IfmsVoucherTypeSetting
             {
                 Id = id,
+                CostCenterId = CostCenterId,
+                VoucherTypeId = VoucherTypeId,
+                DefaultAccountId = DefaultAccountId,
+                BalanceSideId = BalanceSideId,
                 StartingNumber = this.StartingNumber,
                 EndingNumber = this.EndingNumber,
                 CurrentNumber = this.CurrentNumber,
@@ -67,6 +77,10 @@ namespace Domain.Entities
             IfmsVoucherTypeSetting voucherType = t as IfmsVoucherTypeSetting;
             
                 Id = this.Id;
+                CostCenterId = CostCenterId;
+                VoucherTypeId = VoucherTypeId;
+                DefaultAccountId = DefaultAccountId;
+                BalanceSideId = BalanceSideId;
                 StartingNumber = this.StartingNumber;
                 EndingNumber = this.EndingNumber;
                 CurrentNumber = this.CurrentNumber;

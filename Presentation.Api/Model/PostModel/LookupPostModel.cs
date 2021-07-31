@@ -8,6 +8,7 @@ namespace Presentation.Api.Model.PostModel
     public class LookupPostModel
     {
         public string LookupName { get; set; }
+        public string Name { get; set; }
 
         public LookupPostModel()
         {

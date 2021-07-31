@@ -14,6 +14,7 @@ namespace Domain.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
+        public bool IsDeleted { get; set; }
 
         public virtual ICollection<IfmsVoucherDetail> IfmsVoucherDetails { get; set; }
 

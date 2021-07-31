@@ -25,16 +25,24 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<IQueryable<IfmsCashier>> GetCashiers()
         {
-            return (await this.GetAllAsync<IfmsCashier>());
-              //   .Include(x => x.SubsidiaryAccount).ThenInclude(x => x.CoreControlAccount);
+            return (await this.GetAllAsync<IfmsCashier>())
+                 .Include(x => x.SubsidiaryAccount).ThenInclude(x => x.ControlAccount)
+                 .Include(x => x.User);
         }
-
-        public async Task<IQueryable<CoreAccountType>> GetChartOfAccount()
+        public async Task<IQueryable<CoreUser>> GetUsers()
         {
-            var chartOfAccount = (await this.GetAllAsync<CoreAccountType>())
-               .Include(x => x.CoreAccountGroup);
-               //.ThenInclude(y => y.CoreControlAccount)
-               //.ThenInclude(x => x.CoreSubsidiaryAccount);
+            return (await this.GetAllAsync<CoreUser>());
+        }
+        
+
+        public async Task<IQueryable<CoreChartOfAccount>> GetChartOfAccount()
+        {
+            var chartOfAccount = (await this.GetAllAsync<CoreChartOfAccount>())
+               .Include(x => x.CoreControlAccounts)
+               .ThenInclude(x => x.CoreSubsidiaryAccounts);
+
+            //.ThenInclude(y => y.CoreControlAccount)
+            //
 
             return chartOfAccount;
         }
@@ -64,7 +72,9 @@ namespace Infrastructure.Persistence.Repositories
 
         public async Task<IQueryable<IfmsSetting>> GetSettings()
         {
-            return (await this.GetAllAsync<IfmsSetting>()).Include(x => x.CoreCostCenter);
+            return (await this.GetAllAsync<IfmsSetting>())
+                .Include(x => x.CoreCostCenter);
+              //  .Include(x => x.ControlAccount);
         }
 
         public async Task<IQueryable<CoreSubsidiaryAccount>> GetSubsidiaryAccount()
@@ -72,44 +82,38 @@ namespace Infrastructure.Persistence.Repositories
             return (await this.GetAllAsync<CoreSubsidiaryAccount>());
         }
 
-        public Task<IQueryable<CoreSubsidiaryAccount>> GetSubsidiaryAccounts()
+        public async Task<IQueryable<CoreSubsidiaryAccount>> GetSubsidiaryAccounts()
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<IQueryable<IfmsVoucherDetail>> GetVoucherDetails()
-        {
-            var voucherDetail = (await this.GetAllAsync<IfmsVoucherDetail>())
-               .Include(x => x.CoreCostCenter)
-               .Include(x => x.IfmsCostCode)           
-               //.Include(x => x.CoreSubsidiaryAccount).Take(300);
-               .Include(x => x.CoreControlAccount).Take(300);
-
-
-            return voucherDetail;
-        }
-
-        public async Task<IQueryable<IfmsVoucherHeader>> GetVoucherHeaders()
-        {
-            var voucherHeader = (await this.GetAllAsync<IfmsVoucherHeader>())
-               .Include(x => x.CostCenter)
-               .Include(x => x.CorePeriod)
-               .Include(x => x.VoucherType)
-               .Include(x => x.PurposeTemplate)
-               .Include(x => x.ModeOfPayment).Take(300);
-
-            return voucherHeader;
+            var subSidiary =  (await this.GetAllAsync<CoreSubsidiaryAccount>())
+                           .Include(x => x.ControlAccount) ;
+            return subSidiary;
         }
 
         public async Task<IQueryable<IfmsVoucherTypeSetting>> GetVoucherTypeSettings()
         {
             var voucherType = (await this.GetAllAsync<IfmsVoucherTypeSetting>())
                .Include(x => x.CoreCostCenter)
-               .Include(x => x.CoreSubsidiaryAccount)
+               .Include(x => x.CoreSubsidiaryAccount).ThenInclude( y => y.ControlAccount)
                .Include(x => x.LupBalanceSide)
                .Include(x => x.LupVoucherType);
 
             return voucherType;
+        }
+
+        public async Task<IQueryable<IfmsPurposeTemplate>> GetPurposeTemplates()
+        {
+            var voucherType = (await this.GetAllAsync<IfmsPurposeTemplate>());
+               
+
+            return voucherType;
+        }
+
+        public async Task<IQueryable<PsmsPaymentRequest>> GetApprovedPaymentRequest()
+        {
+            var payment = (await this.GetAllAsync<PsmsPaymentRequest>());
+
+
+            return payment;
         }
     }
 }

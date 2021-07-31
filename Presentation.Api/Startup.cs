@@ -50,9 +50,11 @@ namespace Presentation.Api
 
             services.AddScoped<IRepository, GenericRepository>();
             services.AddScoped<IFinancialRepository, FinancialRepository>();
+            services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<ILookupRepository, LookupRepository>();
 
             services.AddTransient<IFinancialSetupManager, FinancialSetupManager>();
+            services.AddTransient<ITransactionSetupManager, TransactionSetupManager>();
             services.AddTransient<ILookupManager, LookupManager>();
 
 

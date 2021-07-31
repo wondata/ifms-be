@@ -7,9 +7,11 @@ namespace Domain.Entities
 {
     public class LookupEntity
     {
-        public Guid Id { get; set; }
+        public Guid? Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
+        public Guid value { get; set; }
+        public string text { get; set; }
         public bool IsDeleted { get; set; }
 
         public LookupEntity()
@@ -23,6 +25,8 @@ namespace Domain.Entities
             this.Id = lookupModel.Id;
             this.Name = lookupModel.Name;
             this.Code = lookupModel.Code;
+            this.value = lookupModel.Id;
+            this.text = lookupModel.Name;
             this.IsDeleted = lookupModel.IsDeleted;
 
         }

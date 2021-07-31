@@ -17,7 +17,7 @@ namespace Domain.Models
         public Guid? InterBranchControlAccountId { get; set; }
         public bool IsDeleted { get; set; }
 
-        //public virtual CoreControlAccount CoreControlAccounts {get; set;}
+      //  public virtual CoreControlAccount ControlAccount {get; set;}
         public virtual CoreCostCenter CoreCostCenter { get; set; }
         //public virtual CoreSubsidiaryAccount CoreSubsidiaryAccounts { get; set; }
         //public virtual CoreSubsidiaryAccount CoreSubsidiaryAccounts_2 { get; set; }

@@ -30,6 +30,13 @@ namespace Application.Services
             return lookups;
         }
 
-        
+        public async Task<LookupEntity> Get(string table)
+        {
+            LookupModel lookupModels = await this._lookupRepository.Get(table);
+
+            return new LookupEntity(lookupModels);
+        }
+
+
     }
 }

@@ -13,8 +13,7 @@ namespace Domain.Models
         public bool IsDeleted { get; set; }
         public byte[] LastUpdated { get; set; }
 
-        //public virtual CoreUser CoreUser{get; set;}
-
+        public virtual CoreUser User{get; set;}
         public virtual CoreSubsidiaryAccount SubsidiaryAccount { get; set; }
     }
 }

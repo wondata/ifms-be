@@ -16,7 +16,7 @@ namespace Domain.Entities
         public DateTime EndDate { get; set; }
         public bool? IsActive { get; set; }
         public bool IsDeleted { get; set; }
-        public byte[] LastUpdated { get; set; }
+    //    public byte[] LastUpdated { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 
@@ -33,6 +33,7 @@ namespace Domain.Entities
             this.StartDate = corePeriod.StartDate;
             this.EndDate = corePeriod.EndDate;
             this.IsActive = corePeriod.IsActive;
+      //      this.LastUpdated = corePeriod.LastUpdated;
             this.IsDeleted = corePeriod.IsDeleted;
             
         }

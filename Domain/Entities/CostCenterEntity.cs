@@ -7,11 +7,14 @@ using System.Text;
 
 namespace Domain.Entities
 {
-    public partial class CostCenterEntity 
+    public partial class CostCenterEntity : BaseEntity
     {   
-        public Guid Id { get; set; }
+     //   public Guid Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
+
+        public string text { get; set; }
+        public string value { get; set; }
         public Guid? ParentId { get; set; }   
         public List<CostCenterEntity> Children { get; set; }
 
@@ -21,9 +24,11 @@ namespace Domain.Entities
 
         public CostCenterEntity(CoreCostCenter coreCost)
         {
-            this.Id = coreCost.Id;
+            this.Id = coreCost.Id.ToString();
             this.Name = coreCost.Name;
             this.Code = coreCost.Code;
+            this.value = coreCost.Id.ToString();
+            this.text = coreCost.Name;
             this.ParentId = coreCost.ParentId;          
             this.Children =
                coreCost.InverseParent == null ? new List<CostCenterEntity>() :
@@ -31,6 +36,32 @@ namespace Domain.Entities
 
         }
 
-       
+        public override T MapToModel<T>()
+        {
+            Guid id;
+            Guid.TryParse(this.Id, out id);
+
+            CoreCostCenter coreCostCenter = new CoreCostCenter
+            {
+                Id = id,
+                Name = this.Name,
+                Code = this.Code
+            };
+
+            return coreCostCenter as T;
+        }
+
+        public override T MapToModel<T>(T t)
+        {
+            CoreCostCenter coreCostCenter = t as CoreCostCenter;
+
+            coreCostCenter.Name = this.Name;
+            coreCostCenter.Code = this.Code;
+
+            return coreCostCenter as T;
+        }
+      
+
+
     }
 }
