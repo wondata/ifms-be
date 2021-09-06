@@ -418,21 +418,7 @@ namespace Presentation.Api.Controllers
         {
             try
             {
-                var lookups = await this._service.GetVoucherTypeSettings();
-
-                //var voucherTypeSettings = lookups.Select(voucherTypeSetting => new
-                //{
-                //    voucherTypeSetting.Id,
-                //    CostCenter = voucherTypeSetting.CostCenter.Code,
-                //    VoucherType = voucherTypeSetting.VoucherType.Name,
-                //    DefaultAccount = voucherTypeSetting.DefaultAccountId == null ? "" : string.Format("{0}-{1}", voucherTypeSetting.SubsidiaryAccount.ControlAccount.Code, voucherTypeSetting.SubsidiaryAccount.Code),
-                //    AccountTitle = voucherTypeSetting.DefaultAccountId == null ? "" : voucherTypeSetting.SubsidiaryAccount.Name,
-                //    BalanceSide = voucherTypeSetting.BalanceSideId == null ? "" : voucherTypeSetting.BalanceSide.Name,
-                //    voucherTypeSetting.StartingNumber,
-                //    voucherTypeSetting.EndingNumber,
-                //    voucherTypeSetting.CurrentNumber,
-                //    voucherTypeSetting.NumberOfDigits
-                //});
+                var lookups = await this._service.GetVoucherTypeSettings();            
                 return Ok(new APIPagedResponse<IEnumerable<object>>(lookups, lookups.Count()));
             }
             catch (System.Exception ex)
@@ -453,8 +439,8 @@ namespace Presentation.Api.Controllers
             return await this._service.GetVoucherTypeSettingByParam(id);
         }
 
-        [HttpPost("SaveVoucherTypesSetting")]
-        public async Task<ResponseDTO> SaveVoucherTypesSetting(VoucherTypeSettingEntity voucherTypeSetting)
+        [HttpPost("SaveVoucherTypeSetting")]
+        public async Task<ResponseDTO> SaveVoucherTypeSetting(VoucherTypeSettingEntity voucherTypeSetting)
         {
             ResponseDTO response = new ResponseDTO();
 
@@ -475,7 +461,7 @@ namespace Presentation.Api.Controllers
         }
 
 
-        [HttpPost("DeleteVoucherTypesSetting")]
+        [HttpPost("DeleteVoucherTypeSetting")]
         public async Task<ResponseDTO> DeleteVoucherTypeSetting(VoucherTypeSettingEntity voucherTypeSetting)
         {
             ResponseDTO response = new ResponseDTO();

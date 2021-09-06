@@ -3,6 +3,7 @@ using Application.Interfaces.Services;
 using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Api.Model.PostModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -73,10 +74,19 @@ namespace Presentation.Api.Controllers
         }
 
         [HttpPost("GetTransactionDetails")]
-        public async Task<IEnumerable<VoucherDetailEntity>> GetTransactionDetails(VoucherDetailEntity voucherDetail)
+        public async Task<IEnumerable<VoucherDetailEntity>> GetTransactionDetails(List<VoucherHeaderPostModel> voucherDetail)
         {
-            Guid.TryParse(voucherDetail.Id, out Guid id);
-            return await this._transactionService.GetTransactionDetails(id);
+            List<Guid> voucherIds = new List<Guid>();
+            if (voucherDetail.Count >= 1)
+            {
+                foreach (var item in voucherDetail)
+                {
+                    Guid.TryParse(item.Id, out Guid id);
+                    voucherIds.Add(id);
+
+                }
+            }
+            return await this._transactionService.GetTransactionDetails(voucherIds);
         }
 
 
@@ -101,13 +111,13 @@ namespace Presentation.Api.Controllers
         }
 
         [HttpPost("TransactionPost")]
-        public async Task<ResponseDTO> TransactionPost(IEnumerable<VoucherHeaderEntity> voucherDetail)
+        public async Task<ResponseDTO> TransactionPost(List<VoucherHeaderEntity> voucherDetail)
         {
             ResponseDTO response = new ResponseDTO();
 
             try
             {
-                await this._transactionService.TransactionUnpost(voucherDetail);
+                await this._transactionService.TransactionPost(voucherDetail);
                 response.ResponseStatus = ResponseStatusEnum.Success.ToString();
                 response.Message = "Transactions has been posted Successfully!";
                 return response;
@@ -122,7 +132,7 @@ namespace Presentation.Api.Controllers
 
 
         [HttpPost("TransactionUnpost")]
-        public async Task<ResponseDTO> TransactionUnpost(IEnumerable<VoucherHeaderEntity> voucherDetail)
+        public async Task<ResponseDTO> TransactionUnpost(List<VoucherHeaderEntity> voucherDetail)
         {
             ResponseDTO response = new ResponseDTO();
 
@@ -141,19 +151,73 @@ namespace Presentation.Api.Controllers
             }
         }
 
-        [HttpPost("GetJvNumber")]
-        public async Task<string> GetJvNumber(string voucherCode)
-        {                     
+        [HttpPost("TransactionVoid")]
+        public async Task<ResponseDTO> TransactionVoid(List<VoucherHeaderEntity> voucherDetail)
+        {
+            ResponseDTO response = new ResponseDTO();
 
-            const string VoucherType = "lupVoucherType";
-            var filtered = await this._lookupManager.Get(VoucherType);
-            var currentNumber = this._transactionService.GetVoucherNumber(filtered.Id);
-            if (filtered.Equals(filtered.Code)) {
-                return filtered.Code;
+            try
+            {
+                await this._transactionService.TransactionVoid(voucherDetail);
+                response.ResponseStatus = ResponseStatusEnum.Success.ToString();
+                response.Message = "Transactions has been Unposted Successfully!";
+                return response;
             }
-            else {
-                return null;
+            catch (Exception ex)
+            {
+                response.ResponseStatus = ResponseStatusEnum.Error.ToString();
+                response.Message = "Error occured, Please retry or contact the admin!";
+                return response;
             }
+        }
+
+        [HttpPost("TransactionAdjust")]
+        public async Task<ResponseDTO> TransactionAdjust(List<VoucherHeaderEntity> voucherDetail)
+        {
+            ResponseDTO response = new ResponseDTO();
+
+            try
+            {
+                await this._transactionService.TransactionAdjust(voucherDetail);
+                response.ResponseStatus = ResponseStatusEnum.Success.ToString();
+                response.Message = "Transactions has been Unposted Successfully!";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.ResponseStatus = ResponseStatusEnum.Error.ToString();
+                response.Message = "Error occured, Please retry or contact the admin!";
+                return response;
+            }
+        }
+
+        [HttpPost("TransactionDelete")]
+        public async Task<ResponseDTO> TransactionDelete(List<VoucherHeaderEntity> voucherDetail)
+        {
+            ResponseDTO response = new ResponseDTO();
+
+            try
+            {
+                await this._transactionService.TransactionDelete(voucherDetail);
+                response.ResponseStatus = ResponseStatusEnum.Success.ToString();
+                response.Message = "Transactions has been Unposted Successfully!";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.ResponseStatus = ResponseStatusEnum.Error.ToString();
+                response.Message = "Error occured, Please retry or contact the admin!";
+                return response;
+            }
+        }
+
+        [HttpPost("GetJvNumber")]
+        public async Task<string> GetJvNumber(PaymentVoucherPostModel payment)
+        {
+            Guid id;
+            Guid.TryParse(payment.Id, out id);       
+        
+           return await this._transactionService.GetVoucherNumber(id);           
 
         }
 

@@ -72,7 +72,7 @@ namespace CyberErp.CoreSetting.Core.Service
 #region Cashier 
         public async Task SaveCashier(CashierEntity cashier)
         {
-            IfmsCostCode existingRecord = await this._financialRepository.GetAsync<IfmsCostCode>(x => x.Id == cashier.Id);
+            IfmsCashier existingRecord = await this._financialRepository.GetAsync<IfmsCashier>(x => x.Id == cashier.Id && x.UserId == cashier.UserId);
 
             if (existingRecord == null)
             {
@@ -83,10 +83,10 @@ namespace CyberErp.CoreSetting.Core.Service
             }
             else
             {
-                IfmsCashier ifmsCost = await this._financialRepository.GetAsync<IfmsCashier>(x => x.Id == cashier.Id);
-                IfmsCashier ifmsCode = cashier.MapToModel(ifmsCost);
+                IfmsCashier ifmsCashier = await this._financialRepository.GetAsync<IfmsCashier>(x => x.Id == cashier.Id);
+                IfmsCashier cashierIfms = cashier.MapToModel(ifmsCashier);
 
-                await this._financialRepository.UpdateAsync(ifmsCode);
+                await this._financialRepository.UpdateAsync(cashierIfms);
                 await this._financialRepository.UnitOfWork.SaveChanges();
             }
 

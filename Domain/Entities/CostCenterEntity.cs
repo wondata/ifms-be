@@ -12,7 +12,6 @@ namespace Domain.Entities
      //   public Guid Id { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
-
         public string text { get; set; }
         public string value { get; set; }
         public Guid? ParentId { get; set; }   

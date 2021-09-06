@@ -35,10 +35,11 @@ namespace Domain.Models
         public virtual CoreCostCenter CostCenter { get; set; }
         public virtual CoreSubsidiaryAccount SubsidiaryAccount { get; set; }
         public virtual CoreControlAccount ControlAccount { get; set; }
+        public virtual IfmsVoucherHeader VoucherHeaders { get; set; }
+        public virtual IfmsVoucherHeader VoucherHeaders1 { get; set; }
+        public virtual IfmsVoucherHeader VoucherHeaders2 { get; set; }
         public virtual ICollection<IfmsBankReconciliationDetail> IfmsBankReconciliationDetails { get; set; }
-    //public virtual IfmsVoucherHeader IfmsVoucherHeaders { get; set; }
-    //public virtual IfmsVoucherHeader IfmsVoucherHeaders_2 { get; set; }
 
 
-}
+    }
 }

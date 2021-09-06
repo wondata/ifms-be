@@ -44,6 +44,7 @@ namespace Application.Services
         public async Task<IEnumerable<VoucherHeaderEntity>> GetTransactionHeaders()
         {
             IQueryable<IfmsVoucherHeader> ifmsVoucher = await this._transactionRepository.GetVoucherHeaders();
+            ifmsVoucher = ifmsVoucher.Where( c => c.VoucherType.Name != "PCPV");
             IEnumerable<VoucherHeaderEntity> voucher = ifmsVoucher.Select(x => new VoucherHeaderEntity(x));
 
             return voucher;
@@ -68,51 +69,177 @@ namespace Application.Services
             return voucherDetail;
         }
 
-        public async Task SaveVoucher(VoucherHeaderEntity voucherEntity)
+        public async Task<string> SaveVoucher(VoucherHeaderEntity voucherHeader, List<VoucherDetailEntity> voucherDetails)
         {
-            Guid.TryParse(voucherEntity.Id.ToString(), out Guid id);
-
+            Guid.TryParse(voucherHeader.Id.ToString(), out Guid id);
+            var isNew = false;
             // get Current Period
-            var period = await this.GetPeriod(voucherEntity.Date);
+            var period = await this.GetPeriod(voucherHeader.Date);
             if (period != null)
             {
-                voucherEntity.PeriodId = period.Id;
+                voucherHeader.PeriodId = period.Id;
             }
             else
             {
-                return;
+                return "Period is not defined for the selected transaction date";
             }
 
             IfmsVoucherHeader existingRecord = await this._transactionRepository.GetAsync<IfmsVoucherHeader>(x => x.Id == id
-                && x.CostCenterId == voucherEntity.CostCenterId
-                && x.ReferenceNo == voucherEntity.ReferenceNo
-                && x.VoucherTypeId == voucherEntity.VoucherTypeId);
+                && x.CostCenterId == voucherHeader.CostCenterId
+                && x.ReferenceNo == voucherHeader.ReferenceNo
+                && x.VoucherTypeId == voucherHeader.VoucherTypeId);
 
-            if (existingRecord == null)
+            if (existingRecord != null)
             {
-                IfmsVoucherHeader voucher = voucherEntity.MapToModel();
+                return "Voucher Header has already been registered!";
+            }
+
+            if (id == null) 
+            {                
+                id = Guid.NewGuid();
+                isNew = true;
+
+                IfmsVoucherHeader voucher = voucherHeader.MapToModel();
 
                 await this._transactionRepository.AddAsync(voucher);
-                await this._transactionRepository.UnitOfWork.SaveChanges();
-
-            }
-            else
+                await this._transactionRepository.UnitOfWork.SaveChanges();               
+            }else
             {
                 IfmsVoucherHeader voucher = await this._transactionRepository.GetAsync<IfmsVoucherHeader>(x => x.Id == id);
-                IfmsVoucherHeader voucherHeader = voucherEntity.MapToModel(voucher);
+                IfmsVoucherHeader header = voucherHeader.MapToModel(voucher);
 
-                await this._transactionRepository.UpdateAsync(voucherHeader);
+                await this._transactionRepository.UpdateAsync(header);
                 await this._transactionRepository.UnitOfWork.SaveChanges();
+            }
 
+            await this.SaveVoucherDetail(id, voucherDetails);
+
+            if (isNew)
+            {
+                await this.UpdateVoucherNumber(voucherHeader.CostCenterId, voucherHeader.VoucherTypeId);
+            }
+            else {              
+                return "Voucher has been added successfully";
+            }
+            return "";
+        }
+
+        
+        public async Task SaveVoucherDetail( Guid voucherHeaderId , List<VoucherDetailEntity> voucherDetails) {
+            if (voucherDetails.Count > 0) {
+                foreach (var item in voucherDetails) {
+
+                    Guid.TryParse(item.Id , out Guid ids);
+                    if (ids != Guid.Empty)
+                    {
+                        var detailVoucher = await this._transactionRepository.GetAsync<IfmsVoucherDetail>(x => x.Id == ids);
+                        if (detailVoucher != null)
+                        {
+                            detailVoucher.VoucherHeaderId = voucherHeaderId;
+                            detailVoucher.CostCenterId = item.CostCenterId;
+                            detailVoucher.ControlAccountId = item.ControlAccountId;
+                            detailVoucher.SubsidiaryAccountId = item.SubsidiaryAccountId;
+                            detailVoucher.DebitAmount = item.DebitAmount;
+                            detailVoucher.CreditAmount = item.CreditAmount;
+                            detailVoucher.Remark = item.Remark;
+                            detailVoucher.IsInterBranchTransactionCleared = item.IsInterBranchTransactionCleared;
+
+                            if (item.CostCodeId != Guid.Empty)
+                            {
+                                detailVoucher.CostCodeId = item.CostCodeId;
+                            }
+                            if (item.ReferenceVoucherHeaderId != Guid.Empty)
+                            {
+                                detailVoucher.ReferenceVoucherHeaderId = item.ReferenceVoucherHeaderId;
+                            }
+                            //if (item.StaffCode != Guid.Empty)
+                            //{
+                            //    detailVoucher.StaffCode = item.StaffCode;
+                            //}
+                            //if (item.customerId != Guid.Empty)
+                            //{
+                            //    detailVoucher.customerId = item.customerId;
+                            //}
+                            //if (item.supplierId != Guid.Empty)
+                            //{
+                            //    detailVoucher.supplierId = item.supplierId;
+                            //}
+                            if (item.CaseId != Guid.Empty)
+                            {
+                                detailVoucher.CaseId = item.CaseId;
+                            }
+                            if (item.ProjectTaskId != Guid.Empty)
+                            {
+                                detailVoucher.ProjectTaskId = item.ProjectTaskId;
+                            }
+                            if (item.IBTReferenceVoucherHeaderId != Guid.Empty)
+                            {
+                                detailVoucher.IBTReferenceVoucherHeaderId = item.IBTReferenceVoucherHeaderId;
+                            }
+                        }
+                    }
+                    else {
+                        var detailVoucher = new IfmsVoucherDetail
+                        {
+                            Id = Guid.NewGuid(),
+                            VoucherHeaderId = voucherHeaderId,
+                            CostCenterId = item.CostCenterId,
+                            ControlAccountId = item.ControlAccountId,
+                            SubsidiaryAccountId = item.SubsidiaryAccountId,
+                            DebitAmount = item.DebitAmount,
+                            CreditAmount = item.CreditAmount
+                        };
+
+                        if (item.CostCodeId != Guid.Empty)
+                        {
+                            detailVoucher.CostCodeId = item.CostCodeId;
+                        }
+                        if (item.ReferenceVoucherHeaderId != Guid.Empty)
+                        {
+                            detailVoucher.ReferenceVoucherHeaderId = item.ReferenceVoucherHeaderId;
+                        }
+                        //if (item.CustomerId != Guid.Empty)
+                        //{
+                        //    detailVoucher.CustomerId = item.CustomerId;
+                        //}
+                        //if (item.SupplierId != Guid.Empty)
+                        //{
+                        //    detailVoucher.SupplierId = item.SupplierId;
+                        //}
+                        //if (item.CaseNoId != Guid.Empty)
+                        //{
+                        //    detailVoucher.CaseId = item.CaseNoId;
+                        //}
+                        //if (item.StaffCode != Guid.Empty)
+                        //{
+                        //    detailVoucher.StaffId = item.StaffCode;
+                        //}
+                        if (item.ProjectTaskId != Guid.Empty)
+                        {
+                            detailVoucher.ProjectTaskId = item.ProjectTaskId;
+                        }
+                        if (item.IBTReferenceVoucherHeaderId != Guid.Empty)
+                        {
+                            detailVoucher.IBTReferenceVoucherHeaderId = item.IBTReferenceVoucherHeaderId;
+                        }
+                        detailVoucher.IsInterBranchTransactionCleared = item.IsInterBranchTransactionCleared;
+                        detailVoucher.Remark = item.Remark;
+
+
+                        await this._transactionRepository.AddAsync(detailVoucher);
+                        await this._transactionRepository.UnitOfWork.SaveChanges();
+
+                    }
+                }
             }
         }
 
+
+
         public async Task DeleteVoucher(Guid id)
         {
-
             await this._transactionRepository.DeleteAsync<IfmsBankReconciliationDetail>(x => x.VoucherDetailId == id);
             await this._transactionRepository.UnitOfWork.SaveChanges();
-
 
             await this._transactionRepository.DeleteAsync<IfmsVoucherDetail>(x => x.Id == id);
             await this._transactionRepository.UnitOfWork.SaveChanges();
@@ -124,6 +251,24 @@ namespace Application.Services
             IQueryable<IfmsVoucherDetail> ifmsVoucher = await this._transactionRepository.GetVoucherDetails();
             ifmsVoucher = ifmsVoucher.Where(x => x.VoucherHeaderId == id);
             IEnumerable<VoucherDetailEntity> voucherDetail = ifmsVoucher.Select(x => new VoucherDetailEntity(x)).ToList();
+
+            return voucherDetail;
+        }
+
+        public async Task<IEnumerable<VoucherDetailEntity>> GetTransactionDetails(List<Guid> voucherIds)
+        {
+            //List<VoucherDetailEntity> voucherDetails = null;
+            //foreach (var item in id)
+            //{
+            //    Guid.TryParse(item, out Guid Id);
+
+            //}
+
+            IQueryable<IfmsVoucherDetail> ifmsVoucher = (await this._transactionRepository.GetVoucherDetails())
+                .Where(x => voucherIds.Contains(x.VoucherHeaderId));
+            //ifmsVoucher = ifmsVoucher.Where(x => x.VoucherHeaderId == Id);
+
+            IEnumerable<VoucherDetailEntity> voucherDetail = ifmsVoucher.Select(x => new VoucherDetailEntity(x));
 
             return voucherDetail;
         }
@@ -352,7 +497,7 @@ namespace Application.Services
         public async Task<IEnumerable<VoucherHeaderEntity>> GetPaymentVouchers()
         {
             IQueryable<IfmsVoucherHeader> ifmsVoucher = await this._transactionRepository.GetVoucherHeaders();
-            //ifmsVoucher = ifmsVoucher.Where(x => x.IsPosted == false && x.Description == "Payment Voucher" && (x.VoucherType.Name == "BPV" || x.VoucherType.Name == "PCPV") );
+            //ifmsVoucher = ifmsVoucher.Where(x => x.IsPosted == false && x.PostedFromOperation == "Payment Voucher" && (x.VoucherType.Name == "BPV" || x.VoucherType.Name == "PCPV")  );
             IEnumerable<VoucherHeaderEntity> voucher = ifmsVoucher.Select(x => new VoucherHeaderEntity(x));
 
             return voucher;
@@ -457,12 +602,12 @@ namespace Application.Services
 
             await this.DeleteVoucherDetail(id);
 
-            await this._transactionRepository.AddAsync(paymentVoucherDetail);
+            await this._transactionRepository.UpdateAsync(paymentVoucherDetail);
             await this._transactionRepository.UnitOfWork.SaveChanges();
 
         }
 
-        public async Task TransactionPost(IEnumerable<VoucherHeaderEntity> voucherHeader)
+        public async Task TransactionPost(List<VoucherHeaderEntity> voucherHeader)
         {
             foreach (var details in voucherHeader)
             {
@@ -472,13 +617,13 @@ namespace Application.Services
                 IfmsVoucherHeader voucher = await this._transactionRepository.GetAsync<IfmsVoucherHeader>(x => x.Id == id);
                 voucher.IsPosted = true;
 
-                await this._transactionRepository.AddAsync(voucher);
+                await this._transactionRepository.UpdateAsync(voucher);
                 await this._transactionRepository.UnitOfWork.SaveChanges();
 
             }
         }
 
-        public async Task TransactionUnpost(IEnumerable<VoucherHeaderEntity> voucherHeader)
+        public async Task TransactionUnpost(List<VoucherHeaderEntity> voucherHeader)
         {
             foreach (var details in voucherHeader)
             {
@@ -489,13 +634,13 @@ namespace Application.Services
                 IfmsVoucherHeader voucher = await this._transactionRepository.GetAsync<IfmsVoucherHeader>(x => x.Id == id);
                 voucher.IsPosted = false;
 
-                await this._transactionRepository.AddAsync(voucher);
+                await this._transactionRepository.UpdateAsync(voucher);
                 await this._transactionRepository.UnitOfWork.SaveChanges();
             }
 
         }
 
-        public async Task TransactionVoid(IEnumerable<VoucherHeaderEntity> voucherHeader)
+        public async Task TransactionVoid(List<VoucherHeaderEntity> voucherHeader)
         {
             foreach (var headers in voucherHeader)
             {
@@ -507,7 +652,7 @@ namespace Application.Services
                 if (voucher != null && voucher.IsPosted == true && voucher.IsVoid == false)
                 {
                     voucher.IsVoid = true;
-                    await this._transactionRepository.AddAsync(voucher);
+                    await this._transactionRepository.UpdateAsync(voucher);
                     await this._transactionRepository.UnitOfWork.SaveChanges();
 
                     IEnumerable<IfmsVoucherDetail> details = await this._transactionRepository.FindAsync<IfmsVoucherDetail>(x => x.VoucherHeaderId == id);
@@ -541,7 +686,7 @@ namespace Application.Services
                             IsDeleted = false
                         };
 
-                        await this._transactionRepository.AddAsync(newVoucherDetail);
+                        await this._transactionRepository.UpdateAsync(newVoucherDetail);
                         await this._transactionRepository.UnitOfWork.SaveChanges();
 
                     }
@@ -550,8 +695,47 @@ namespace Application.Services
 
             }
 
+            
+
         }
 
-        
+        public Task TransactionAdjust(List<VoucherHeaderEntity> voucherHeader)
+        {
+            throw new NotImplementedException();
+
+        }
+
+        public async Task TransactionDelete(List<VoucherHeaderEntity> voucherHeader)
+        {
+            foreach (var headers in voucherHeader)
+            {
+                Guid id;
+                Guid.TryParse(headers.Id, out id);
+
+                await this._transactionRepository.DeleteAsync<IfmsVoucherHeader>(x => x.Id == id);
+                await this._transactionRepository.UnitOfWork.SaveChanges();
+            }
+                           
+        }
+
+        public async Task<VoucherTypeSettingEntity> GetDefaultAccounts(Guid VoucherTypeId)
+        {
+            IQueryable<IfmsVoucherTypeSetting> typeSetting = await this._transactionRepository.GetVoucherTypeSettings();
+            typeSetting = typeSetting.Where(x => x.VoucherTypeId == VoucherTypeId);
+            VoucherTypeSettingEntity voucherType = typeSetting.Select(x => new VoucherTypeSettingEntity(x)).FirstOrDefault();
+
+            return voucherType;            
+           
+        }
+
+        public async Task<SettingEntity> GetSettings()
+        {
+
+            IQueryable<IfmsSetting> ifmsSetting = await this._transactionRepository.GetSettings();
+            SettingEntity settngs = ifmsSetting.Select(x => new SettingEntity(x)).FirstOrDefault();
+
+            return settngs;
+
+        }
     }
 }

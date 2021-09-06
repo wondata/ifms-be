@@ -3,6 +3,7 @@ using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace Domain.Entities
@@ -29,8 +30,11 @@ namespace Domain.Entities
         public bool IsVoid { get; set; }
         public string? PostedFromOperation { get; set; }
 
+        public DateTime parsedDate;
         public Guid? AccountId { get; set; }
         public DateTime? AuthorizedDate { get; set; }
+
+        public List<VoucherHeaderEntity> Children { get; set; }
 
         public CostCenterEntity CostCenter { get; set; }
         public PeriodEntity Period { get; set; }
@@ -38,7 +42,7 @@ namespace Domain.Entities
         public PurposeTemplateEntity PurposeTemplate { get; set; }
         public LookupEntity ModePayment{ get; set; }
 
-        public DateTime parsedDate;
+       
 
 
         public VoucherHeaderEntity()
@@ -69,6 +73,7 @@ namespace Domain.Entities
             this.CreatedBy = ifmsVoucherHeader.CreatedBy;
             this.IsDeleted = ifmsVoucherHeader.IsDeleted;
             this.PostedBy = ifmsVoucherHeader.PostedBy;
+            this.IsPosted = ifmsVoucherHeader.IsPosted;
             this.IsAdjustment = ifmsVoucherHeader.IsAdjustment;
             this.IsVoid = ifmsVoucherHeader.IsVoid;
             this.PostedFromOperation = ifmsVoucherHeader.PostedFromOperation;
@@ -80,6 +85,10 @@ namespace Domain.Entities
             this.VoucherType = new VoucherTypeEntity(ifmsVoucherHeader.VoucherType);
             this.PurposeTemplate = new PurposeTemplateEntity(ifmsVoucherHeader.PurposeTemplate);
             this.ModePayment = ( ifmsVoucherHeader.ModeOfPayment == null) ? null : LookupEntity.Map(ifmsVoucherHeader.ModeOfPayment);
+
+            this.Children =
+               ifmsVoucherHeader.IfmsVoucherDetails == null ? new List<VoucherHeaderEntity>() :
+               ifmsVoucherHeader.IfmsVoucherDetails.Select(x => new VoucherHeaderEntity(x.VoucherHeaders)).ToList();
         }
 
         public override T MapToModel<T>()
@@ -109,6 +118,7 @@ namespace Domain.Entities
                 IsDeleted = this.IsDeleted,
                 IsAdjustment = this.IsAdjustment,
                 IsVoid = this.IsVoid,
+                IsPosted = this.IsPosted,
                 PostedFromOperation = this.PostedFromOperation,
                 AuthorizedDate = this.AuthorizedDate
 
@@ -144,6 +154,7 @@ namespace Domain.Entities
                 IsDeleted = this.IsDeleted,
                 IsAdjustment = this.IsAdjustment,
                 IsVoid = this.IsVoid,
+                IsPosted = this.IsPosted,
                 PostedFromOperation = this.PostedFromOperation,
                 AuthorizedDate = this.AuthorizedDate
 
@@ -171,6 +182,7 @@ namespace Domain.Entities
                 IsDeleted = this.IsDeleted;
                 IsAdjustment = this.IsAdjustment;
                 IsVoid = this.IsVoid;
+                IsPosted = this.IsPosted;
             
             return voucherHeader as T;
 

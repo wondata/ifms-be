@@ -20,14 +20,11 @@ namespace Presentation.Api.Model.PostModel
 
         public CashierEntity MapToEntity()
         {
-            Guid id;
-            Guid.TryParse(this.Id, out id);
+            Guid.TryParse(this.Id, out Guid id);
 
-            Guid userId;
-            Guid.TryParse(this.UserId, out userId);
+            Guid.TryParse(this.UserId, out Guid userId);
 
-            Guid subsidiaryAccountId;
-            Guid.TryParse(this.SubsidiaryAccountId, out subsidiaryAccountId);
+            Guid.TryParse(this.SubsidiaryAccountId, out Guid subsidiaryAccountId);
 
             CashierEntity cashier = new CashierEntity
             {

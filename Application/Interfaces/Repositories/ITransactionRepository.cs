@@ -12,6 +12,8 @@ namespace Application.Interfaces.Repositories
 
         Task<IQueryable<IfmsVoucherHeader>> GetVoucherHeaders();
         Task<IQueryable<IfmsVoucherDetail>> GetVoucherDetails();
+        Task<IQueryable<IfmsVoucherTypeSetting>> GetVoucherTypeSettings();
+        Task<IQueryable<IfmsSetting>> GetSettings();
 
     }
 }

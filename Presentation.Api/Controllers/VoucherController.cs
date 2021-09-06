@@ -49,13 +49,10 @@ namespace Presentation.Api.Controllers
                     item.Description,
                     item.PayedToReceivedFrom,
                     item.PurposeTemplateId,
-                    item.Purpose,
-                  //  item.Description,
+                    item.Purpose,                
                     item.Amount,
                     item.ModeOfPaymentId,
-                   // item.PayedToReceivedFrom ,
                     item.ChequeNo,
-                   // item.PeriodId,
                     item.IsPosted,
                     item.IsAdjustment,
                     item.IsVoid,
@@ -110,25 +107,28 @@ namespace Presentation.Api.Controllers
                 var voucher = lookups.Select(item => new {
                     item.Id,
                     item.CostCenterId,
-                    CostCenter = item.CostCenter.Code,
-                    voucherType = item.VoucherType.Name,
+                    CostCenterCode = item.CostCenter.Code,
+                    VoucherTypeName = item.VoucherType.Name,
                     modePayment = (item.ModePayment == null) ? null : item.ModePayment.Name,
-                    item.VoucherTypeId,
-                    item.VoucherType.Name,
+                    item.VoucherTypeId,                  
                     item.ReferenceNo,
                     item.DocumentNo,
-                    item.Date,
+                    item.Date,                    
                     item.PayedToReceivedFrom,
                     item.PurposeTemplateId,
-                    Purpose = item.PurposeTemplate != null ? item.PurposeTemplate.Purpose : "",
+                    Purpose = item.PurposeTemplate != null ? item.PurposeTemplate.Name : "",
                     item.Description,
                     item.Amount,
                     item.TaxId,
                     item.ModeOfPaymentId,
                     item.ChequeNo,
                     Project = item.CostCenter != null ? item.CostCenter.Code : "",
+                    ProjectId = item.CostCenterId,
                     item.PostedFromOperation,
                     item.AuthorizedDate,
+                    item.CostCenter,
+                    item.VoucherType,
+                    
                 });
 
                 return voucher;
@@ -145,34 +145,33 @@ namespace Presentation.Api.Controllers
         [ProducesDefaultResponseType]
         public async Task<ActionResult<APIPagedResponse<VoucherDetailEntity>>> GetVoucherDetail(VoucherHeaderEntity voucherHeader)
         {
-            Guid id;
-            Guid.TryParse(voucherHeader.Id, out id);
+            Guid.TryParse(voucherHeader.Id, out Guid id);
 
             try
             {
                 var lookups = await _transactionService.GetVoucherDetails(id);
 
-                var voucher = lookups.Select(item => new {
-                    item.Id,
-                    item.CostCenterId,
-                    CostCenter = item.CostCenters.Code,
-                    item.ControlAccountId,
-                    AccountId = item.SubsidiaryAccountId,
-                    AccountCode = item.ControlAccount.Code + "-" + item.SubsidiaryAccount.Code,
-                    AccountName = item.SubsidiaryAccount.Name,
-                    item.DebitAmount,
-                    item.CreditAmount,
-                    item.CostCodeId,
-                    CostCode = item.CostCodes == null ? "" : item.CostCodes.Code,
-                    item.IsInterBranchTransactionCleared,
-                    item.IBTReferenceVoucherHeaderId,
-                    item.ControlAccount,
-                    item.CostCodes,
-                    item.SubsidiaryAccount,
-                    item.CostCenters,
-                });
+                //var voucher = lookups.Select(item => new {
+                //    item.Id,
+                //    item.CostCenterId,
+                //    CostCenter = item.CostCenters.Code,
+                //    item.ControlAccountId,
+                //    AccountId = item.SubsidiaryAccountId,
+                //    AccountCode = item.ControlAccount.Code + "-" + item.SubsidiaryAccount.Code,
+                //    AccountName = item.SubsidiaryAccount.Name,
+                //    item.DebitAmount,
+                //    item.CreditAmount,
+                //    item.CostCodeId,
+                //    CostCode = item.CostCodes == null ? "" : item.CostCodes.Code,
+                //    item.IsInterBranchTransactionCleared,
+                //    item.IBTReferenceVoucherHeaderId,
+                //    item.ControlAccount,
+                //    item.CostCodes,
+                //    item.SubsidiaryAccount,
+                //    item.CostCenters,
+                //});
 
-                return Ok(new APIPagedResponse<IEnumerable<object>>(voucher, lookups.Count()));
+                return Ok(new APIPagedResponse<IEnumerable<object>>(lookups, lookups.Count()));
             }
             catch (System.Exception ex)
             {
@@ -183,15 +182,16 @@ namespace Presentation.Api.Controllers
         }
 
         [HttpPost("SaveVoucher")]
-        public async Task<ResponseDTO> SaveVoucher(VoucherHeaderEntity voucherHeader)
+        public async Task<ResponseDTO> SaveVoucher(VoucherHeaderPostModel voucherHeader)
         {
             ResponseDTO response = new ResponseDTO();
             try
             {
-                await this._transactionService.SaveVoucher(voucherHeader);
+                VoucherHeaderEntity voucher = voucherHeader.MapToEntity();
+                var message = await this._transactionService.SaveVoucher(voucher, voucherHeader.voucherDetails);
 
                 response.ResponseStatus = ResponseStatusEnum.Success.ToString();
-                response.Message = "Record saved successfully!";
+                response.Message = message;
                 return response;
             }
             catch (Exception ex)
@@ -202,16 +202,15 @@ namespace Presentation.Api.Controllers
             }
         }
 
-        [HttpPost("DeleteVoucher")]
-        public async Task<ResponseDTO> DeleteVoucher(VoucherHeaderEntity voucherHeader)
+        [HttpPost("DeleteVoucherDetail")]
+        public async Task<ResponseDTO> DeleteVoucherDetail(VoucherHeaderPostModel voucherHeader)
         {
             ResponseDTO response = new ResponseDTO();
             try
             {
-                Guid id;
-                Guid.TryParse(voucherHeader.Id, out id);
+                Guid.TryParse(voucherHeader.Id, out Guid id);
 
-                await this._transactionService.DeleteVoucher(id);
+                await this._transactionService.DeleteVoucherDetail(id);
 
                 response.ResponseStatus = ResponseStatusEnum.Success.ToString();
                 response.Message = "Record deleted successfully!";
@@ -224,6 +223,97 @@ namespace Presentation.Api.Controllers
                 return response;
             }
         }
+
+
+        [HttpPost("GetVoucherNumber")]
+        public async Task<string> GetVoucherNumber(VoucherHeaderEntity voucherHeader )
+        {            
+            try
+            {
+                var voucherNumber = await this._transactionService.GetVoucherNumber(voucherHeader.CostCenterId, voucherHeader.VoucherTypeId);               
+                return voucherNumber;
+            }
+            catch (System.Exception ex)
+            {
+                return null;
+            }
+        }
+
+        [HttpPost("GetDefaultAccounts")]
+        public async Task<object> GetDefaultAccounts(VoucherHeaderEntity voucherHeader)
+        {
+            try
+            {
+                string defaultCostCenterIds= "";
+                string defaultCostCenters= "";
+                string controlAccountId = "";
+                string controlAccount = "";
+                string controlAccountCode = "";
+                string subsidiaryAccountId = "";
+                string subsidiaryAccount = "";
+                string subsidiaryAccountCode = "";
+
+                var setting = await this._transactionService.GetSettings();
+                if (setting != null) {
+                    if (setting.DefaultCostCenterId == null)
+                    {
+                        defaultCostCenterIds = "";
+                        defaultCostCenters = "";
+                    }
+                    else {
+                        defaultCostCenterIds = setting.DefaultCostCenterId.ToString() ;
+                        defaultCostCenters = setting.CostCenter.Code;
+                    }
+                }
+
+
+                var voucherType = await this._transactionService.GetDefaultAccounts(voucherHeader.VoucherTypeId);
+                if (voucherType != null && voucherType.DefaultAccountId != null)
+                {
+
+                    controlAccountId = voucherType.SubsidiaryAccount.ControlAccountId.ToString();
+                    controlAccount = voucherType.SubsidiaryAccount.ControlAccount.Name;
+                    controlAccountCode = voucherType.SubsidiaryAccount.ControlAccount.Code;
+                    subsidiaryAccountId = voucherType.DefaultAccountId.ToString();
+                    subsidiaryAccount = voucherType.SubsidiaryAccount.Name;
+                    subsidiaryAccountCode = voucherType.SubsidiaryAccount.Code;                                   
+
+                }
+                else {
+
+                    controlAccountId = "";
+                    controlAccount = "";
+                    controlAccountCode = "";
+                    subsidiaryAccountId = "";
+                    subsidiaryAccount = "";
+                    subsidiaryAccountCode = "";                                  
+                }
+
+                var voucher = new
+                {
+                    CostCenterId = defaultCostCenterIds,
+                    CostCenter = defaultCostCenters,
+                    ControlAccountId = controlAccountId,
+                    ControlAccount = controlAccount,
+                    ControlAccountCode = controlAccountCode,
+                    SubsidiaryAccountId = subsidiaryAccountId,
+                    SubsidiaryAccount = subsidiaryAccount,
+                    SubsidiaryAccountCode = subsidiaryAccountCode
+                };
+
+                return voucher;
+                
+            }
+            catch (System.Exception ex)
+            {
+                return null;
+            }
+        }
+
+
+
+
+
 
         #endregion
 

@@ -207,6 +207,7 @@ namespace Infrastructure.Persistence.Contexts
                   .HasForeignKey(d => d.PurposeTemplateId)
                   .OnDelete(DeleteBehavior.ClientSetNull)
                   .HasConstraintName("FK_ifmsVoucherHeader_ifmsPurposeTemplate");
+         
 
             });
 
@@ -257,22 +258,28 @@ namespace Infrastructure.Persistence.Contexts
                   .HasConstraintName("FK_ifmsVoucherDetail_coreSubsidiaryAccount");
 
                 entity.HasOne(d => d.CostCode)
-                 .WithMany(p => p.IfmsVoucherDetails)
-                 .HasForeignKey(d => d.CostCodeId)
-                 .OnDelete(DeleteBehavior.ClientSetNull)
-                 .HasConstraintName("FK_ifmsVoucherDetail_ifmsCostCode");
+                     .WithMany(p => p.IfmsVoucherDetails)
+                     .HasForeignKey(d => d.CostCodeId)
+                     .OnDelete(DeleteBehavior.ClientSetNull)
+                     .HasConstraintName("FK_ifmsVoucherDetail_ifmsCostCode");
 
-                //entity.HasOne(d => d.IfmsVoucherHeaders)
-                // .WithMany(p => p.IfmsVoucherDetails)
-                // .HasForeignKey(d => d.VoucherHeaderId)
-                // .OnDelete(DeleteBehavior.ClientSetNull)
-                // .HasConstraintName("FK_ifmsVoucherDetail_ifmsVoucherHeader");
+                entity.HasOne(d => d.VoucherHeaders)
+                     .WithMany(p => p.IfmsVoucherDetails)
+                     .HasForeignKey(d => d.VoucherHeaderId)
+                     .OnDelete(DeleteBehavior.ClientSetNull)
+                     .HasConstraintName("FK_ifmsVoucherDetail_ifmsVoucherHeader");
 
-                //entity.HasOne(d => d.IfmsVoucherHeaders_2)
-                //.WithMany(p => p.IfmsVoucherDetails_2)
-                //.HasForeignKey(d => d.IBTReferenceVoucherHeaderId)
-                //.OnDelete(DeleteBehavior.ClientSetNull)
-                //.HasConstraintName("FK_ifmsVoucherDetail_ifmsVoucherHeader1");
+                entity.HasOne(d => d.VoucherHeaders1)
+                    .WithMany(p => p.IfmsVoucherDetails1)
+                    .HasForeignKey(d => d.IBTReferenceVoucherHeaderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ifmsVoucherDetail_ifmsVoucherHeader1");
+
+                entity.HasOne(d => d.VoucherHeaders2)
+                    .WithMany(p => p.IfmsVoucherDetails2)
+                    .HasForeignKey(d => d.ReferenceVoucherHeaderId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_ifmsVoucherDetail_ifmsVoucherHeader2");
 
             });
 

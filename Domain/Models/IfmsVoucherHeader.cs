@@ -7,7 +7,10 @@ namespace Domain.Models
     public partial class IfmsVoucherHeader
     {
         public IfmsVoucherHeader()
-        {           
+        {
+            IfmsVoucherDetails = new HashSet<IfmsVoucherDetail>();
+            IfmsVoucherDetails1 = new HashSet<IfmsVoucherDetail>();
+            IfmsVoucherDetails2 = new HashSet<IfmsVoucherDetail>();
         }
 
         public Guid Id { get; set; }
@@ -41,5 +44,10 @@ namespace Domain.Models
         public virtual LupVoucherType VoucherType { get; set; }
         public virtual LupModeOfPayment ModeOfPayment { get; set; }
         public virtual IfmsPurposeTemplate PurposeTemplate { get; set; }
+        public virtual ICollection<IfmsVoucherDetail> IfmsVoucherDetails { get; set; }
+        public virtual ICollection<IfmsVoucherDetail> IfmsVoucherDetails1 { get; set; }
+        public virtual ICollection<IfmsVoucherDetail> IfmsVoucherDetails2 { get; set; }
+
+
     }
 }
