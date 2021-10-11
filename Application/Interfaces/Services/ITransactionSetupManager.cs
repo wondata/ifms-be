@@ -10,6 +10,7 @@ namespace Application.Interfaces.Services
     {
         Task<IEnumerable<VoucherHeaderEntity>> GetAllVoucherList();
         Task<IEnumerable<VoucherHeaderEntity>> GetTransactionHeaders();
+        Task<IEnumerable<VoucherHeaderEntity>> GetSettlementHeaders();
         Task<string> SaveVoucher(VoucherHeaderEntity voucherHeader, List<VoucherDetailEntity> voucherDetails);
         Task DeleteVoucher(Guid Id);
         Task DeleteVoucherDetail(Guid Id);

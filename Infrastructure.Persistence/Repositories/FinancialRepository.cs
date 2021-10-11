@@ -115,5 +115,12 @@ namespace Infrastructure.Persistence.Repositories
 
             return payment;
         }
+
+        public async Task<IQueryable<CoreChartOfAccount>> GetChartOfAccounts()
+        {
+            var chartAccount = (await this.GetAllAsync<CoreChartOfAccount>());
+
+            return chartAccount;
+        }
     }
 }

@@ -110,6 +110,53 @@ namespace Presentation.Api.Controllers
 
         }
 
+
+        [HttpPost("GetSettelementHeaders")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesDefaultResponseType]
+        public async Task<ActionResult<VoucherHeaderEntity>> GetSettelementHeaders()
+        {
+            try
+            {
+                var lookups = await this._transactionService.GetSettlementHeaders();
+
+                var transaction = lookups.Select(item => new {
+                    item.Id,
+                    item.ReferenceNo,
+                    IsBalanced = IsBalanced(item.Id).Result.ToString(),
+                    item.Amount,
+                    item.ChequeNo,
+                    item.CostCenterId,
+                    item.CreatedBy,
+                    item.Date,
+                    item.Description,
+                    item.DocumentNo,
+                    item.IsAdjustment,
+                    item.IsDeleted,
+                    item.IsPosted,
+                    item.IsVoid,
+                    item.ModeOfPaymentId,
+                    item.PayedToReceivedFrom,
+                    item.Period.Name,
+                    item.PeriodId,
+                    item.Period,
+                    item.PurposeTemplate,
+                    item.CostCenter,
+                    item.VoucherType,
+                });
+
+                return Ok(new APIPagedResponse<IEnumerable<object>>(transaction, lookups.Count()));
+            }
+            catch (System.Exception ex)
+            {
+                string message = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+                return BadRequest(new APIPagedResponse<VoucherHeaderEntity>(null, 0, true, "Exception occurred, please retry!"));
+            }
+
+        }
+
+
+
         [HttpPost("TransactionPost")]
         public async Task<ResponseDTO> TransactionPost(List<VoucherHeaderEntity> voucherDetail)
         {
@@ -160,7 +207,7 @@ namespace Presentation.Api.Controllers
             {
                 await this._transactionService.TransactionVoid(voucherDetail);
                 response.ResponseStatus = ResponseStatusEnum.Success.ToString();
-                response.Message = "Transactions has been Unposted Successfully!";
+                response.Message = "Transactions has been Voided Successfully!";
                 return response;
             }
             catch (Exception ex)
@@ -180,7 +227,7 @@ namespace Presentation.Api.Controllers
             {
                 await this._transactionService.TransactionAdjust(voucherDetail);
                 response.ResponseStatus = ResponseStatusEnum.Success.ToString();
-                response.Message = "Transactions has been Unposted Successfully!";
+                response.Message = "Transactions has been Adjusted Successfully!";
                 return response;
             }
             catch (Exception ex)
@@ -200,7 +247,7 @@ namespace Presentation.Api.Controllers
             {
                 await this._transactionService.TransactionDelete(voucherDetail);
                 response.ResponseStatus = ResponseStatusEnum.Success.ToString();
-                response.Message = "Transactions has been Unposted Successfully!";
+                response.Message = "Transactions has been Deleted Successfully!";
                 return response;
             }
             catch (Exception ex)
@@ -212,7 +259,7 @@ namespace Presentation.Api.Controllers
         }
 
         [HttpPost("GetJvNumber")]
-        public async Task<string> GetJvNumber(PaymentVoucherPostModel payment)
+        public async Task<object> GetJvNumber(PaymentVoucherPostModel payment)
         {
             Guid id;
             Guid.TryParse(payment.Id, out id);       

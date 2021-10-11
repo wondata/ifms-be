@@ -13,6 +13,8 @@ namespace Application.Interfaces.Repositories
 
         Task<IQueryable<CoreChartOfAccount>> GetChartOfAccount();
 
+        Task<IQueryable<CoreChartOfAccount>> GetChartOfAccounts();
+
         Task<IQueryable<CoreSubsidiaryAccount>> GetSubsidiaryAccounts();
 
         Task<IQueryable<CoreControlAccount>> GetControlAccounts();

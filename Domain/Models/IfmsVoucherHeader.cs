@@ -35,6 +35,8 @@ namespace Domain.Models
         public bool IsVoid{ get; set; }
         public string? PostedFromOperation { get; set; }
         public DateTime? AuthorizedDate { get; set; }
+        public DateTime? SettlementEndDate { get; set; }
+        public bool IsSettled { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

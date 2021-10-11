@@ -22,7 +22,6 @@ namespace Domain.Models
         public decimal RunningBalance { get; set; }
         public Guid? SubsidiaryAccountTypeId { get; set; }
         public bool IsDeleted { get; set; }
-        public byte[] LastUpdated { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 

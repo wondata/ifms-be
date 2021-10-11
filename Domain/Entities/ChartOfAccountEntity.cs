@@ -8,6 +8,7 @@ namespace Domain.Entities
 {
     public partial class ChartOfAccountEntity: BaseEntity
     {
+        public static string ACCOUNT_CATEGORY = "Account Category";
         public static string ACCOUNT_TYPE = "Account Type";
         public static string ACCOUNT_GROUP = "Account Group";
         
@@ -19,7 +20,8 @@ namespace Domain.Entities
         public string Name { get; set; }
         public string Code { get; set; }
         public string Type { get; set; }
-
+        public Guid? ParentId { get; set; }
+        public Guid? CompanyId { get; set; }
         public List<ChartOfAccountEntity> Children { get; set; }
 
         public ChartOfAccountEntity()
@@ -53,7 +55,7 @@ namespace Domain.Entities
         //    //this.Children =
         //    //    accountGroup.CoreControlAccount == null ? new List<ChartOfAccountEntity>() :
         //    //    accountGroup.CoreControlAccount.Select(x => new ChartOfAccountEntity(x)).ToList();
-        //}
+        //}       
 
         public ChartOfAccountEntity(CoreChartOfAccount chartOfAccount)
         {
@@ -104,6 +106,144 @@ namespace Domain.Entities
         public override T MapToModel<T>(T t)
         {
             throw new NotImplementedException();
+        }
+
+        public override T MapToModel<T>(T t, String type)
+        {
+            if (type == ChartOfAccountEntity.ACCOUNT_CATEGORY)
+            {
+                CoreAccountType coreAccount = t as CoreAccountType;
+                Guid.TryParse(this.Id, out Guid id);
+
+                coreAccount.Id = id;
+                coreAccount.Name = this.Name;
+                coreAccount.Code = this.Code;
+                return coreAccount as T;
+
+            }
+            else if (type == ChartOfAccountEntity.ACCOUNT_GROUP)
+            {
+                CoreControlAccount coreAccount = t as CoreControlAccount;
+                Guid.TryParse(this.Id, out Guid id);
+
+                coreAccount.Id = id;
+                coreAccount.Name = this.Name;
+                coreAccount.Code = this.Code;
+                return coreAccount as T;
+
+            }
+            else if (type == ChartOfAccountEntity.ACCOUNT_TYPE)
+            {
+                CoreAccountGroup coreAccount = t as CoreAccountGroup;
+                Guid.TryParse(this.Id, out Guid id);
+
+                coreAccount.Id = id;
+                coreAccount.Name = this.Name;
+                coreAccount.Code = this.Code;
+                return coreAccount as T;
+
+            }
+            else if (type == ChartOfAccountEntity.CONTROL_ACCOUNT)
+            {
+                CoreSubsidiaryAccount coreAccount = t as CoreSubsidiaryAccount;
+                Guid.TryParse(this.Id, out Guid id);
+
+                coreAccount.Id = id;
+                coreAccount.Name = this.Name;
+                coreAccount.Code = this.Code;
+                return coreAccount as T;
+
+            }
+            else if (type == ChartOfAccountEntity.CHART_ACCOUNT)
+            {
+                CoreChartOfAccount coreChart = t as CoreChartOfAccount;
+                Guid.TryParse(this.Id, out Guid id);
+                
+
+                coreChart.Id = id;
+                coreChart.Name = this.Name;
+                coreChart.Code = this.Code;
+                coreChart.CompanyId = this.CompanyId;
+                coreChart.ParentId = this.ParentId;
+
+                return coreChart as T;
+            }
+
+            return null;
+
+
+        }
+
+        public override T MapToModel<T>(string type)
+        {
+
+            if (type == ChartOfAccountEntity.ACCOUNT_CATEGORY)
+            {
+                CoreAccountType coreAccount = new CoreAccountType
+                {
+                  
+
+                    Id = Guid.NewGuid(),
+                    Name = this.Name,
+                    Code = this.Code,
+                    AccountCategoryId = this.ParentId
+                };
+                return coreAccount as T;
+
+            }
+            else if (type == ChartOfAccountEntity.ACCOUNT_GROUP)
+            {
+                CoreControlAccount coreAccount = new CoreControlAccount
+                {
+                    Id = Guid.NewGuid(),
+                    Name = this.Name,
+                    Code = this.Code,
+                    //AccountGroupId = this.ParentId
+                };
+                return coreAccount as T;
+
+            }
+            else if (type == ChartOfAccountEntity.ACCOUNT_TYPE)
+            {
+                CoreAccountGroup coreAccount = new CoreAccountGroup
+                {
+
+                    Id = Guid.NewGuid(),
+                    Name = this.Name,
+                    Code = this.Code,
+                    AccountTypeId = this.ParentId
+                };
+                return coreAccount as T;
+
+
+            }
+            else if (type == ChartOfAccountEntity.CONTROL_ACCOUNT)
+            {
+                CoreSubsidiaryAccount coreAccount = new CoreSubsidiaryAccount
+                {
+                    Id = Guid.NewGuid(),
+                    Name = this.Name,
+                    Code = this.Code,
+                    ControlAccountId = this.ParentId.Value
+                };
+                return coreAccount as T;
+
+            }
+            else if (type == ChartOfAccountEntity.CHART_ACCOUNT)
+            {
+                CoreChartOfAccount coreChart = new CoreChartOfAccount
+                {
+                    Id = Guid.NewGuid(),
+                    Name = this.Name,
+                    Code = this.Code,
+                    ParentId = this.ParentId.Value,
+                    CompanyId = this.CompanyId.Value
+                };
+                return coreChart as T;
+
+            }
+            return null as T;
+
         }
     }
 }

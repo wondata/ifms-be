@@ -43,8 +43,80 @@ namespace Presentation.Api.Controllers
                 return null;
             }            
         }
-                                    
-        
+
+        [HttpPost("GetChartOfAccount")]
+        public async Task<ChartOfAccountViewModel> GetChartOfAccount()
+        {
+            //return Ok(await Mediator.Send(new GetAllAccountTypesQuery()));
+            //  var charAccount = await this._service.GetChartOfAccount();
+
+            IEnumerable<ChartOfAccountEntity> chartOfAccountEntities = await this._service.GetChartOfAccount();
+            IEnumerable<ChartOfAccountViewModel> chartOfAccountViewModels = chartOfAccountEntities.Select(x => new ChartOfAccountViewModel(x));
+
+            ChartOfAccountViewModel chartOfAccounts = new ChartOfAccountViewModel
+            {
+                Id = null,
+                text = "Chart Of Accounts",
+                expanded = true,
+                iconCls = "x-fa fa-sitemap",
+                children = chartOfAccountViewModels.ToList()
+            };
+
+            return chartOfAccounts;
+
+        }
+
+        [HttpPost("GetChildChartsOfAccount")]
+        public async Task<List<ChartOfAccountEntity>> GetChildChartsOfAccount(ChartOfAccountViewModel chartOfAccount)
+        {
+            return await this._service.GetChildChartsOfAccount(chartOfAccount.Id, chartOfAccount.Type);
+        }
+
+        [HttpPost("SaveChildChartAccount")]
+        public async Task<ResponseDTO> SaveChildChartAccount(ChartOfAccountEntity chartOfAccount)
+        {
+            ResponseDTO response = new ResponseDTO();
+
+            try
+            {
+                await this._service.SaveChildChartAccount(chartOfAccount);
+
+                response.ResponseStatus = ResponseStatusEnum.Success.ToString();
+                response.Message = "Record saved successfully!";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.ResponseStatus = ResponseStatusEnum.Error.ToString();
+                response.Message = "Error occured, Please retry or contact the admin!";
+                return response;
+            }
+        }
+
+        [HttpPost("DeleteChildChartAccount")]
+        public async Task<ResponseDTO> DeleteChildChartAccount(ChartOfAccountEntity chartOfAccount)
+        {
+            ResponseDTO response = new ResponseDTO();
+
+            try
+            {
+                Guid id;
+                Guid.TryParse(chartOfAccount.Id, out id);
+
+                await this._service.DeleteChildChartAccount(id, chartOfAccount.Type);
+                response.ResponseStatus = ResponseStatusEnum.Success.ToString();
+                response.Message = "Record deleted successfully";
+                return response;
+            }
+            catch (Exception ex)
+            {
+                response.ResponseStatus = ResponseStatusEnum.Error.ToString();
+                response.Message = "Error occured, Please retry or contact the admin!";
+                return response;
+            }
+        }
+
+
 
         #region Payment Request        
 
@@ -90,33 +162,7 @@ namespace Presentation.Api.Controllers
         }
 
 
-        #endregion
-
-
-        [HttpPost("GetChartOfAccount")]
-        public async Task<ChartOfAccountViewModel> GetChartOfAccount()
-        {
-            //return Ok(await Mediator.Send(new GetAllAccountTypesQuery()));
-            //  var charAccount = await this._service.GetChartOfAccount();
-
-            IEnumerable<ChartOfAccountEntity> chartOfAccountEntities = await this._service.GetChartOfAccount();
-            IEnumerable<ChartOfAccountViewModel> chartOfAccountViewModels = chartOfAccountEntities.Select(x => new ChartOfAccountViewModel(x));
-
-            ChartOfAccountViewModel chartOfAccounts = new ChartOfAccountViewModel
-            {
-                Id = null,
-                text = "Chart Of Accounts",
-                expanded = true,
-                iconCls = "x-fa fa-sitemap",
-                children = chartOfAccountViewModels.ToList()
-            };
-
-            return chartOfAccounts;
-            
-        }
-
-
-       
+        #endregion        
 
         //[HttpPost("SaveAccountGroup")]
         //public async Task<Response<bool>> SaveAccountGroup(AccountGroupEntity param)

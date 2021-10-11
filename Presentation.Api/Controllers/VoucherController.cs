@@ -149,27 +149,7 @@ namespace Presentation.Api.Controllers
 
             try
             {
-                var lookups = await _transactionService.GetVoucherDetails(id);
-
-                //var voucher = lookups.Select(item => new {
-                //    item.Id,
-                //    item.CostCenterId,
-                //    CostCenter = item.CostCenters.Code,
-                //    item.ControlAccountId,
-                //    AccountId = item.SubsidiaryAccountId,
-                //    AccountCode = item.ControlAccount.Code + "-" + item.SubsidiaryAccount.Code,
-                //    AccountName = item.SubsidiaryAccount.Name,
-                //    item.DebitAmount,
-                //    item.CreditAmount,
-                //    item.CostCodeId,
-                //    CostCode = item.CostCodes == null ? "" : item.CostCodes.Code,
-                //    item.IsInterBranchTransactionCleared,
-                //    item.IBTReferenceVoucherHeaderId,
-                //    item.ControlAccount,
-                //    item.CostCodes,
-                //    item.SubsidiaryAccount,
-                //    item.CostCenters,
-                //});
+                var lookups = await _transactionService.GetVoucherDetails(id);              
 
                 return Ok(new APIPagedResponse<IEnumerable<object>>(lookups, lookups.Count()));
             }

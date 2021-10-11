@@ -50,6 +50,15 @@ namespace Application.Services
             return voucher;
         }
 
+        public async Task<IEnumerable<VoucherHeaderEntity>> GetSettlementHeaders()
+        {
+            IQueryable<IfmsVoucherHeader> ifmsVoucher = await this._transactionRepository.GetVoucherHeaders();
+            ifmsVoucher = ifmsVoucher.Where(c => c.SettlementEndDate != null && c.IsSettled == false);
+            IEnumerable<VoucherHeaderEntity> voucher = ifmsVoucher.Select(x => new VoucherHeaderEntity(x));
+
+            return voucher;
+        }
+
         public async Task<IEnumerable<VoucherHeaderEntity>> GetAllVoucherList()
         {
 
@@ -311,7 +320,7 @@ namespace Application.Services
             }
 
             var referenceNo = await this.GetVoucherNumber(voucherEntity.CostCenterId, voucherEntity.VoucherTypeId);
-            if (referenceNo == String.Empty)
+            if (referenceNo == null)
             {
                 return;
             }
@@ -331,7 +340,6 @@ namespace Application.Services
 
             if (existingRecord == null)
             {
-
                 voucherEntity.ReferenceNo = referenceNo;
                 voucherEntity.DocumentNo = referenceNo;
                 voucherEntity.CreatedBy = "CyberERP";
@@ -643,17 +651,15 @@ namespace Application.Services
         public async Task TransactionVoid(List<VoucherHeaderEntity> voucherHeader)
         {
             foreach (var headers in voucherHeader)
-            {
-                Guid id;
-                Guid.TryParse(headers.Id, out id);
+            {               
+                Guid.TryParse(headers.Id,  out Guid id);
 
                 IfmsVoucherHeader voucher = await this._transactionRepository.GetAsync<IfmsVoucherHeader>(x => x.Id == id);
 
-                if (voucher != null && voucher.IsPosted == true && voucher.IsVoid == false)
+                if (voucher != null && voucher.IsPosted == true)
                 {
                     voucher.IsVoid = true;
                     await this._transactionRepository.UpdateAsync(voucher);
-                    await this._transactionRepository.UnitOfWork.SaveChanges();
 
                     IEnumerable<IfmsVoucherDetail> details = await this._transactionRepository.FindAsync<IfmsVoucherDetail>(x => x.VoucherHeaderId == id);
 
@@ -675,7 +681,7 @@ namespace Application.Services
 
                         var newVoucherDetail = new IfmsVoucherDetail
                         {
-                            VoucherHeaderId = voucher.Id,
+                            VoucherHeaderId = Guid.NewGuid(),
                             CostCenterId = voucher.CostCenterId,
                             ControlAccountId = detail.ControlAccountId,
                             SubsidiaryAccountId = detail.SubsidiaryAccountId,
@@ -687,7 +693,6 @@ namespace Application.Services
                         };
 
                         await this._transactionRepository.UpdateAsync(newVoucherDetail);
-                        await this._transactionRepository.UnitOfWork.SaveChanges();
 
                     }
 
@@ -695,7 +700,10 @@ namespace Application.Services
 
             }
 
-            
+            await this._transactionRepository.UnitOfWork.SaveChanges();
+
+
+
 
         }
 

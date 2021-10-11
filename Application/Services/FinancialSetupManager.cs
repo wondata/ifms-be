@@ -33,6 +33,195 @@ namespace CyberErp.CoreSetting.Core.Service
             return chartOfAccounts;
         }
 
+
+        public async Task<List<ChartOfAccountEntity>> GetChildChartsOfAccount(string parentNodeId, string type)
+        {
+            List<ChartOfAccountEntity> chartOfAccounts = new List<ChartOfAccountEntity>();
+            Guid parentId;
+            Guid.TryParse(parentNodeId, out parentId);
+
+            //if (type == ChartOfAccountEntity.ACCOUNT_CATEGORY)
+            //{
+            //    var accountTypes = await this._financialRepository.GetAccountTypes();
+            //    accountTypes = accountTypes.Where(x => x.AccountCategoryId == parentId);
+            //    chartOfAccounts = accountTypes.Select(x => new ChartOfAccountEntity(x)).ToList();
+            //} 
+            //else if (type == ChartOfAccountEntity.ACCOUNT_TYPE)
+            //{
+            //    var accountGroups = await this._financialRepository.GetAccountGroups();
+            //    accountGroups = accountGroups.Where(x => x.AccountTypeId == parentId);
+            //    chartOfAccounts = accountGroups.Select(x => new ChartOfAccountEntity(x)).ToList();
+            //}
+            if (type == ChartOfAccountEntity.CHART_ACCOUNT)
+            {
+                var chartCompnay = await this._financialRepository.GetChartOfAccounts();
+                chartCompnay = chartCompnay.Where(x => x.Id == parentId);
+                chartOfAccounts = chartCompnay.Select(x => new ChartOfAccountEntity(x)).ToList();
+            }
+            else if (type == ChartOfAccountEntity.ACCOUNT_GROUP)
+            {
+                var controlAccounts = await this._financialRepository.GetControlAccounts();
+                controlAccounts = controlAccounts.Where(x => x.ChartAccountID == parentId);
+                chartOfAccounts = controlAccounts.Select(x => new ChartOfAccountEntity(x)).ToList();
+            }
+            else if (type == ChartOfAccountEntity.CONTROL_ACCOUNT)
+            {
+                var subsidiaryAccounts = await this._financialRepository.GetSubsidiaryAccounts();
+                subsidiaryAccounts = subsidiaryAccounts.Where(x => x.ControlAccountId == parentId);
+                chartOfAccounts = subsidiaryAccounts.Select(x => new ChartOfAccountEntity(x)).ToList();
+            }
+
+            return chartOfAccounts;
+        }
+
+        public async Task SaveChildChartAccount(ChartOfAccountEntity chartOfAccount)
+        {
+            Guid id;
+            Guid.TryParse(chartOfAccount.Id, out id);
+
+            if (chartOfAccount.Type == ChartOfAccountEntity.ACCOUNT_CATEGORY)
+            {
+
+                CoreAccountType existingRecord = await this._financialRepository.GetAsync<CoreAccountType>(x => x.Id == id);
+
+                if (existingRecord == null)
+                {
+                    CoreAccountType accountType = chartOfAccount.MapToModel<CoreAccountType>(chartOfAccount.Type);
+
+                    await this._financialRepository.AddAsync(accountType);
+                    await this._financialRepository.UnitOfWork.SaveChanges();
+                }
+                else
+                {
+                    CoreAccountType controlAccounts = await this._financialRepository.GetAsync<CoreAccountType>(x => x.Id == id);
+                    CoreAccountType controlModel = chartOfAccount.MapToModel(controlAccounts, chartOfAccount.Type);
+
+                    await this._financialRepository.UpdateAsync(controlModel);
+                    await this._financialRepository.UnitOfWork.SaveChanges();
+                }
+            }
+            else if (chartOfAccount.Type == ChartOfAccountEntity.ACCOUNT_TYPE)
+            {
+                CoreAccountGroup existingRecord = await this._financialRepository.GetAsync<CoreAccountGroup>(x => x.Id == id);
+
+                if (existingRecord == null)
+                {
+                    CoreAccountGroup coreGroup = chartOfAccount.MapToModel<CoreAccountGroup>(chartOfAccount.Type);
+
+                    await this._financialRepository.AddAsync(coreGroup);
+                    await this._financialRepository.UnitOfWork.SaveChanges();
+                }
+                else
+                {
+                    CoreAccountGroup controlAccounts = await this._financialRepository.GetAsync<CoreAccountGroup>(x => x.Id == id);
+                    CoreAccountGroup controlModel = chartOfAccount.MapToModel(controlAccounts, chartOfAccount.Type);
+
+                    await this._financialRepository.UpdateAsync(controlModel);
+                    await this._financialRepository.UnitOfWork.SaveChanges();
+                }
+
+            }
+            else if (chartOfAccount.Type == ChartOfAccountEntity.ACCOUNT_GROUP)
+            {
+
+                CoreControlAccount existingRecord = await this._financialRepository.GetAsync<CoreControlAccount>(x => x.Id == id);
+
+                if (existingRecord == null)
+                {
+                    CoreControlAccount controlAccount = chartOfAccount.MapToModel<CoreControlAccount>(chartOfAccount.Type);
+
+                    await this._financialRepository.AddAsync(controlAccount);
+                    await this._financialRepository.UnitOfWork.SaveChanges();
+                }
+                else
+                {
+                    CoreControlAccount controlAccounts = await this._financialRepository.GetAsync<CoreControlAccount>(x => x.Id == id);
+                    CoreControlAccount controlModel = chartOfAccount.MapToModel(controlAccounts, chartOfAccount.Type);
+
+                    await this._financialRepository.UpdateAsync(controlModel);
+                    await this._financialRepository.UnitOfWork.SaveChanges();
+                }
+
+            }
+
+            else if (chartOfAccount.Type == ChartOfAccountEntity.CONTROL_ACCOUNT)
+            {
+                CoreSubsidiaryAccount existingRecord = await this._financialRepository.GetAsync<CoreSubsidiaryAccount>(x => x.Id == id);
+
+                if (existingRecord == null)
+                {
+                    
+                    CoreSubsidiaryAccount coreSubsidiary = chartOfAccount.MapToModel<CoreSubsidiaryAccount>(chartOfAccount.Type);
+                    
+                    await this._financialRepository.AddAsync(coreSubsidiary);
+                    await this._financialRepository.UnitOfWork.SaveChanges();
+                }
+                else
+                {
+                    CoreSubsidiaryAccount controlAccounts = await this._financialRepository.GetAsync<CoreSubsidiaryAccount>(x => x.Id == id);
+                    CoreSubsidiaryAccount controlModel = chartOfAccount.MapToModel(controlAccounts, chartOfAccount.Type);
+                    await this._financialRepository.UpdateAsync(controlModel);
+                    await this._financialRepository.UnitOfWork.SaveChanges();
+                }
+            }
+            else if (chartOfAccount.Type == ChartOfAccountEntity.CHART_ACCOUNT)
+            {
+                CoreChartOfAccount existingRecord = await this._financialRepository.GetAsync<CoreChartOfAccount>(x => x.Id == id);
+
+                if (existingRecord == null)
+                {
+                    CoreChartOfAccount coreChart = chartOfAccount.MapToModel<CoreChartOfAccount>(chartOfAccount.Type);
+
+                    await this._financialRepository.AddAsync(coreChart);
+                    await this._financialRepository.UnitOfWork.SaveChanges();
+                }
+                else
+                {
+                    CoreChartOfAccount accountChart = await this._financialRepository.GetAsync<CoreChartOfAccount>(x => x.Id == id);
+                    CoreChartOfAccount coreChart = chartOfAccount.MapToModel(accountChart, chartOfAccount.Type);
+                    await this._financialRepository.UpdateAsync(coreChart);
+                    await this._financialRepository.UnitOfWork.SaveChanges();
+                }
+            }
+        }
+
+        public async Task DeleteChildChartAccount(Guid id, string type)
+        {
+
+            //if (type == ChartOfAccountEntity.ACCOUNT_CATEGORY)
+            //{
+            //    await this._financialRepository.DeleteAsync<CoreAccountCategory>(x => x.Id == id);
+            //    await this._financialRepository.UnitOfWork.SaveChanges();
+            //}
+             
+            if (type == ChartOfAccountEntity.ACCOUNT_TYPE)
+            {
+                await this._financialRepository.DeleteAsync<CoreAccountType>(x => x.Id == id);
+                await this._financialRepository.UnitOfWork.SaveChanges();
+
+            }
+            else if (type == ChartOfAccountEntity.ACCOUNT_GROUP)
+            {
+                await this._financialRepository.DeleteAsync<CoreAccountGroup>(x => x.Id == id);
+                await this._financialRepository.UnitOfWork.SaveChanges();
+
+            }
+            else if (type == ChartOfAccountEntity.CONTROL_ACCOUNT)
+            {
+                await this._financialRepository.DeleteAsync<CoreControlAccount>(x => x.Id == id);
+                await this._financialRepository.UnitOfWork.SaveChanges();
+
+            }
+            else if (type == ChartOfAccountEntity.SUBSIDIARY_ACCOUNT)
+            {
+                await this._financialRepository.DeleteAsync<CoreSubsidiaryAccount>(x => x.Id == id);
+                await this._financialRepository.UnitOfWork.SaveChanges();
+
+            }
+
+        }
+
+
         public async Task<List<CostCodeEntity>> GetCostCodes()
         {
             IQueryable<IfmsCostCode> ifmsCost = await this._financialRepository.GetCostCodes();
@@ -340,6 +529,7 @@ namespace CyberErp.CoreSetting.Core.Service
 
             return payment;
         }
+     
 
        
     }

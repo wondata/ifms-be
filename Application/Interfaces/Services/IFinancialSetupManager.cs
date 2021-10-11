@@ -12,6 +12,9 @@ namespace Application.Interfaces.Services
     public interface IFinancialSetupManager 
     {
         Task<IEnumerable<ChartOfAccountEntity>> GetChartOfAccount();
+        Task<List<ChartOfAccountEntity>> GetChildChartsOfAccount(string parentNodeId, string type);
+        Task SaveChildChartAccount(ChartOfAccountEntity chartOfAccount);
+        Task DeleteChildChartAccount(Guid id, string type);
         Task<IEnumerable<SubsidiaryAccountEntity>> GetSubsidiaryAccounts(string accountCode);
         Task<IEnumerable<SubsidiaryAccountEntity>> GetSubsidiaryAccountList();
         Task<IEnumerable<ControlAccountEntity>> GetControlAccountList();

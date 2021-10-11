@@ -131,10 +131,7 @@ namespace Infrastructure.Persistence.Contexts
                 entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.CreatedBy).HasMaxLength(50);
-
-                entity.Property(e => e.LastUpdated)
-                    .IsRequired()
-                    .IsRowVersion();
+               
 
                 entity.Property(e => e.UpdatedAt).HasDefaultValueSql("(getdate())");
 

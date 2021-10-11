@@ -23,22 +23,15 @@ namespace Presentation.Api.Model.PostModel
         public string VoucherTypeId { get; set; }
 
         public VoucherHeaderEntity MapToEntity()
-        {
-            Guid AccountIds;
-            Guid.TryParse(this.AccountId, out AccountIds);
-            Guid ModeOfPaymentIds;
-            Guid.TryParse(this.ModeOfPaymentId, out ModeOfPaymentIds);
-            Guid Projects;
-            Guid.TryParse(this.Project, out Projects);
-            Guid PurposeTemplateIds;
-            Guid.TryParse(this.PurposeTemplateId, out PurposeTemplateIds);
-            Guid VoucherTypeIds;
-            Guid.TryParse(this.VoucherTypeId, out VoucherTypeIds);
-
+        {            
+            Guid.TryParse(this.AccountId, out Guid AccountIds);
+            Guid.TryParse(this.ModeOfPaymentId, out Guid ModeOfPaymentIds);
+            Guid.TryParse(this.Project, out Guid Projects);
+            Guid.TryParse(this.PurposeTemplateId, out Guid PurposeTemplateIds);
+            Guid.TryParse(this.VoucherTypeId, out Guid VoucherTypeIds);        
 
             VoucherHeaderEntity voucher = new VoucherHeaderEntity
             {
-
                 AccountId = AccountIds,
                 Amount = decimal.Parse(this.Amount),
                 AuthorizedDate = this.AuthorizedDate == null ? DateTime.Now : DateTime.Parse(this.AuthorizedDate, null),
@@ -49,7 +42,8 @@ namespace Presentation.Api.Model.PostModel
                 PayedToReceivedFrom = this.PayedToReceivedFrom,
                 CostCenterId = Projects,
                 PurposeTemplateId = PurposeTemplateIds,
-                VoucherTypeId = VoucherTypeIds
+                VoucherTypeId = VoucherTypeIds,
+                Id = this.Id
 
             };
 

@@ -43,7 +43,6 @@ namespace Domain.Entities
             this.CreatedBy = coreSubsidiary.CreatedBy;
             this.SubsidiaryAccountTypeId = coreSubsidiary.SubsidiaryAccountTypeId;
             this.IsDeleted = coreSubsidiary.IsDeleted;
-            this.LastUpdated = coreSubsidiary.LastUpdated;
             this.CreatedAt = coreSubsidiary.CreatedAt;
             this.UpdatedAt = coreSubsidiary.UpdatedAt;
             this.ControlAccount = new ControlAccountEntity(coreSubsidiary.ControlAccount);

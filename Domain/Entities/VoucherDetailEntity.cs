@@ -72,5 +72,15 @@ namespace Domain.Entities
         {
             throw new NotImplementedException();
         }
+
+        public override T MapToModel<T>(string Type)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override T MapToModel<T>(T t, string tyoe)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -33,7 +33,7 @@ namespace Domain.Entities
         public DateTime parsedDate;
         public Guid? AccountId { get; set; }
         public DateTime? AuthorizedDate { get; set; }
-
+        public DateTime? SettlementEndDate { get; set; }
         public List<VoucherHeaderEntity> Children { get; set; }
 
         public CostCenterEntity CostCenter { get; set; }
@@ -71,6 +71,7 @@ namespace Domain.Entities
             this.TaxId = ifmsVoucherHeader.TaxId;
             this.ChequeNo = ifmsVoucherHeader.ChequeNo;
             this.CreatedBy = ifmsVoucherHeader.CreatedBy;
+
             this.IsDeleted = ifmsVoucherHeader.IsDeleted;
             this.PostedBy = ifmsVoucherHeader.PostedBy;
             this.IsPosted = ifmsVoucherHeader.IsPosted;
@@ -78,7 +79,7 @@ namespace Domain.Entities
             this.IsVoid = ifmsVoucherHeader.IsVoid;
             this.PostedFromOperation = ifmsVoucherHeader.PostedFromOperation;
             this.AuthorizedDate = ifmsVoucherHeader.AuthorizedDate;
-        //    this.LastUpdated = ifmsVoucherHeader.LastUpdated;
+            this.SettlementEndDate= ifmsVoucherHeader.SettlementEndDate;
             
             this.CostCenter = new CostCenterEntity(ifmsVoucherHeader.CostCenter);
             this.Period = new PeriodEntity(ifmsVoucherHeader.CorePeriod);
@@ -92,9 +93,8 @@ namespace Domain.Entities
         }
 
         public override T MapToModel<T>()
-        {
-            Guid id;
-            Guid.TryParse(this.Id, out id);
+        {            
+            Guid.TryParse(this.Id, out Guid id);
 
             IfmsVoucherHeader voucherHeader = new IfmsVoucherHeader
             {
@@ -115,6 +115,7 @@ namespace Domain.Entities
                 ChequeNo = this.ChequeNo,
                 CreatedBy = this.CreatedBy,
                 PostedBy = this.PostedBy,
+                SettlementEndDate = this.SettlementEndDate,
                 IsDeleted = this.IsDeleted,
                 IsAdjustment = this.IsAdjustment,
                 IsVoid = this.IsVoid,
@@ -151,6 +152,7 @@ namespace Domain.Entities
                 ChequeNo = this.ChequeNo,
                 CreatedBy = this.CreatedBy,
                 PostedBy = this.PostedBy,
+                SettlementEndDate = this.SettlementEndDate,
                 IsDeleted = this.IsDeleted,
                 IsAdjustment = this.IsAdjustment,
                 IsVoid = this.IsVoid,
@@ -179,6 +181,7 @@ namespace Domain.Entities
                 Amount = this.Amount;
                 ChequeNo = this.ChequeNo;
                 CreatedBy = this.CreatedBy;
+                SettlementEndDate = this.SettlementEndDate;
                 IsDeleted = this.IsDeleted;
                 IsAdjustment = this.IsAdjustment;
                 IsVoid = this.IsVoid;
@@ -186,6 +189,16 @@ namespace Domain.Entities
             
             return voucherHeader as T;
 
+        }
+
+        public override T MapToModel<T>(string Type)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override T MapToModel<T>(T t, string tyoe)
+        {
+            throw new NotImplementedException();
         }
     }
 }
